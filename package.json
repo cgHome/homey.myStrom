@@ -1,0 +1,26 @@
+{
+  "name": "ch.mystrom.smarthome",
+  "version": "0.0.1",
+  "description": "This app provides support for the following devices:",
+  "main": "app.js",
+  "scripts": {
+    "run": "athom project --run",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+git://github.com/cgHome/ch.mystrom.smarthome"
+  },
+  "keywords": [
+    "homey",
+    "devices",
+    "app",
+    "myStrom Smart Home"
+  ],
+  "author": "Chris.Gross <cgHome@gmx.net>",
+  "license": "ISC",
+  "dependencies": {
+    "bonjour": "^3.5.0",
+    "homey-wifidriver": "git+https://github.com/athombv/node-homey-wifidriver.git"
+  }
+}

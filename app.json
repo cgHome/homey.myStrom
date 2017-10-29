@@ -1,0 +1,54 @@
+{
+  "id": "ch.mystrom.smarthome",
+  "sdk": 2,
+  "name": {
+    "en": "myStrom SmartHome"
+  },
+  "description": {
+    "en": "Adds support for myStrom devices."
+  },
+  "version": "0.0.1",
+  "compatibility": ">=1.5.0",
+  "category": [
+    "appliances",
+    "lights"
+  ],
+  "images": {
+    "small": "./assets/images/small.png",
+    "large": "./assets/images/large.png"
+  },
+  "author": {
+    "name": "Chris Gross",
+    "email": "cgHome@gmx.net"
+  },
+  "drivers": [
+    {
+      "id": "switch",
+      "name": {
+        "en": "WiFi Switch"
+      },
+      "images": {
+        "large": "drivers/switch/assets/images/large.png",
+        "small": "drivers/switch/assets/images/small.png"
+      },
+      "class": "socket",
+      "capabilities": [
+        "onoff",
+        "measure_power"
+      ],
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    }
+  ]
+}
