@@ -6,12 +6,10 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 
 ## Devices
 
-|Device|State|
-|----|--------|
-|myStrom WiFi Switch|supported|
-|myStrom WiFi Bulb|in progress|
-|myStrom WiFi Button|scheduled|
-|myStrom WiFi Button Plus|scheduled|
+* myStrom WiFi Switch       [supported]
+* myStrom WiFi Bulb         [in progress]
+* myStrom WiFi Button       [scheduled]
+* myStrom WiFi Button Plus  [scheduled]
 
 ---
 
