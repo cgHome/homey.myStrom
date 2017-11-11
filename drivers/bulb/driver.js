@@ -12,7 +12,7 @@ module.exports = class MyStromSwitchDriver extends WebAPIDriver {
 
     onPairListDevices(data, callback) {
         let devices = (Object.values(Homey.app.devices) || [])
-            .filter((device) => device.data.type == Homey.app.DeviceTypes.WSW);
+            .filter((device) => device.data.type == Homey.app.DeviceTypes.WRB);
 
         callback(null, devices);
     }

@@ -1,10 +1,10 @@
 {
   "name": "ch.mystrom.smarthome",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "This app provides support for the following devices:",
   "main": "app.js",
   "scripts": {
-    "run": "athom project --run",
+    "start": "clear; athom project --run",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

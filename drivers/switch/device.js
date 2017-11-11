@@ -23,7 +23,7 @@ module.exports = class MyStromSwitch extends WebAPIDevice {
 
     registerPollInterval() {
         super.registerPollInterval({
-            id: 'values',
+            id: this.getData().deviceName,
             fn: this.getValues.bind(this),
             interval: 5000, // 5 sec
         });
@@ -37,7 +37,7 @@ module.exports = class MyStromSwitch extends WebAPIDevice {
                     this.state = state;
                     this.setCapabilityValue('onoff', this.state);
                 };
-                let measurePower = Math.round(result.power * 100) / 100;
+                let measurePower = Math.round(result.power * 10) / 10;
                 if (typeof this.measurePower === 'undefined' || this.measurePower !== measurePower) {
                     this.measurePower = measurePower;
                     this.setCapabilityValue('measure_power', this.measurePower);
@@ -63,7 +63,7 @@ module.exports = class MyStromSwitch extends WebAPIDevice {
     };
 
     onCapabilityOnoff(value, opts, callback) {
-        this.log(`onCapabilityOnoff value: ${value}`);
+        this.log(`[${this.getName()}] onCapabilityOnoff value: ${value}`);
 
         return this.apiCallGet({ uri: `relay?state=${value ? '1' : '0'}` })
             .then(result => {
@@ -77,6 +77,6 @@ module.exports = class MyStromSwitch extends WebAPIDevice {
     };
 
     onCapabilityMeasurePower(value, opts, callback) {
-        this.log(`onCapabilityMeasurePower value: ${value}`);
+        this.log(`[${this.getName()}] onCapabilityMeasurePower value: ${value}`);
     };
 }
