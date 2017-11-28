@@ -5,7 +5,8 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 **Note:**
 
 * Finding new devices can take up to 4 minutes.
-* Due to the new discovery service, all devices will need to be re-registered.  ;)
+* To add myStrom devices, you have to use the myStrom-App at the moment.
+* This is an alpha version, if you have problems after the upgrade, register all devices new.
 
 ---
 
@@ -13,12 +14,18 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 
 * myStrom WiFi Switch       [supported]
 * myStrom WiFi Bulb         [supported]
-* myStrom WiFi Button       [in progress]
-* myStrom WiFi Button Plus  [scheduled]
+* myStrom WiFi Button       [supported]
+* myStrom WiFi Button Plus  [sheduled]
 
 ---
 
 ## Changelog
+
+v0.0.3
+
+* Support for myStrom WiFi Button added
+* New pictures added (Many thanks to Tom)
+* Device response error fixed
 
 v0.0.2
 
@@ -29,6 +36,14 @@ v0.0.1
 
 * Support for myStrom WiFi Switch added
 * initial commit
+
+---
+
+## ToDo
+
+* Test WPS-Mode
+* Adding devices to WLAN without myStrom-app
+* Button add battery level warning
 
 ---
 

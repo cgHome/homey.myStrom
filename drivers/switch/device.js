@@ -3,9 +3,14 @@
 const Homey = require('homey');
 const WebAPIDevice = require('homey-wifidriver').WebAPIDevice;
 
+const backOffStrategy = {
+    initialDelay: 10000, // 10 seconds
+    maxDelay: 1000 * 60 * 60, // 1 hour
+};
+
 module.exports = class MyStromSwitch extends WebAPIDevice {
     async onInit(options) {
-        await super.onInit()
+        await super.onInit(backOffStrategy)
             .catch(err => {
                 this.error('error onInit', err.stack);
                 return err;
@@ -31,19 +36,26 @@ module.exports = class MyStromSwitch extends WebAPIDevice {
 
     getValues() {
         return this.apiCallGet({ uri: 'report' })
-            .then(result => {
-                let state = result.relay;
-                if (typeof this.state === 'undefined' || this.state !== state) {
-                    this.state = state;
-                    this.setCapabilityValue('onoff', this.state);
+            .then(response => {
+                if (typeof response.errorResponse == 'undefined') {
+                    const result = response;
+
+                    let state = result.relay;
+                    if (typeof this.state === 'undefined' || this.state !== state) {
+                        this.state = state;
+                        this.setCapabilityValue('onoff', this.state);
+                    };
+                    let measurePower = Math.round(result.power * 10) / 10;
+                    if (typeof this.measurePower === 'undefined' || this.measurePower !== measurePower) {
+                        this.measurePower = measurePower;
+                        this.setCapabilityValue('measure_power', this.measurePower);
+                    };
+                    // this.log(`device ${this.getName()} refreshed`);
+                    this.setAvailable();
+                } else {
+                    this.log(`[${this.getName()}] ${response.toString()}`);
+                    this.setUnavailable(`Response error ${response.errorResponse.code}`);
                 };
-                let measurePower = Math.round(result.power * 10) / 10;
-                if (typeof this.measurePower === 'undefined' || this.measurePower !== measurePower) {
-                    this.measurePower = measurePower;
-                    this.setCapabilityValue('measure_power', this.measurePower);
-                };
-                // this.log(`device ${this.getName()} refreshed`);
-                this.setAvailable();
             })
             .catch(err => {
                 this.error('Failed to get data', err.stack);

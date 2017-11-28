@@ -7,7 +7,7 @@
   "description": {
     "en": "Adds support for myStrom devices."
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "compatibility": ">=1.5.0",
   "category": [
     "appliances",
@@ -17,6 +17,8 @@
     "small": "./assets/images/small.png",
     "large": "./assets/images/large.png"
   },
+  "permissions": [
+  ],
   "author": {
     "name": "Chris Gross",
     "email": "cgHome@gmx.net"
@@ -79,6 +81,82 @@
           "template": "add_devices"
         }
       ]
+    },
+    {
+      "id": "button",
+      "name": {
+        "en": "WiFi Button"
+      },
+      "images": {
+        "large": "drivers/button/assets/images/large.png",
+        "small": "drivers/button/assets/images/small.png"
+      },
+      "class": "other",
+      "capabilities": [
+        "measure_voltage"
+      ],
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
     }
-  ]
+  ],
+  "flow": {
+    "triggers": [
+      {
+				"id": "button_pressed",
+				"title": {
+					"en": "A button is pressed",
+          "nl": "Een knop is ingedrukt",
+          "de": "Ein Button gedrückt"
+				},
+				"args": [
+					{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=button"
+					},
+					{
+						"name": "button",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "short",
+								"label": {
+									"en": "Short Press",
+                  "nl": "Korte druk",
+                  "de": "Druck kurz"
+								}
+							},
+							{
+								"id": "double",
+								"label": {
+									"en": "Double Press",
+									"nl": "Dubbele druk",
+                  "de": "Druck doppelt"
+								}
+							},
+							{
+								"id": "long",
+								"label": {
+									"en": "Long Press",
+									"nl": "Lange druk",
+                  "de": "Druck lang"
+								}
+							}
+						]
+					}
+				]
+			}
+    ]
+  }
 }

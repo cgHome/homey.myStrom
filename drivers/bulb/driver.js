@@ -3,7 +3,7 @@
 const Homey = require('homey');
 const WebAPIDriver = require('homey-wifidriver').WebAPIDriver;
 
-module.exports = class MyStromSwitchDriver extends WebAPIDriver {
+module.exports = class MyStromBulbDriver extends WebAPIDriver {
     onInit(options) {
         super.onInit(options);
 

@@ -8,7 +8,7 @@ const dgram = require('dgram');
 const bonjour = require('bonjour')();
 
 // Start Node.js debugger
-// require('inspector').open(9229, '0.0.0.0', true);
+require('inspector').open(9229, '0.0.0.0', true);
 
 module.exports = class MyStromApp extends WifiApp {
 	constructor(...args) {
@@ -19,7 +19,7 @@ module.exports = class MyStromApp extends WifiApp {
 			WSW: 101,		// WiFi Switch
 			WRB: 102,		// WiFi Bulb
 			WBP: 103,		// WiFi ??		
-			WBS: 104,		// WiFi ??
+			WBS: 104,		// WiFi Button
 			WRS: 105,		// WiFi ??
 			WS2: 106,		// WiFi ??
 			WSE: 107		// WiFi ??
@@ -42,12 +42,13 @@ module.exports = class MyStromApp extends WifiApp {
 					}
 				};
 				this.devices[mac] = device;
-				this.log(`Bonjour discovered device found: ${device.data.deviceName} - ${device.data.address}`);
+				this.log(`Bonjour discovered device found: ${device.data.deviceName} (Type: ${device.data.type}) - ${device.data.address} (${mac})`);
 			};
 		});
 		browser.start();
 
 		const udpClient = dgram.createSocket('udp4', (msg, rinfo) => {
+			// this.log(JSON.stringify(rinfo));			
 			dns.reverse(rinfo.address, (err, hostnames) => {
 				if (!err) {
 					const hostname = hostnames[0];
@@ -65,7 +66,7 @@ module.exports = class MyStromApp extends WifiApp {
 					};
 					if (!this.devices[mac]) {
 						this.devices[mac] = device;
-						this.log(`UDP discovered device found: ${device.data.deviceName} - ${device.data.address}`);
+						this.log(`UDP discovered device found ${device.data.deviceName} (Type: ${device.data.type}) - ${device.data.address} (${mac})`);
 					};
 				}
 				else {
