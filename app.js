@@ -8,7 +8,7 @@ const dgram = require('dgram');
 const bonjour = require('bonjour')();
 
 // Start Node.js debugger
-require('inspector').open(9229, '0.0.0.0', true);
+// require('inspector').open(9229, '0.0.0.0', true);
 
 module.exports = class MyStromApp extends WifiApp {
 	constructor(...args) {
