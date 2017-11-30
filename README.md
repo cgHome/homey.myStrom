@@ -6,7 +6,7 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 
 * Finding new devices can take up to 4 minutes.
 * To add myStrom devices, you have to use the myStrom-App at the moment.
-* This is an alpha version, if you have problems after the upgrade, register all devices new.
+* If you have problems after the upgrade, register all devices new.
 
 ---
 
@@ -15,7 +15,7 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 * myStrom WiFi Switch       [supported]
 * myStrom WiFi Bulb         [supported]
 * myStrom WiFi Button       [supported]
-* myStrom WiFi Button Plus  [sheduled]
+* myStrom WiFi Button Plus  [supported]
 
 ---
 
