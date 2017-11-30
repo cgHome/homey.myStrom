@@ -23,7 +23,7 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 
 v0.0.5
 
-* Relase problem on Homey-App store
+* Release problem fixed
 
 v0.0.4
 
