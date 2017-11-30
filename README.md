@@ -21,6 +21,10 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 
 ## Changelog
 
+v0.0.5
+
+* Relase problem on Homey-App store
+
 v0.0.4
 
 * Support for myStrom WiFi Button Plus added
