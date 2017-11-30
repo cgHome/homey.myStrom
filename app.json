@@ -40,6 +40,12 @@
       ],
       "pair": [
         {
+          "id": "start",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
           "id": "list_devices",
           "template": "list_devices",
           "navigation": {
@@ -70,6 +76,12 @@
       ],
       "pair": [
         {
+          "id": "start",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
           "id": "list_devices",
           "template": "list_devices",
           "navigation": {
@@ -97,6 +109,45 @@
       ],
       "pair": [
         {
+          "id": "start",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "button_plus",
+      "name": {
+        "en": "WiFi Button+"
+      },
+      "images": {
+        "large": "drivers/button_plus/assets/images/large.png",
+        "small": "drivers/button_plus/assets/images/small.png"
+      },
+      "class": "other",
+      "capabilities": [
+        "measure_voltage"
+      ],
+      "pair": [
+        {
+          "id": "start",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
           "id": "list_devices",
           "template": "list_devices",
           "navigation": {
@@ -116,8 +167,7 @@
 				"id": "button_pressed",
 				"title": {
 					"en": "A button is pressed",
-          "nl": "Een knop is ingedrukt",
-          "de": "Ein Button gedrückt"
+          "de": "Button gedrückt"
 				},
 				"args": [
 					{
@@ -133,24 +183,69 @@
 								"id": "short",
 								"label": {
 									"en": "Short Press",
-                  "nl": "Korte druk",
-                  "de": "Druck kurz"
+                  "de": "Kurz gedrückt"
 								}
 							},
+              {
+                "id": "long",
+                "label": {
+                  "en": "Long Press",
+                  "de": "Lang gedrückt"
+                }
+              },
 							{
 								"id": "double",
 								"label": {
 									"en": "Double Press",
-									"nl": "Dubbele druk",
-                  "de": "Druck doppelt"
+                  "de": "2x Kurz gedrückt"
+								}
+							}
+						]
+					}
+				]
+			},
+      {
+				"id": "button_plus_pressed",
+				"title": {
+					"en": "A button is pressed",
+          "de": "Button gedrückt"
+				},
+				"args": [
+					{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=button_plus"
+					},
+					{
+						"name": "button",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "short",
+								"label": {
+									"en": "Short Press",
+                  "de": "Kurz gedrückt"
 								}
 							},
+              {
+                "id": "long",
+                "label": {
+                  "en": "Long Press",
+                  "de": "Lang gedrückt"
+                }
+              },
 							{
-								"id": "long",
+								"id": "double",
 								"label": {
-									"en": "Long Press",
-									"nl": "Lange druk",
-                  "de": "Druck lang"
+									"en": "Double Press",
+                  "de": "2x Kurz gedrückt"
+								}
+							},
+              {
+								"id": "touch",
+								"label": {
+									"en": "Touch",
+                  "de": "Berührt"
 								}
 							}
 						]

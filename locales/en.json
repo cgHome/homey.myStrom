@@ -1,6 +1,6 @@
 {
-    "settings": {
-        "title": "General settings",
-        "intro": ""
+    "pair": {
+        "title": "Add a myStrom device...",
+        "intro": "** First install Device via myStrom-App (iOS, Android) **"
     }
 }

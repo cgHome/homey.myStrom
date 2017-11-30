@@ -18,7 +18,7 @@ module.exports = class MyStromApp extends WifiApp {
 		this.DeviceTypes = Object.freeze({
 			WSW: 101,		// WiFi Switch
 			WRB: 102,		// WiFi Bulb
-			WBP: 103,		// WiFi ??		
+			WBP: 103,		// WiFi Button +		
 			WBS: 104,		// WiFi Button
 			WRS: 105,		// WiFi ??
 			WS2: 106,		// WiFi ??
@@ -42,7 +42,7 @@ module.exports = class MyStromApp extends WifiApp {
 					}
 				};
 				this.devices[mac] = device;
-				this.log(`Bonjour discovered device found: ${device.data.deviceName} (Type: ${device.data.type}) - ${device.data.address} (${mac})`);
+				this.log(`Bonjour discovered device ${device.data.deviceName} found: ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
 			};
 		});
 		browser.start();
@@ -66,7 +66,7 @@ module.exports = class MyStromApp extends WifiApp {
 					};
 					if (!this.devices[mac]) {
 						this.devices[mac] = device;
-						this.log(`UDP discovered device found ${device.data.deviceName} (Type: ${device.data.type}) - ${device.data.address} (${mac})`);
+						this.log(`UDP discovered device ${device.data.deviceName} found: ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
 					};
 				}
 				else {

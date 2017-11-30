@@ -1,13 +1,11 @@
 'use strict';
 
 const Homey = require('homey');
-const WebAPIDriver = require('homey-wifidriver').WebAPIDriver;
+const MyStromDriver = require('../driver');
 
-module.exports = class MyStromBulbDriver extends WebAPIDriver {
-    onInit(options) {
+module.exports = class MyStromBulbDriver extends MyStromDriver {
+    onInit(options = {}) {
         super.onInit(options);
-
-        this.log('Driver onInit ....');
     };
 
     onPairListDevices(data, callback) {

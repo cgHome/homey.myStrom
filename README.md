@@ -21,10 +21,15 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 
 ## Changelog
 
+v0.0.4
+
+* Support for myStrom WiFi Button Plus added
+* Code refactored
+
 v0.0.3
 
 * Support for myStrom WiFi Button added
-* New pictures added (Many thanks to Tom)
+* New pictures added (Thanks to Tom)
 * Device response error fixed
 
 v0.0.2
@@ -42,7 +47,7 @@ v0.0.1
 ## ToDo
 
 * Test WPS-Mode
-* Adding devices to WLAN without myStrom-app
+* Adding devices (pair) to WLAN without myStrom-app
 * Button add battery level warning
 
 ---

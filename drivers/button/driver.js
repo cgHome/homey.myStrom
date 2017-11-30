@@ -1,16 +1,15 @@
 'use strict';
 
 const Homey = require('homey');
-const WebAPIDriver = require('homey-wifidriver').WebAPIDriver;
+const MyStromDriver = require('../driver');
 
-module.exports = class MyStromButtonDriver extends WebAPIDriver {
-    onInit(options) {
+module.exports = class MyStromButtonDriver extends MyStromDriver {
+    onInit(options = {}) {
         super.onInit(options);
 
-        this.log('Driver onInit ....');
-
         // Initialize Flow
-        this.flowCardTrigger = new Homey.FlowCardTriggerDevice('button_pressed')
+        const flowCardTriggerName = options.flowCardTriggerName ? options.flowCardTriggerName : 'button_pressed';
+        this.flowCardTrigger = new Homey.FlowCardTriggerDevice(flowCardTriggerName) 
             .register()
             .registerRunListener((args, state) => args.button === state.button);
     };
