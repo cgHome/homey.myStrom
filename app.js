@@ -7,9 +7,6 @@ const dns = require('dns');
 const dgram = require('dgram');
 const bonjour = require('bonjour')();
 
-// Start Node.js debugger
-// require('inspector').open(9229, '0.0.0.0', true);
-
 module.exports = class MyStromApp extends WifiApp {
 	constructor(...args) {
 		super(...args);
@@ -27,6 +24,11 @@ module.exports = class MyStromApp extends WifiApp {
 	};
 
 	onInit() {
+		this.log(`${ this.id } on init...(debug mode ${ DEBUG ? 'on' : 'off' })`);
+        if (DEBUG) {
+            require('inspector').open(9229, '0.0.0.0');
+		};
+		
 		const browser = bonjour.find({ type: 'hap' }, (service) => {
 			if (service.host.match('myStrom-')) {
 				const deviceName = service.host.slice(0, service.host.indexOf('.'));

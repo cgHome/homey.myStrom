@@ -30,7 +30,7 @@
     "Smart Home",
     "athom"
   ],
-  "author": "Chris Gross <cgHome@gmx.net>",
+  "author": "Chris Gross <cgHome@cflat-inc.org>",
   "license": "ISC",
   "dependencies": {
     "bonjour": "^3.5.0",
@@ -39,5 +39,5 @@
   "bugs": {
     "url": "https://github.com/cgHome/ch.mystrom.smarthome/issues"
   },
-  "homepage": "https://apps.athom.com/app/ch.mystrom.smarthome"
+  "homepage": "https://apps.athom.com/app/ch.mystrom.smarthome",
 }
