@@ -1,65 +1,69 @@
-'use strict';
-
-const Homey = require('homey');
-const MyStromDevice = require('../device');
+const Homey = require("homey");
+const MyStromDevice = require("../device");
 
 module.exports = class MyStromSwitch extends MyStromDevice {
-    onInit(options = {}) {
-        options.baseUrl = `http://${this.getData().address}/`;
-        
-        super.onInit(options);
+	onInit(options = {}) {
+		options.baseUrl = `http://${this.getData().address}/`;
 
-        this.registerCapabilityListener('onoff', this.onCapabilityOnoff.bind(this));
-        this.registerCapabilityListener('measure_power', this.onCapabilityMeasurePower.bind(this));
+		super.onInit(options);
 
-        this.registerPollInterval();
-    };
+		this.registerCapabilityListener("onoff", 
+			this.onCapabilityOnoff.bind(this));
+		this.registerCapabilityListener("measure_power",
+			this.onCapabilityMeasurePower.bind(this)
+		);
 
-    onCapabilityOnoff(value, opts, callback) {
-        this.log(`[${this.getName()}] onCapabilityOnoff value: ${value}`);
+		this.registerPollInterval();
+	}
 
-        return this.apiCallGet({ uri: `relay?state=${value ? '1' : '0'}` })
-            .then(result => {
-                this.getValues();
-            })
-            .catch(err => {
-                this.error('failed to set capability', err.stack);
-                this.setUnavailable(err);
-                throw err;
-            });
-    };
+	onCapabilityOnoff(value, opts, callback) {
+		this.log(`[${this.getName()}] onCapabilityOnoff value: ${value}`);
 
-    onCapabilityMeasurePower(value, opts, callback) {
-        this.log(`[${this.getName()}] onCapabilityMeasurePower value: ${value}`);
-    };
+		return this.apiCallGet({ uri: `relay?state=${value ? "1" : "0"}` })
+			.then(result => {
+				this.getValues();
+			})
+			.catch(err => {
+				this.error("failed to set capability", err.stack);
+				this.setUnavailable(err);
+				throw err;
+			});
+	}
 
-    getValues() {
-        return this.apiCallGet({ uri: 'report' })
-            .then(response => {
-                if (typeof response.errorResponse == 'undefined') {
-                    const result = response;
+	onCapabilityMeasurePower(value, opts, callback) {
+		this.log(`[${this.getName()}] onCapabilityMeasurePower value: ${value}`);
+	}
 
-                    let state = result.relay;
-                    if (typeof this.state === 'undefined' || this.state !== state) {
-                        this.state = state;
-                        this.setCapabilityValue('onoff', this.state);
-                    };
-                    let measurePower = Math.round(result.power * 10) / 10;
-                    if (typeof this.measurePower === 'undefined' || this.measurePower !== measurePower) {
-                        this.measurePower = measurePower;
-                        this.setCapabilityValue('measure_power', this.measurePower);
-                    };
-                    // this.log(`device ${this.getName()} refreshed`);
-                    this.setAvailable();
-                } else {
-                    this.log(`[${this.getName()}] ${response.toString()}`);
-                    this.setUnavailable(`Response error ${response.errorResponse.code}`);
-                };
-            })
-            .catch(err => {
-                this.error('Failed to get data', err.stack);
-                this.setUnavailable(err);
-                throw err;
-            });
-    };
-}
+	getValues() {
+		return this.apiCallGet({ uri: "report" })
+			.then(response => {
+				if (typeof response.errorResponse == "undefined") {
+					const result = response;
+
+					let state = result.relay;
+					if (typeof this.state === "undefined" || this.state !== state) {
+						this.state = state;
+						this.setCapabilityValue("onoff", this.state);
+					}
+					let measurePower = Math.round(result.power * 10) / 10;
+					if (
+						typeof this.measurePower === "undefined" ||
+						this.measurePower !== measurePower
+					) {
+						this.measurePower = measurePower;
+						this.setCapabilityValue("measure_power", this.measurePower);
+					}
+					// this.log(`device ${this.getName()} refreshed`);
+					this.setAvailable();
+				} else {
+					this.log(`[${this.getName()}] ${response.toString()}`);
+					this.setUnavailable(`Response error ${response.errorResponse.code}`);
+				}
+			})
+			.catch(err => {
+				this.error("Failed to get data", err.stack);
+				this.setUnavailable(err);
+				throw err;
+			});
+	}
+};
