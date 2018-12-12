@@ -56,10 +56,7 @@ module.exports = class MyStromButton extends MyStromDevice {
 					const result = response[Object.keys(response)[0]];
 
 					let measureVoltage = result.voltage;
-					if (
-						typeof this.measureVoltage === "undefined" ||
-						this.measureVoltage !== measureVoltage
-					) {
+					if (typeof this.measureVoltage === "undefined" || this.measureVoltage !== measureVoltage) {
 						this.measureVoltage = measureVoltage;
 						this.setCapabilityValue("measure_voltage", this.measureVoltage);
 					}

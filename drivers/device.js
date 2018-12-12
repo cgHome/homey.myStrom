@@ -36,16 +36,12 @@ module.exports = class MyStromDevice extends WebAPIDevice {
 
 	onAdded() {
 		super.onAdded();
-		this.log(
-			`[${this.getName()}] device added (class: ${this.constructor.name})`
-		);
+		this.log(`[${this.getName()}] device added (class: ${this.constructor.name})`);
 	}
 
 	onDeleted() {
 		super.onDeleted();
-		this.log(
-			`[${this.getName()}] device deleted (class: ${this.constructor.name})`
-		);
+		this.log(`[${this.getName()}] device deleted (class: ${this.constructor.name})`);
 	}
 
 	getValues() {

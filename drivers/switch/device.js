@@ -7,11 +7,8 @@ module.exports = class MyStromSwitch extends MyStromDevice {
 
 		super.onInit(options);
 
-		this.registerCapabilityListener("onoff", 
-			this.onCapabilityOnoff.bind(this));
-		this.registerCapabilityListener("measure_power",
-			this.onCapabilityMeasurePower.bind(this)
-		);
+		this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
+		this.registerCapabilityListener("measure_power", this.onCapabilityMeasurePower.bind(this));
 
 		this.registerPollInterval();
 	}
@@ -38,18 +35,13 @@ module.exports = class MyStromSwitch extends MyStromDevice {
 		return this.apiCallGet({ uri: "report" })
 			.then(response => {
 				if (typeof response.errorResponse == "undefined") {
-					const result = response;
-
-					let state = result.relay;
+					let state = response.relay;
 					if (typeof this.state === "undefined" || this.state !== state) {
 						this.state = state;
 						this.setCapabilityValue("onoff", this.state);
 					}
-					let measurePower = Math.round(result.power * 10) / 10;
-					if (
-						typeof this.measurePower === "undefined" ||
-						this.measurePower !== measurePower
-					) {
+					let measurePower = Math.round(response.power * 10) / 10;
+					if (typeof this.measurePower === "undefined" || this.measurePower !== measurePower) {
 						this.measurePower = measurePower;
 						this.setCapabilityValue("measure_power", this.measurePower);
 					}

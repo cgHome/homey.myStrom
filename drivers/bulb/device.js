@@ -5,19 +5,11 @@ module.exports = class MyStromBulb extends MyStromDevice {
 	onInit(options = {}) {
 		super.onInit(options);
 
-		this.registerCapabilityListener("onoff", 
-			this.onCapabilityOnoff.bind(this));
-		this.registerCapabilityListener("light_hue",
-			this.onCapabilityLightHue.bind(this)
-		);
-		this.registerCapabilityListener("light_saturation",
-			this.onCapabilityLightSaturation.bind(this)
-		);
-		this.registerCapabilityListener("dim", 
-			this.onCapabilityDim.bind(this));
-		this.registerCapabilityListener("measure_power",
-			this.onCapabilityMeasurePower.bind(this)
-		);
+		this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
+		this.registerCapabilityListener("light_hue", this.onCapabilityLightHue.bind(this));
+		this.registerCapabilityListener("light_saturation", this.onCapabilityLightSaturation.bind(this));
+		this.registerCapabilityListener("dim", this.onCapabilityDim.bind(this));
+		this.registerCapabilityListener("measure_power", this.onCapabilityMeasurePower.bind(this));
 
 		this.registerPollInterval();
 	}
@@ -59,10 +51,7 @@ module.exports = class MyStromBulb extends MyStromDevice {
 			this.onCapabilityOnoff(true);
 		}
 
-		return this.apiCallPost(
-			`color=${Math.round(this.lightHue * 360)};${this.lightSaturation *
-				100};${value * 100}`
-		)
+		return this.apiCallPost(`color=${Math.round(this.lightHue * 360)};${this.lightSaturation * 100};${value * 100}`)
 			.then(result => {
 				this.getValues();
 			})
@@ -76,10 +65,7 @@ module.exports = class MyStromBulb extends MyStromDevice {
 	onCapabilityLightHue(value, opts, callback) {
 		this.log(`[${this.getName()}] onCapabilityLightHue value: ${value}`);
 
-		return this.apiCallPost(
-			`color=${Math.round(value * 360)};${this.lightSaturation * 100};${this
-				.dim * 100}`
-		)
+		return this.apiCallPost(`color=${Math.round(value * 360)};${this.lightSaturation * 100};${this.dim * 100}`)
 			.then(result => {
 				this.getValues();
 			})
@@ -93,10 +79,7 @@ module.exports = class MyStromBulb extends MyStromDevice {
 	onCapabilityLightSaturation(value, opts, callback) {
 		this.log(`[${this.getName()}] onCapabilityLightSaturation value: ${value}`);
 
-		return this.apiCallPost(
-			`color=${Math.round(this.lightHue * 360)};${value * 100};${this.dim *
-				100}`
-		)
+		return this.apiCallPost(`color=${Math.round(this.lightHue * 360)};${value * 100};${this.dim * 100}`)
 			.then(result => {
 				this.getValues();
 			})
@@ -123,21 +106,13 @@ module.exports = class MyStromBulb extends MyStromDevice {
 						this.setCapabilityValue("onoff", this.state);
 					}
 
-					let lightHue =
-						Math.round((1 / 360) * parseInt(result.color.split(";")[0]) * 100) /
-						100;
-					if (
-						typeof this.lightHue === "undefined" ||
-						this.lightHue !== lightHue
-					) {
+					let lightHue = Math.round((1 / 360) * parseInt(result.color.split(";")[0]) * 100) / 100;
+					if (typeof this.lightHue === "undefined" || this.lightHue !== lightHue) {
 						this.lightHue = lightHue;
 						this.setCapabilityValue("light_hue", this.lightHue);
 					}
 					let lightSaturation = parseInt(result.color.split(";")[1]) / 100;
-					if (
-						typeof this.lightSaturation === "undefined" ||
-						this.lightSaturation !== lightSaturation
-					) {
+					if (typeof this.lightSaturation === "undefined" || this.lightSaturation !== lightSaturation) {
 						this.lightSaturation = lightSaturation;
 						this.setCapabilityValue("light_saturation", this.lightSaturation);
 					}
@@ -147,10 +122,7 @@ module.exports = class MyStromBulb extends MyStromDevice {
 						this.setCapabilityValue("dim", this.dim);
 					}
 					let measurePower = Math.round(result.power * 10) / 10;
-					if (
-						typeof this.measurePower === "undefined" ||
-						this.measurePower !== measurePower
-					) {
+					if (typeof this.measurePower === "undefined" || this.measurePower !== measurePower) {
 						this.measurePower = measurePower;
 						// this.setCapabilityValue('measure_power', this.measurePower);
 					}

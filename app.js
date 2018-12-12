@@ -32,9 +32,7 @@ module.exports = class MyStromApp extends WifiApp {
 		const browser = bonjour.find({ type: "hap" }, service => {
 			if (service.host.match("myStrom-")) {
 				const deviceName = service.host.slice(0, service.host.indexOf("."));
-				const mac = service.txt.id
-					.replace(new RegExp(":", "g"), "")
-					.toUpperCase();
+				const mac = service.txt.id.replace(new RegExp(":", "g"), "").toUpperCase();
 				const device = {
 					name: deviceName,
 					data: {
@@ -46,11 +44,7 @@ module.exports = class MyStromApp extends WifiApp {
 					}
 				};
 				this.devices[mac] = device;
-				this.log(
-					`Bonjour discovered device ${device.data.deviceName} found: ${
-						device.data.address
-					} (${mac}) - (Type: ${device.data.type})`
-				);
+				this.log(`Bonjour discovered device ${device.data.deviceName} found: ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
 			}
 		});
 		browser.start();
@@ -74,11 +68,7 @@ module.exports = class MyStromApp extends WifiApp {
 					};
 					if (!this.devices[mac]) {
 						this.devices[mac] = device;
-						this.log(
-							`UDP discovered device ${device.data.deviceName} found: ${
-								device.data.address
-							} (${mac}) - (Type: ${device.data.type})`
-						);
+						this.log(`UDP discovered device ${device.data.deviceName} found: ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
 					}
 				} else {
 					this.error(`UDP discovery failed: ${err.code} - ${err.message}`);
