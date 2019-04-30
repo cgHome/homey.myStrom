@@ -7,7 +7,7 @@
   "description": {
     "en": "Adds support for myStrom devices."
   },
-  "version": "0.2.0",
+  "version": "0.3.0",
   "compatibility": ">=1.5.0",
   "category": [
     "appliances",
