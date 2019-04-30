@@ -19,10 +19,10 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Devices
 
-* myStrom WiFi Switch       [supported]
-* myStrom WiFi Bulb         [supported]
-* myStrom WiFi Button       [supported]
-* myStrom WiFi Button Plus  [supported]
+* myStrom WiFi Switch                   [supported]
+* myStrom WiFi Bulb                     [supported]
+* myStrom WiFi Button       (fw: >2.74) [supported]
+* myStrom WiFi Button Plus  (fw: >2.74) [supported]
 
 ---
 
