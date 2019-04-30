@@ -15,35 +15,35 @@ module.exports = class MyStromBulb extends MyStromDevice {
 	}
 
 	onCapabilityOnoff(value, opts, callback) {
-		this.log(`[${this.getName()}] onCapabilityOnoff value: ${value}`);
+		this.debug(`onCapabilityOnoff value: ${value}`);
 
 		return this.apiCallPost(`action=${value ? "on" : "off"}`)
 			.then(result => {
 				this.getValues();
 			})
 			.catch(err => {
-				this.error("failed to set OnOff", err.stack);
+				this.error(`failed to set OnOff ${response.toString()}`);
 				this.setUnavailable(err);
 				throw err;
 			});
 	}
 
 	onCapabilityLightMode(value, opts, callback) {
-		this.log(`[${this.getName()}] onCapabilityLightMode value: ${value}`);
+		this.debug(`onCapabilityLightMode value: ${value}`);
 
 		return this.apiCallPost(`mode=${value === "color" ? "hsv" : "mono"}`)
 			.then(result => {
 				this.getValues();
 			})
 			.catch(err => {
-				this.error("failed to set light mode", err.stack);
+				this.error(`failed to set light-mode ${err.stack}`);
 				this.setUnavailable(err);
 				throw err;
 			});
 	}
 
 	onCapabilityDim(value, opts, callback) {
-		this.log(`[${this.getName()}] onCapabilityDim value: ${value}`);
+		this.debug(`onCapabilityDim value: ${value}`);
 
 		if (value < 0.01) {
 			this.onCapabilityOnoff(false);
@@ -56,42 +56,42 @@ module.exports = class MyStromBulb extends MyStromDevice {
 				this.getValues();
 			})
 			.catch(err => {
-				this.error("failed to set dim", err.stack);
+				this.error(`failed to set dim ${err.stack}`);
 				this.setUnavailable(err);
 				throw err;
 			});
 	}
 
 	onCapabilityLightHue(value, opts, callback) {
-		this.log(`[${this.getName()}] onCapabilityLightHue value: ${value}`);
+		this.debug(`onCapabilityLightHue value: ${value}`);
 
 		return this.apiCallPost(`color=${Math.round(value * 360)};${this.lightSaturation * 100};${this.dim * 100}`)
 			.then(result => {
 				this.getValues();
 			})
 			.catch(err => {
-				this.error("failed to set light hue", err.stack);
+				this.error(`failed to set light hue ${err.stack}`);
 				this.setUnavailable(err);
 				throw err;
 			});
 	}
 
 	onCapabilityLightSaturation(value, opts, callback) {
-		this.log(`[${this.getName()}] onCapabilityLightSaturation value: ${value}`);
+		this.debug(`onCapabilityLightSaturation value: ${value}`);
 
 		return this.apiCallPost(`color=${Math.round(this.lightHue * 360)};${value * 100};${this.dim * 100}`)
 			.then(result => {
 				this.getValues();
 			})
 			.catch(err => {
-				this.error("failed to set light saturation", err.stack);
+				this.error(`failed to set light saturation ${err.stack}`);
 				this.setUnavailable(err);
 				throw err;
 			});
 	}
 
 	onCapabilityMeasurePower(value, opts, callback) {
-		this.log(`[${this.getName()}] onCapabilityMeasurePower value: ${value}`);
+		this.debug(`onCapabilityMeasurePower value: ${value}`);
 	}
 
 	getValues() {
@@ -126,15 +126,15 @@ module.exports = class MyStromBulb extends MyStromDevice {
 						this.measurePower = measurePower;
 						// this.setCapabilityValue('measure_power', this.measurePower);
 					}
-					// this.log(`device ${this.getName()} refreshed`);
+					//this.debug(`device refreshed`);
 					this.setAvailable();
 				} else {
-					this.log(`[${this.getName()}] ${response.toString()}`);
+					this.error(`response error ${response.toString()}`);
 					this.setUnavailable(`Response error ${response.errorResponse.code}`);
 				}
 			})
 			.catch(err => {
-				this.error("Failed to get values", err.stack);
+				this.error(`failed to get values ${err.stack}`);
 				this.setUnavailable(err);
 				throw err;
 			});

@@ -9,7 +9,7 @@ module.exports = class MyStromButtonDriver extends MyStromDriver {
 		const flowCardTriggerName = options.flowCardTriggerName ? options.flowCardTriggerName : "button_pressed";
 		this.flowCardTrigger = new Homey.FlowCardTriggerDevice(flowCardTriggerName)
 			.register()
-			.registerRunListener((args, state) => args.button === state.button);
+			.registerRunListener((args, state) => args.action === state.action);
 	}
 
 	onPairListDevices(data, callback) {

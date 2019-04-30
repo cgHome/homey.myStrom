@@ -8,6 +8,13 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 * To add myStrom devices, you have to use the myStrom-App at the moment.
 * If you have problems after the upgrade, register all devices new.
 
+**Important note for Buttons**
+
+Keep in mind that in order for the Button or Button+ to respond to any of these requests they have to be in the configuration mode:
+
+* Button: (Re-)Connect the button to a power source with the provided USB cable. Press the button and after some time it should become visible in the network.
+* Button+: Open the back of the button by rotating it clockwise. Remove the batteries and reinsert them. The Button+ should now be visible.
+
 ---
 
 ## Devices
@@ -20,6 +27,17 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 ---
 
 ## Changelog
+
+v0.2.0
+
+* Rewrite myStrom WiFi Button & Button+ (Due to Homey v2 & myStrom api changes)
+* [Homey-App Logger](https://community.athom.com/t/how-to-integrate-a-homey-app-logger-to-your-app-for-a-simple-global-logger-in-homey) added
+* Packages updated
+* Homey-Dev added
+
+v0.1.0
+
+* Now uses [semantic versioning](https://semver.org/)
 
 v0.0.5
 

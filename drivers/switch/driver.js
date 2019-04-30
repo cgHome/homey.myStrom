@@ -8,7 +8,7 @@ module.exports = class MyStromSwitchDriver extends MyStromDriver {
 
 	onPairListDevices(data, callback) {
 		let devices = (Object.values(Homey.app.devices) || []).filter(
-			device => device.data.type == Homey.app.DeviceTypes.WSW
+			device => device.data.type == Homey.app.DeviceTypes.WSW || device.data.type == Homey.app.DeviceTypes.WS2
 		);
 
 		callback(null, devices);

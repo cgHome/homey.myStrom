@@ -10,11 +10,11 @@ const backOffStrategy = {
 module.exports = class MyStromDevice extends WebAPIDevice {
 	async onInit(options = {}) {
 		await super.onInit(options).catch(err => {
-			this.error("error onInit", err.stack);
+			this.error(`onInit error ${err.stack}`);
 			return err;
 		});
 
-		this.log(`[${this.getName()}] device init ...`);
+		this.debug(`device init ...`);
 
 		const baseUrl = options.baseUrl ? options.baseUrl : `http://${this.getData().address}/api/v1/device/${this.getData().id}/`;
 		this.setDefaultBaseUrl(baseUrl);
@@ -22,8 +22,21 @@ module.exports = class MyStromDevice extends WebAPIDevice {
 		this.setUnavailable(Homey.__("connecting"));
 		this.ready(() => {
 			this.setAvailable();
-			this.log(`[${this.getName()}] device ready ...`);
+			this.debug(`device ready ...`);
 		});
+	}
+
+	// Homey-App Loggers
+	log(msg) {
+		Homey.app.log(`${this.getName()} ${msg}`);
+	}
+
+	error(msg) {
+		Homey.app.error(`${this.getName()} ${msg}`);
+	}
+
+	debug(msg) {
+		Homey.app.debug(`${this.getName()} ${msg}`);
 	}
 
 	registerPollInterval() {
@@ -36,12 +49,12 @@ module.exports = class MyStromDevice extends WebAPIDevice {
 
 	onAdded() {
 		super.onAdded();
-		this.log(`[${this.getName()}] device added (class: ${this.constructor.name})`);
+		this.debug(`device added (${this.constructor.name})`);
 	}
 
 	onDeleted() {
 		super.onDeleted();
-		this.log(`[${this.getName()}] device deleted (class: ${this.constructor.name})`);
+		this.debug(`device deleted (${this.constructor.name})`);
 	}
 
 	getValues() {

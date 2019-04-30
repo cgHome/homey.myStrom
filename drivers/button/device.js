@@ -4,9 +4,8 @@ const MyStromDevice = require("../device");
 module.exports = class MyStromButton extends MyStromDevice {
 	onInit(options = {}) {
 		super.onInit(options);
-
 		// Register WEB-API events
-		Homey.on("myStromButtonPressed", data => this.buttonPressed(data));
+		Homey.on("myStromButtonGenAction", params => this.buttonGenAction(params));
 	}
 
 	onAdded() {
@@ -17,60 +16,39 @@ module.exports = class MyStromButton extends MyStromDevice {
 	configButton() {
 		Homey.ManagerCloud.getLocalAddress()
 			.then(localAddress => {
-				const ipAddress = localAddress.split(":")[0];
-				const url = `get://${ipAddress}/api/app/ch.mystrom.smarthome/buttonPressed`;
-				const config = `single=${url}/short&double=${url}/double&long=${url}/long&touch=${url}/touch`;
-
-				return this.apiCallPost(config)
+				const data = `get://${localAddress.split(":")[0]}/api/app/ch.mystrom.smarthome/buttonGenAction`;
+				return this.apiCallPost({ uri: "/api/v1/action/generic" }, data)
 					.then(response => {
-						this.getValues();
+						this.debug(`button configured (${data})`);
 					})
 					.catch(err => {
-						this.error("failed to config button", err.stack);
+						this.error(`failed to config button ${err.stack}`);
 						this.setUnavailable(err);
 						throw err;
 					});
 			})
 			.catch(err => {
-				this.error("failed to get localAddress", err.stack);
+				this.error(`failed to get localAddress ${err.stack}`);
 				this.setUnavailable(err);
 			});
 	}
 
-	buttonPressed(data) {
-		if (data.address === this.getData().address) {
-			this.log(`[${this.getName()}] ${data.button}-button pressed`);
+	buttonGenAction(params) {
+		if (params.mac === this.getData().id) {
+			this.debug(`action received: ${JSON.stringify(params)}`);
 
-			this.getDriver()
-				.flowCardTrigger.trigger(this, null, { button: data.button })
-				.catch(this.error);
-
-			// this.getValues();
-		}
-	}
-
-	getValues() {
-		return this.apiCallGet()
-			.then(response => {
-				if (typeof response.errorResponse == "undefined") {
-					const result = response[Object.keys(response)[0]];
-
-					let measureVoltage = result.voltage;
-					if (typeof this.measureVoltage === "undefined" || this.measureVoltage !== measureVoltage) {
-						this.measureVoltage = measureVoltage;
-						this.setCapabilityValue("measure_voltage", this.measureVoltage);
-					}
-					this.log(`[${this.getName()}] device refreshed ...`);
-					this.setAvailable();
-				} else {
-					this.error(`[${this.getName()}] ${response.toString()}`);
-					// this.setUnavailable(`Response error ${response.errorResponse.code}`);
+			// Battery-Level
+			if (params.battery) {
+				const battery = parseInt(params.battery);
+				if (typeof this.batteryLevel === "undefined" || this.batteryLevel !== battery) {
+					this.batteryLevel = battery;
+					this.setCapabilityValue("measure_battery", this.batteryLevel).catch(this.error);
 				}
-			})
-			.catch(err => {
-				this.error(`[${this.getName()}] failed to get values ${err.stack}`);
-				this.setUnavailable(err);
-				throw err;
-			});
+			}
+			// Action
+			this.getDriver()
+				.flowCardTrigger.trigger(this, {}, { action: params.action })
+				.catch(this.error);
+		}
 	}
 };

@@ -1,22 +1,18 @@
 const Homey = require("homey");
 
 // ToDo
-const apiAuthorizationPublic = true;
 // const apiAuthorizationPublic = !(Homey.ManagerSettings.get('httpSettings') === null ? true : Homey.ManagerSettings.get('httpSettings').apiAuthorization)
+const apiAuthorizationPublic = true;
 
 module.exports = [
 	{
-		description: "WIFI Button pressed",
+		description: "WIFI Button generic action",
 		method: "GET",
-		path: "/buttonPressed/:event",
+		path: "/buttonGenAction",
 		public: apiAuthorizationPublic,
 		fn: function(args, callback) {
-			// Homey.app.log(`WIFI Button pressed received ${args.params.event}`);
-			Homey.emit("myStromButtonPressed", {
-				address: args.req.remoteAddress.replace(/^.*:/, ""),
-				button: args.params.event
-			});
-			callback(null, "OK");
+			const result = Homey.emit("myStromButtonGenAction", args.query);
+			callback(null, result);
 		}
 	}
 ];

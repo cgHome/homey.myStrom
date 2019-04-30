@@ -1,7 +1,11 @@
-// eslint-disable-next-line no-unused-vars
+"use strict";
+// Start debuger
+if (process.env.DEBUG === "1") {
+	require("inspector").open(9229, "0.0.0.0", false);
+	// require("inspector").open(9229, "0.0.0.0", true);
+}
+
 const Homey = require("homey");
-const DEBUG = process.env.DEBUG === "1";
-//const Log = require('homey-log').Log;
 const WifiApp = require("homey-wifidriver").WifiApp;
 const dns = require("dns");
 const dgram = require("dgram");
@@ -13,22 +17,30 @@ module.exports = class MyStromApp extends WifiApp {
 
 		this.devices = {};
 		this.DeviceTypes = Object.freeze({
-			WSW: 101, // WiFi Switch
+			WSW: 101, // WiFi Switch CH v1
 			WRB: 102, // WiFi Bulb
 			WBP: 103, // WiFi Button +
 			WBS: 104, // WiFi Button
-			WRS: 105, // WiFi ??
-			WS2: 106, // WiFi ??
-			WSE: 107 // WiFi ??
+			WLS: 105, // WiFi LED-strip
+			WS2: 106, // WiFi Switch CH v2
+			WSE: 107 // WiFi Switch EU
 		});
 	}
 
 	onInit() {
-		this.log(`${this.id} on init...(debug mode ${DEBUG ? "on" : "off"})`);
-		if (DEBUG) {
-			require("inspector").open(9229, "0.0.0.0");
-		}
+		// Initialize Homey-App Loggers
+		this.appLogListener = new Homey.FlowCardTrigger("app_log_listener");
+		this.appLogListener.register().registerRunListener(Promise.resolve(true));
 
+		this.appErrorListener = new Homey.FlowCardTrigger("app_error_listener");
+		this.appErrorListener.register().registerRunListener(Promise.resolve(true));
+
+		this.appDebugListener = new Homey.FlowCardTrigger("app_debug_listener");
+		this.appDebugListener.register().registerRunListener(Promise.resolve(true));
+
+		this.log(`${Homey.app.manifest.name.en}-App - v${Homey.app.manifest.version} is running...`);
+
+		// Find myStrom-Devices
 		const browser = bonjour.find({ type: "hap" }, service => {
 			if (service.host.match("myStrom-")) {
 				const deviceName = service.host.slice(0, service.host.indexOf("."));
@@ -44,13 +56,12 @@ module.exports = class MyStromApp extends WifiApp {
 					}
 				};
 				this.devices[mac] = device;
-				this.log(`Bonjour discovered device ${device.data.deviceName} found: ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
+				this.log(`Bonjour discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
 			}
 		});
 		browser.start();
 
 		const udpClient = dgram.createSocket("udp4", (msg, rinfo) => {
-			// this.log(JSON.stringify(rinfo));
 			dns.reverse(rinfo.address, (err, hostnames) => {
 				if (!err) {
 					const hostname = hostnames[0];
@@ -68,15 +79,38 @@ module.exports = class MyStromApp extends WifiApp {
 					};
 					if (!this.devices[mac]) {
 						this.devices[mac] = device;
-						this.log(`UDP discovered device ${device.data.deviceName} found: ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
+						this.log(`UDP discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
 					}
 				} else {
-					this.error(`UDP discovery failed: ${err.code} - ${err.message}`);
+					this.error(`UDP discovery failed ${err.code} - ${err.message}`);
 				}
 			});
 		});
 		udpClient.bind(7979);
+	}
 
-		this.log(`${this.id} is running...`);
+	// Homey-App Loggers
+	log(msg) {
+		super.log(msg);
+		// Send to logger
+		if (this.appLogListener) {
+			this.appLogListener.trigger({ name: `${Homey.app.manifest.name.en}`, msg: msg }).catch(err => super.error(err.message));
+		}
+	}
+
+	error(msg) {
+		super.error(`### ${msg}`);
+		// Send to error logger
+		if (this.appErrorListener) {
+			this.appErrorListener.trigger({ name: `${Homey.app.manifest.name.en}`, msg: msg }).catch(err => super.error(err.message));
+		}
+	}
+
+	debug(msg) {
+		super.log(`»»» ${msg}`);
+		// Send to debug logger
+		if (this.appDebugListener) {
+			this.appDebugListener.trigger({ name: `${Homey.app.manifest.name.en}`, msg: msg }).catch(err => super.error(err.message));
+		}
 	}
 };
