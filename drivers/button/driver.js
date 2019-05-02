@@ -14,7 +14,7 @@ module.exports = class MyStromButtonDriver extends MyStromDriver {
 
 	onPairListDevices(data, callback) {
 		let devices = (Object.values(Homey.app.devices) || []).filter(
-			device => device.data.type == Homey.app.DeviceTypes.WBS
+			device => device.data.type == Homey.app.deviceType.WBS
 		);
 
 		callback(null, devices);

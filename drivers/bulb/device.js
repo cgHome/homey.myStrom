@@ -129,12 +129,12 @@ module.exports = class MyStromBulb extends MyStromDevice {
 					//this.debug(`device refreshed`);
 					this.setAvailable();
 				} else {
-					this.error(`response error ${response.toString()}`);
-					this.setUnavailable(`Response error ${response.errorResponse.code}`);
+					this.error(`response: ${response.toString()}`);
+					this.setUnavailable(`Response error: ${response.errorResponse.code}`);
 				}
 			})
 			.catch(err => {
-				this.error(`failed to get values ${err.stack}`);
+				this.error(`failed to get values: ${err.stack}`);
 				this.setUnavailable(err);
 				throw err;
 			});

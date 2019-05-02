@@ -13,7 +13,7 @@ module.exports = class MyStromButtonPlusDriver extends MyStromButtonDriver {
 	}
 
 	onPairListDevices(data, callback) {
-		let devices = (Object.values(Homey.app.devices) || []).filter(device => device.data.type == Homey.app.DeviceTypes.WBP);
+		let devices = (Object.values(Homey.app.devices) || []).filter(device => device.data.type == Homey.app.deviceType.WBP);
 
 		callback(null, devices);
 	}

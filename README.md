@@ -28,9 +28,16 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Changelog
 
-v0.2.0
+v0.x.x
+
+* ....
+
+v0.3.0
 
 * Rewrite myStrom WiFi Button & Button+ (Due to Homey v2 & myStrom api changes)
+
+v0.2.0
+
 * [Homey-App Logger](https://community.athom.com/t/how-to-integrate-a-homey-app-logger-to-your-app-for-a-simple-global-logger-in-homey) added
 * Packages updated
 * Homey-Dev added
@@ -70,10 +77,9 @@ v0.0.1
 
 * Test WPS-Mode
 * Adding devices (pair) to WLAN without myStrom-app
-* Button add battery level warning
 
 ---
 
 ## Copyright and license
 
-Copyright 2017, 2017 cgHome under [ISC License](LICENSE)
+Copyright 2017, 2019 cFlat-inc.org under [ISC License](LICENSE)

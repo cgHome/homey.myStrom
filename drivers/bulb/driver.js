@@ -8,7 +8,7 @@ module.exports = class MyStromBulbDriver extends MyStromDriver {
 
 	onPairListDevices(data, callback) {
 		let devices = (Object.values(Homey.app.devices) || []).filter(
-			device => device.data.type == Homey.app.DeviceTypes.WRB
+			device => device.data.type == Homey.app.deviceType.WRB
 		);
 
 		callback(null, devices);

@@ -7,18 +7,18 @@ module.exports = class MyStromSwitch extends MyStromDevice {
 
 		super.onInit(options);
 
-		this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
+		this.registerCapabilityListener("onoff", this.onCapabilityOnOff.bind(this));
 		this.registerCapabilityListener("measure_power", this.onCapabilityMeasurePower.bind(this));
 
 		// WiFi Switch v2
-		if (this.getData().type == Homey.app.DeviceTypes.WS2) {
+		if (this.getData().type === Homey.app.deviceType.WS2) {
 			this.registerCapabilityListener("measure_temperaturer", this.onCapabilityMeasureTemp.bind(this));
 		}
 
 		this.registerPollInterval();
 	}
 
-	onCapabilityOnoff(value, opts, callback) {
+	async onCapabilityOnOff(value, opts, callback) {
 		this.debug(`onCapabilityOnoff value: ${value}`);
 
 		return this.apiCallGet({ uri: `relay?state=${value ? "1" : "0"}` })
@@ -43,18 +43,26 @@ module.exports = class MyStromSwitch extends MyStromDevice {
 	getValues() {
 		return this.apiCallGet({ uri: "report" })
 			.then(response => {
+				// this.debug(`device report received: ${JSON.stringify(response)}`);
 				if (typeof response.errorResponse == "undefined") {
 					let state = response.relay;
 					if (typeof this.state === "undefined" || this.state !== state) {
 						this.state = state;
-						this.setCapabilityValue("onoff", this.state);
+						this.setCapabilityValue("onoff", this.state).catch(this.error);
 					}
 					let measurePower = Math.round(response.power * 10) / 10;
 					if (typeof this.measurePower === "undefined" || this.measurePower !== measurePower) {
 						this.measurePower = measurePower;
-						this.setCapabilityValue("measure_power", this.measurePower);
+						this.setCapabilityValue("measure_power", this.measurePower).catch(this.error);
 					}
-					//this.debug(`device refreshed`);
+					if (this.getData().type == Homey.app.deviceType.WS2) {
+						let temperature = Math.round(response.temperature * 10) / 10;
+						if (typeof this.temperature === "undefined" || this.temperature !== temperature) {
+							this.temperature = temperature;
+							// Error: invalid_capability
+							// this.setCapabilityValue("measure_temperature", this.temperature).catch(this.error);
+						}
+					}
 					this.setAvailable();
 				} else {
 					this.debug(`${response.toString()}`);
@@ -62,30 +70,7 @@ module.exports = class MyStromSwitch extends MyStromDevice {
 				}
 			})
 			.catch(err => {
-				this.error(`failed to get data ${err.stack}`);
-				this.setUnavailable(err);
-				throw err;
-			});
-	}
-
-	getTemp() {
-		return this.apiCallGet({ uri: "temp" })
-			.then(response => {
-				if (typeof response.errorResponse == "undefined") {
-					let measureTemp = Math.round(response.measured * 10) / 10;
-					if (typeof this.measureTemp === "undefined" || this.measureTemp !== measureTemp) {
-						this.measureTemp = measureTemp;
-						this.setCapabilityValue("measure_temperature", this.measureTemp);
-					}
-					this.debug(`device ${this.getName()} refreshed`);
-					this.setAvailable();
-				} else {
-					this.debug(`${response.toString()}`);
-					this.setUnavailable(`Response error ${response.errorResponse.code}`);
-				}
-			})
-			.catch(err => {
-				this.error(`failed to get data ${err.stack}`);
+				this.error(`failed to get data: ${err.stack}`);
 				this.setUnavailable(err);
 				throw err;
 			});

@@ -16,14 +16,14 @@ module.exports = class MyStromApp extends WifiApp {
 		super(...args);
 
 		this.devices = {};
-		this.DeviceTypes = Object.freeze({
+		this.deviceType = Object.freeze({
 			WSW: 101, // WiFi Switch CH v1
 			WRB: 102, // WiFi Bulb
 			WBP: 103, // WiFi Button +
 			WBS: 104, // WiFi Button
 			WLS: 105, // WiFi LED-strip
 			WS2: 106, // WiFi Switch CH v2
-			WSE: 107 // WiFi Switch EU
+			WSE: 107  // WiFi Switch EU
 		});
 	}
 
@@ -42,17 +42,17 @@ module.exports = class MyStromApp extends WifiApp {
 
 		// Find myStrom-Devices
 		const browser = bonjour.find({ type: "hap" }, service => {
-			if (service.host.match("myStrom-")) {
+			if (service.host.match("myStrom-Switch")) {
 				const deviceName = service.host.slice(0, service.host.indexOf("."));
 				const mac = service.txt.id.replace(new RegExp(":", "g"), "").toUpperCase();
 				const device = {
 					name: deviceName,
 					data: {
 						id: mac,
-						type: this.DeviceTypes.WSW,
+						deviceName: deviceName,
 						host: service.host,
 						address: service.referer.address,
-						deviceName: deviceName
+						type: mac.match("64002D") ? this.deviceType.WSW : this.deviceType.WS2
 					}
 				};
 				this.devices[mac] = device;
@@ -71,10 +71,10 @@ module.exports = class MyStromApp extends WifiApp {
 						name: deviceName,
 						data: {
 							id: mac,
-							type: msg[6],
+							deviceName: deviceName,
 							host: hostname,
 							address: rinfo.address,
-							deviceName: deviceName
+							type: msg[6]
 						}
 					};
 					if (!this.devices[mac]) {
