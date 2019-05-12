@@ -6,7 +6,7 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 
 * Finding new devices can take up to 4 minutes.
 * To add myStrom devices, you have to use the myStrom-App at the moment.
-* If you have problems after the upgrade, register all devices new.
+* **If you have problems after the upgrade, register all devices new.**
 
 **Important note for Buttons**
 
@@ -19,22 +19,23 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Devices
 
-* myStrom WiFi Switch                   [supported]
-* myStrom WiFi Bulb                     [supported]
-* myStrom WiFi Button       (fw: >2.74) [supported]
-* myStrom WiFi Button Plus  (fw: >2.74) [supported]
+* myStrom Switch v1 & v2                 [supported]
+* myStrom Bulb                           [supported]
+* myStrom Button            (fw: >2.74)  [supported]
+* myStrom Button Plus       (fw: >2.74)  [supported]
+* myStrom LED Strip                      [currently not supported]
 
 ---
 
 ## Changelog
 
-v0.x.x
+v1.0.0
 
-* ....
+* Rewrite myStrom Bulb
 
 v0.3.0
 
-* Rewrite myStrom WiFi Button & Button+ (Due to Homey v2 & myStrom api changes)
+* Rewrite myStrom Button & Button+ (Due to Homey v2 & myStrom api changes)
 
 v0.2.0
 

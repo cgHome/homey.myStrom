@@ -49,6 +49,7 @@ module.exports = class MyStromApp extends WifiApp {
 					name: deviceName,
 					data: {
 						id: mac,
+						mac: mac,
 						deviceName: deviceName,
 						host: service.host,
 						address: service.referer.address,

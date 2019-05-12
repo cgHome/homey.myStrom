@@ -46,13 +46,6 @@
 					"id": "list_devices",
 					"template": "list_devices",
 					"navigation": {
-						"next": "choose_slave"
-					}
-				},
-				{
-					"id": "choose_slave",
-					"template": "choose_slave",
-					"navigation": {
 						"next": "add_devices"
 					}
 				},
@@ -72,7 +65,7 @@
 				"small": "drivers/bulb/assets/images/small.png"
 			},
 			"class": "light",
-			"capabilities": ["onoff", "light_hue", "light_saturation", "dim"],
+			"capabilities": ["onoff", "measure_power", "light_mode", "light_temperature", "light_hue", "light_saturation", "dim"],
 			"pair": [
 				{
 					"id": "start",

@@ -14,15 +14,15 @@ module.exports = class MyStromDevice extends WebAPIDevice {
 			return err;
 		});
 
-		this.debug(`device init ...`);
+		this.debug("device init ...");
 
-		const baseUrl = options.baseUrl ? options.baseUrl : `http://${this.getData().address}/api/v1/device/${this.getData().id}/`;
+		const baseUrl = options.baseUrl ? options.baseUrl : `http://${this.getData().address}/api/v1/device/`;
 		this.setDefaultBaseUrl(baseUrl);
 
 		this.setUnavailable(Homey.__("connecting"));
 		this.ready(() => {
 			this.setAvailable();
-			this.debug(`device ready ...`);
+			this.debug("device ready ...");
 		});
 	}
 
