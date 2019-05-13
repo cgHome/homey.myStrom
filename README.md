@@ -32,6 +32,7 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 v1.0.0
 
 * Rewrite myStrom Bulb
+* Some fixes
 
 v0.3.0
 

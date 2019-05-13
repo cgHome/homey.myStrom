@@ -83,7 +83,7 @@ module.exports = class MyStromApp extends WifiApp {
 						this.log(`UDP discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
 					}
 				} else {
-					this.error(`UDP discovery failed ${err.code} - ${err.message}`);
+					// this.error(`UDP discovery failed ${err.code} - ${err.message}`);
 				}
 			});
 		});

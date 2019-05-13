@@ -102,7 +102,7 @@ module.exports = class MyStromBulb extends MyStromDevice {
 					}
 					const measurePower = Math.round(result.power * 10) / 10;
 					if (typeof this.measurePower === "undefined" || this.measurePower !== measurePower) {
-						this.debug(`getValues - measurePower value: ${measurePower} (old: ${this.measurePower})`);
+						// this.debug(`getValues - measurePower value: ${measurePower} (old: ${this.measurePower})`);
 						this.measurePower = measurePower;
 						this.setCapabilityValue("measure_power", this.measurePower).catch(this.error);
 					}
