@@ -4,9 +4,9 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 
 **Note:**
 
+* **If you have problems after the upgrade, register all devices new.**
 * Finding new devices can take up to 4 minutes.
 * To add myStrom devices, you have to use the myStrom-App at the moment.
-* **If you have problems after the upgrade, register all devices new.**
 
 **Important note for Buttons**
 
