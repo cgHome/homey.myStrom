@@ -1,360 +1,379 @@
 {
-	"id": "ch.mystrom.smarthome",
-	"sdk": 2,
-	"name": {
-		"en": "myStrom-SmartHome"
-	},
-	"description": {
-		"en": "Adds support for myStrom devices."
-	},
-	"version": "0.3.0",
-	"compatibility": ">=1.5.0",
-	"category": ["appliances", "lights"],
-	"images": {
-		"small": "./assets/images/small.png",
-		"large": "./assets/images/large.png"
-	},
-	"permissions": [],
-	"author": {
-		"name": "Chris Gross",
-		"email": "cgHome@cflat-inc.org"
-	},
-	"bugs": {
-		"url": "https://github.com/cgHome/ch.mystrom.smarthome/issues"
-	},
-	"homeyCommunityTopicId": 12507,
-	"drivers": [
-		{
-			"id": "switch",
-			"name": {
-				"en": "WiFi Switch"
-			},
-			"images": {
-				"large": "drivers/switch/assets/images/large.png",
-				"small": "drivers/switch/assets/images/small.png"
-			},
-			"class": "socket",
-			"capabilities": ["onoff", "measure_power", "measure_temperature"],
-			"pair": [
-				{
-					"id": "start",
-					"navigation": {
-						"next": "list_devices"
-					}
-				},
-				{
-					"id": "list_devices",
-					"template": "list_devices",
-					"navigation": {
-						"next": "add_devices"
-					}
-				},
-				{
-					"id": "add_devices",
-					"template": "add_devices"
-				}
-			]
-		},
-		{
-			"id": "bulb",
-			"name": {
-				"en": "WiFi Bulb"
-			},
-			"images": {
-				"large": "drivers/bulb/assets/images/large.png",
-				"small": "drivers/bulb/assets/images/small.png"
-			},
-			"class": "light",
-			"capabilities": ["onoff", "measure_power", "light_mode", "light_temperature", "light_hue", "light_saturation", "dim"],
-			"pair": [
-				{
-					"id": "start",
-					"navigation": {
-						"next": "list_devices"
-					}
-				},
-				{
-					"id": "list_devices",
-					"template": "list_devices",
-					"navigation": {
-						"next": "add_devices"
-					}
-				},
-				{
-					"id": "add_devices",
-					"template": "add_devices"
-				}
-			]
-		},
-		{
-			"id": "button",
-			"name": {
-				"en": "WiFi Button"
-			},
-			"images": {
-				"large": "drivers/button/assets/images/large.png",
-				"small": "drivers/button/assets/images/small.png"
-			},
-			"class": "other",
-			"capabilities": ["measure_battery"],
-			"pair": [
-				{
-					"id": "start",
-					"navigation": {
-						"next": "list_devices"
-					}
-				},
-				{
-					"id": "list_devices",
-					"template": "list_devices",
-					"navigation": {
-						"next": "add_devices"
-					}
-				},
-				{
-					"id": "add_devices",
-					"template": "add_devices"
-				}
-			]
-		},
-		{
-			"id": "button_plus",
-			"name": {
-				"en": "WiFi Button+"
-			},
-			"images": {
-				"large": "drivers/button_plus/assets/images/large.png",
-				"small": "drivers/button_plus/assets/images/small.png"
-			},
-			"class": "other",
-			"capabilities": ["measure_battery"],
-			"pair": [
-				{
-					"id": "start",
-					"navigation": {
-						"next": "list_devices"
-					}
-				},
-				{
-					"id": "list_devices",
-					"template": "list_devices",
-					"navigation": {
-						"next": "add_devices"
-					}
-				},
-				{
-					"id": "add_devices",
-					"template": "add_devices"
-				}
-			]
-		}
-	],
-	"flow": {
-		"triggers": [
-			{
-				"id": "button_pressed",
-				"title": {
-					"en": "A button is pressed",
-					"de": "Button gedrückt"
-				},
-				"args": [
-					{
-						"name": "device",
-						"type": "device",
-						"filter": "driver_id=button"
-					},
-					{
-						"name": "action",
-						"type": "dropdown",
-						"values": [
-							{
-								"id": "1",
-								"label": {
-									"en": "Short Press",
-									"de": "Kurz gedrückt"
-								}
-							},
-							{
-								"id": "2",
-								"label": {
-									"en": "Double Press",
-									"de": "2x Kurz gedrückt"
-								}
-							},
-							{
-								"id": "3",
-								"label": {
-									"en": "Long Press",
-									"de": "Lang gedrückt"
-								}
-							}
-						]
-					}
-				]
-			},
-			{
-				"id": "button_plus_pressed",
-				"title": {
-					"en": "A button is pressed",
-					"de": "Button gedrückt"
-				},
-				"args": [
-					{
-						"name": "device",
-						"type": "device",
-						"filter": "driver_id=button_plus"
-					},
-					{
-						"name": "action",
-						"type": "dropdown",
-						"values": [
-							{
-								"id": "1",
-								"label": {
-									"en": "Short Press",
-									"de": "Kurz gedrückt"
-								}
-							},
-							{
-								"id": "2",
-								"label": {
-									"en": "Double Press",
-									"de": "2x Kurz gedrückt"
-								}
-							},
-							{
-								"id": "3",
-								"label": {
-									"en": "Long Press",
-									"de": "Lang gedrückt"
-								}
-							},
-							{
-								"id": "4",
-								"label": {
-									"en": "Touch",
-									"de": "Berührt"
-								}
-							},
-							{
-								"id": "11",
-								"label": {
-									"en": "Wheel",
-									"de": "Drehknopf"
-								}
-							}
-						]
-					}
-				]
-			},
-			{
-				"id": "button_plus_wheel",
-				"title": {
-					"en": "A wheel-value received",
-					"de": "Wheel-Value empfangen"
-				},
-				"args": [
-					{
-						"name": "device",
-						"type": "device",
-						"filter": "driver_id=button_plus"
-					}
-				],
-				"tokens": [
-					{
-						"name": "value",
-						"type": "number",
-						"title": {
-							"en": "value",
-							"de": "Wert"
-						}
-					}
-				]
-			},
-			{
-				"id": "app_log_listener",
-				"title": {
-					"en": "Homey-App - Logger"
-				},
-				"tokens": [
-					{
-						"name": "name",
-						"type": "string",
-						"title": {
-							"en": "name"
-						},
-						"example": {
-							"en": "App-Name"
-						}
-					},
-					{
-						"name": "msg",
-						"type": "string",
-						"title": {
-							"en": "msg"
-						},
-						"example": {
-							"en": "Log message"
-						}
-					}
-				]
-			},
-			{
-				"id": "app_error_listener",
-				"title": {
-					"en": "Homey-App - Error-Logger"
-				},
-				"tokens": [
-					{
-						"name": "name",
-						"type": "string",
-						"title": {
-							"en": "name"
-						},
-						"example": {
-							"en": "App-Name"
-						}
-					},
-					{
-						"name": "msg",
-						"type": "string",
-						"title": {
-							"en": "msg"
-						},
-						"example": {
-							"en": "Error message"
-						}
-					}
-				]
-			},
-			{
-				"id": "app_debug_listener",
-				"title": {
-					"en": "Homey-App - Debug-Logger"
-				},
-				"tokens": [
-					{
-						"name": "name",
-						"type": "string",
-						"title": {
-							"en": "name"
-						},
-						"example": {
-							"en": "App-Name"
-						}
-					},
-					{
-						"name": "msg",
-						"type": "string",
-						"title": {
-							"en": "msg"
-						},
-						"example": {
-							"en": "Debug message"
-						}
-					}
-				]
-			}
-		]
-	}
+  "id": "ch.mystrom.smarthome",
+  "sdk": 2,
+  "name": {
+    "en": "myStrom-SmartHome"
+  },
+  "description": {
+    "en": "Adds support for myStrom devices."
+  },
+  "version": "1.0.0",
+  "compatibility": ">=1.5.0",
+  "category": [
+    "appliances",
+    "lights"
+  ],
+  "images": {
+    "small": "./assets/images/small.png",
+    "large": "./assets/images/large.png"
+  },
+  "permissions": [],
+  "author": {
+    "name": "Chris Gross",
+    "email": "cgHome@cflat-inc.org"
+  },
+  "bugs": {
+    "url": "https://github.com/cgHome/ch.mystrom.smarthome/issues"
+  },
+  "homeyCommunityTopicId": 12507,
+  "drivers": [
+    {
+      "id": "switch",
+      "name": {
+        "en": "WiFi Switch"
+      },
+      "images": {
+        "large": "drivers/switch/assets/images/large.png",
+        "small": "drivers/switch/assets/images/small.png"
+      },
+      "class": "socket",
+      "capabilities": [
+        "onoff",
+        "measure_power",
+        "measure_temperature"
+      ],
+      "pair": [
+        {
+          "id": "start",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "bulb",
+      "name": {
+        "en": "WiFi Bulb"
+      },
+      "images": {
+        "large": "drivers/bulb/assets/images/large.png",
+        "small": "drivers/bulb/assets/images/small.png"
+      },
+      "class": "light",
+      "capabilities": [
+        "onoff",
+        "measure_power",
+        "light_mode",
+        "light_temperature",
+        "light_hue",
+        "light_saturation",
+        "dim"
+      ],
+      "pair": [
+        {
+          "id": "start",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "button",
+      "name": {
+        "en": "WiFi Button"
+      },
+      "images": {
+        "large": "drivers/button/assets/images/large.png",
+        "small": "drivers/button/assets/images/small.png"
+      },
+      "class": "other",
+      "capabilities": [
+        "measure_battery"
+      ],
+      "pair": [
+        {
+          "id": "start",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "button_plus",
+      "name": {
+        "en": "WiFi Button+"
+      },
+      "images": {
+        "large": "drivers/button_plus/assets/images/large.png",
+        "small": "drivers/button_plus/assets/images/small.png"
+      },
+      "class": "other",
+      "capabilities": [
+        "measure_battery"
+      ],
+      "pair": [
+        {
+          "id": "start",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    }
+  ],
+  "flow": {
+    "triggers": [
+      {
+        "id": "button_pressed",
+        "title": {
+          "en": "A button is pressed",
+          "de": "Button gedrückt"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=button"
+          },
+          {
+            "name": "action",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "1",
+                "label": {
+                  "en": "Short Press",
+                  "de": "Kurz gedrückt"
+                }
+              },
+              {
+                "id": "2",
+                "label": {
+                  "en": "Double Press",
+                  "de": "2x Kurz gedrückt"
+                }
+              },
+              {
+                "id": "3",
+                "label": {
+                  "en": "Long Press",
+                  "de": "Lang gedrückt"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "button_plus_pressed",
+        "title": {
+          "en": "A button is pressed",
+          "de": "Button gedrückt"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=button_plus"
+          },
+          {
+            "name": "action",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "1",
+                "label": {
+                  "en": "Short Press",
+                  "de": "Kurz gedrückt"
+                }
+              },
+              {
+                "id": "2",
+                "label": {
+                  "en": "Double Press",
+                  "de": "2x Kurz gedrückt"
+                }
+              },
+              {
+                "id": "3",
+                "label": {
+                  "en": "Long Press",
+                  "de": "Lang gedrückt"
+                }
+              },
+              {
+                "id": "4",
+                "label": {
+                  "en": "Touch",
+                  "de": "Berührt"
+                }
+              },
+              {
+                "id": "11",
+                "label": {
+                  "en": "Wheel",
+                  "de": "Drehknopf"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "button_plus_wheel",
+        "title": {
+          "en": "A wheel-value received",
+          "de": "Wheel-Value empfangen"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=button_plus"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "value",
+            "type": "number",
+            "title": {
+              "en": "value",
+              "de": "Wert"
+            }
+          }
+        ]
+      },
+      {
+        "id": "app_log_listener",
+        "title": {
+          "en": "Homey-App - Logger"
+        },
+        "tokens": [
+          {
+            "name": "name",
+            "type": "string",
+            "title": {
+              "en": "name"
+            },
+            "example": {
+              "en": "App-Name"
+            }
+          },
+          {
+            "name": "msg",
+            "type": "string",
+            "title": {
+              "en": "msg"
+            },
+            "example": {
+              "en": "Log message"
+            }
+          }
+        ]
+      },
+      {
+        "id": "app_error_listener",
+        "title": {
+          "en": "Homey-App - Error-Logger"
+        },
+        "tokens": [
+          {
+            "name": "name",
+            "type": "string",
+            "title": {
+              "en": "name"
+            },
+            "example": {
+              "en": "App-Name"
+            }
+          },
+          {
+            "name": "msg",
+            "type": "string",
+            "title": {
+              "en": "msg"
+            },
+            "example": {
+              "en": "Error message"
+            }
+          }
+        ]
+      },
+      {
+        "id": "app_debug_listener",
+        "title": {
+          "en": "Homey-App - Debug-Logger"
+        },
+        "tokens": [
+          {
+            "name": "name",
+            "type": "string",
+            "title": {
+              "en": "name"
+            },
+            "example": {
+              "en": "App-Name"
+            }
+          },
+          {
+            "name": "msg",
+            "type": "string",
+            "title": {
+              "en": "msg"
+            },
+            "example": {
+              "en": "Debug message"
+            }
+          }
+        ]
+      }
+    ]
+  }
 }

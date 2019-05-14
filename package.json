@@ -1,6 +1,6 @@
 {
   "name": "ch.mystrom.smarthome",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "This app provides support for the following devices:",
   "main": "app.js",
   "scripts": {
