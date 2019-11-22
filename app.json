@@ -8,7 +8,7 @@
     "en": "Adds support for myStrom devices."
   },
   "version": "1.0.0",
-  "compatibility": ">=1.5.0",
+  "compatibility": ">=2.5.0",
   "category": [
     "appliances",
     "lights"
@@ -17,6 +17,7 @@
     "small": "./assets/images/small.png",
     "large": "./assets/images/large.png"
   },
+  "brandColor": "#5AB42E",
   "permissions": [],
   "author": {
     "name": "Chris Gross",
@@ -26,6 +27,8 @@
     "url": "https://github.com/cgHome/ch.mystrom.smarthome/issues"
   },
   "homeyCommunityTopicId": 12507,
+  "support": "https://community.athom.com/t/12507",
+  "source": "https://github.com/cgHome/ch.mystrom.smarthome",
   "drivers": [
     {
       "id": "switch",

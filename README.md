@@ -29,6 +29,10 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Changelog
 
+v1.0.1
+
+* Some changes for the new Homey-App Store
+
 v1.0.0
 
 * Rewrite myStrom Bulb
@@ -77,6 +81,7 @@ v0.0.1
 
 ## ToDo
 
+* Add homey discovery-api
 * Test WPS-Mode
 * Adding devices (pair) to WLAN without myStrom-app
 
