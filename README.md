@@ -81,6 +81,7 @@ v0.0.1
 
 ## ToDo
 
+* myStrom Button add "energy.batteries"
 * Add homey discovery-api
 * Test WPS-Mode
 * Adding devices (pair) to WLAN without myStrom-app
