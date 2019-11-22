@@ -9,6 +9,12 @@
   },
   "version": "1.0.0",
   "compatibility": ">=2.5.0",
+  "source": "https://github.com/cgHome/ch.mystrom.smarthome",
+  "bugs": {
+    "url": "https://github.com/cgHome/ch.mystrom.smarthome/issues"
+  },
+  "homeyCommunityTopicId": 12507,
+  "support": "https://community.athom.com/t/12507",
   "category": [
     "appliances",
     "lights"
@@ -23,12 +29,6 @@
     "name": "Chris Gross",
     "email": "cgHome@cflat-inc.org"
   },
-  "bugs": {
-    "url": "https://github.com/cgHome/ch.mystrom.smarthome/issues"
-  },
-  "homeyCommunityTopicId": 12507,
-  "support": "https://community.athom.com/t/12507",
-  "source": "https://github.com/cgHome/ch.mystrom.smarthome",
   "drivers": [
     {
       "id": "switch",
