@@ -3,5 +3,6 @@
         "mystrom",
         "smarthome",
         "wifidriver"
-    ]
+    ],
+    "git.ignoreLimitWarning": true
 }

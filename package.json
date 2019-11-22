@@ -34,7 +34,7 @@
   "license": "ISC",
   "dependencies": {
     "bonjour": "^3.5.0",
-    "homey-wifidriver": "git+https://github.com/athombv/node-homey-wifidriver.git"
+    "homey-wifidriver": "^1.0.8"
   },
   "bugs": {
     "url": "https://github.com/cgHome/ch.mystrom.smarthome/issues"
