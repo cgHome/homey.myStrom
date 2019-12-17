@@ -3,7 +3,7 @@ const MyStromButton = require("../button/device");
 
 module.exports = class MyStromButtonPlus extends MyStromButton {
 	buttonGenAction(params) {
-		if (params.mac === this.getData().mac && params.action === "5" && params.wheel) {
+		if (params.mac === this.getData().id && params.action === "5" && params.wheel) {
 			this.debug(`wheel value received: ${JSON.stringify(params)}`);
 
 			// Battery-Level

@@ -34,7 +34,7 @@ module.exports = class MyStromButton extends MyStromDevice {
 	}
 
 	buttonGenAction(params) {
-		if (params.mac === this.getData().mac) {
+		if (params.mac === this.getData().id) {
 			this.debug(`action received: ${JSON.stringify(params)}`);
 
 			// Battery-Level
