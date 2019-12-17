@@ -117,6 +117,9 @@
       "capabilities": [
         "measure_battery"
       ],
+      "energy": {
+        "batteries": [ "INTERNAL" ]
+      },
       "pair": [
         {
           "id": "start",
@@ -150,6 +153,9 @@
       "capabilities": [
         "measure_battery"
       ],
+      "energy": {
+        "batteries": [ "AAA", "AAA", "AAA" ]
+      },
       "pair": [
         {
           "id": "start",
