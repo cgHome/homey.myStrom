@@ -21,15 +21,21 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 * myStrom Switch v1 & v2                 [supported]
 * myStrom Bulb                           [supported]
-* myStrom Button            (fw: >2.74)  [supported]
-* myStrom Button Plus       (fw: >2.74)  [supported]
+* myStrom Button                         [supported]
+* myStrom Button Plus                    [supported]
 * myStrom LED Strip                      [currently not supported]
+* myStrom WiFi Motion Sensor             [currently not supported]
 
 ---
 
 ## Changelog
 
-v1.0.1
+v1.0.3
+
+* Button fixed
+* Add batteries type
+
+v1.0.2
 
 * Some changes for the new Homey-App Store
 
@@ -81,7 +87,6 @@ v0.0.1
 
 ## ToDo
 
-* myStrom Button add "energy.batteries"
 * Add homey discovery-api
 * Test WPS-Mode
 * Adding devices (pair) to WLAN without myStrom-app
