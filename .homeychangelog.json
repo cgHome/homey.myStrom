@@ -1,12 +1,9 @@
 {
+  "1.0.0": {
+    "en": "Rewrite myStrom Bulb"
+  },
   "1.0.2": {
     "en": "Some changes for the new Homey-App Store"
-  },
-  "1.0.3": {
-    "en": "Fixed Button"
-  },
-  "1.0.4": {
-    "en": "Fixed Button"
   },
   "1.0.5": {
     "en": "Fixed Button"
