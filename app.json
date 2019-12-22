@@ -7,7 +7,7 @@
   "description": {
     "en": "Adds support for myStrom devices."
   },
-  "version": "1.0.3",
+  "version": "1.0.2",
   "compatibility": ">=2.5.0",
   "source": "https://github.com/cgHome/ch.mystrom.smarthome",
   "bugs": {

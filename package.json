@@ -1,6 +1,6 @@
 {
   "name": "ch.mystrom.smarthome",
-  "version": "1.0.3",
+  "version": "1.0.2",
   "description": "This app provides support for the following devices:",
   "main": "app.js",
   "scripts": {
@@ -14,11 +14,11 @@
     "init:app": "npm run -s _homeyRun -- init:app && exit; npm init --quiet -y 1>/dev/null",
     "createRepo": "npm run -s _homeyRun -- createRepo && exit; hub create -d \"$npm_package_description\" -h $npm_package_homepage $npm_package_name && npm run init:app",
     "_homeyRun": "source ~/.bashrc && [[ \"$(type -t homey-run)\" = function ]] && homey-run -s",
-    "_release": "git checkout master && git pull && git tag v$npm_package_version && git push origin v$npm_package_version",
-    "_dbuild": "func() { homey app version $1 && npm run init:app && npm run __dbuild && git push origin master; }; func",
-    "__dbuild": "git commit -am v$npm_package_version"
+    "_dbuild": "func() { git checkout master && git pull && homey app version $1 && npm run init:app && npm run __dbuild; }; func",
+    "__dbuild": "git commit -am v$npm_package_version",
+    "_release": "npm run __dbuild && git tag v$npm_package_version && git push origin v$npm_package_version && git push origin master"
   },
-  "repository": {
+  "repository": { 
     "type": "git",
     "url": "git+https://github.com/cgHome/ch.mystrom.smarthome.git"
   },
