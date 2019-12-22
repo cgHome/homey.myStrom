@@ -32,7 +32,7 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 v1.0.3
 
-* Button fixed
+* Fixed Button
 * Add batteries type
 
 v1.0.2

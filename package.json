@@ -18,7 +18,7 @@
     "__dbuild": "git commit -am v$npm_package_version",
     "_release": "npm run __dbuild && git tag v$npm_package_version && git push origin v$npm_package_version && git push origin master"
   },
-  "repository": { 
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/cgHome/ch.mystrom.smarthome.git"
   },
