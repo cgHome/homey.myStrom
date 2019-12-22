@@ -30,7 +30,7 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Changelog
 
-v1.0.3
+v1.0.4
 
 * Fixed Button
 * Add batteries type
