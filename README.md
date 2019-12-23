@@ -30,6 +30,10 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Changelog
 
+v1.0.6
+
+* README.txt removed external link
+
 v1.0.5
 
 * Fixed Button
