@@ -28,16 +28,6 @@ module.exports = class MyStromApp extends WifiApp {
 	}
 
 	onInit() {
-		// Initialize Homey-App Loggers
-		this.appLogListener = new Homey.FlowCardTrigger("app_log_listener");
-		this.appLogListener.register().registerRunListener(Promise.resolve(true));
-
-		this.appErrorListener = new Homey.FlowCardTrigger("app_error_listener");
-		this.appErrorListener.register().registerRunListener(Promise.resolve(true));
-
-		this.appDebugListener = new Homey.FlowCardTrigger("app_debug_listener");
-		this.appDebugListener.register().registerRunListener(Promise.resolve(true));
-
 		this.log(`${Homey.app.manifest.name.en}-App - v${Homey.app.manifest.version} is running...`);
 
 		// Find myStrom-Devices
@@ -93,25 +83,11 @@ module.exports = class MyStromApp extends WifiApp {
 	// Homey-App Loggers
 	log(msg) {
 		super.log(msg);
-		// Send to logger
-		if (this.appLogListener) {
-			this.appLogListener.trigger({ name: `${Homey.app.manifest.name.en}`, msg: msg }).catch(err => super.error(err.message));
-		}
 	}
-
 	error(msg) {
 		super.error(`### ${msg}`);
-		// Send to error logger
-		if (this.appErrorListener) {
-			this.appErrorListener.trigger({ name: `${Homey.app.manifest.name.en}`, msg: msg }).catch(err => super.error(err.message));
-		}
 	}
-
 	debug(msg) {
 		super.log(`»»» ${msg}`);
-		// Send to debug logger
-		if (this.appDebugListener) {
-			this.appDebugListener.trigger({ name: `${Homey.app.manifest.name.en}`, msg: msg }).catch(err => super.error(err.message));
-		}
 	}
 };
