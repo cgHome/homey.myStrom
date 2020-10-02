@@ -9,9 +9,9 @@
   }, 
   "version": "1.0.6",
   "compatibility": ">=2.5.0",
-  "source": "https://github.com/cgHome/ch.mystrom.smarthome",
+  "source": "https://github.com/cgHome/homey.myStrom",
   "bugs": {
-    "url": "https://github.com/cgHome/ch.mystrom.smarthome/issues"
+    "url": "https://github.com/cgHome/homey.myStrom/issues"
   },
   "homeyCommunityTopicId": 12507,
   "support": "https://community.athom.com/t/12507",
