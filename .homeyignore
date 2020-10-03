@@ -1,7 +1,0 @@
-.homeyignore
-.gitattributes
-.gitignore
-.git/
-.vscode/
-package-lock.json
-package.json
