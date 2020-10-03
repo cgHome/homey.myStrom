@@ -2,16 +2,15 @@
 // Start debuger
 if (process.env.DEBUG === "1") {
 	require("inspector").open(9229, "0.0.0.0", false);
-	// require("inspector").open(9229, "0.0.0.0", true);
+	//require("inspector").open(9229, "0.0.0.0", true);
 }
 
 const Homey = require("homey");
-const WifiApp = require("homey-wifidriver").WifiApp;
 const dns = require("dns");
 const dgram = require("dgram");
 const bonjour = require("bonjour")();
 
-module.exports = class MyStromApp extends WifiApp {
+module.exports = class MyStromApp extends Homey.App {
 	constructor(...args) {
 		super(...args);
 
@@ -85,7 +84,7 @@ module.exports = class MyStromApp extends WifiApp {
 		super.log(msg);
 	}
 	error(msg) {
-		super.error(`### ${msg}`);
+		super.error(`${msg}`);
 	}
 	debug(msg) {
 		super.log(`»»» ${msg}`);

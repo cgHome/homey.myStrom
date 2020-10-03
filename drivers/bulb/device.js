@@ -1,7 +1,11 @@
-const Homey = require("homey");
-const MyStromDevice = require("../device");
+"use strict";
 
-module.exports = class MyStromBulb extends MyStromDevice {
+const Homey = require("homey");
+const Device = require("../device");
+
+const RAMP_DEFAULT = "0";
+
+module.exports = class BulbDevice extends Device {
 	onInit(options = {}) {
 		super.onInit(options);
 
@@ -12,184 +16,165 @@ module.exports = class MyStromBulb extends MyStromDevice {
 		this.registerCapabilityListener("light_saturation", this.onCapabilityLightSaturation.bind(this));
 		this.registerCapabilityListener("dim", this.onCapabilityDim.bind(this));
 
-		this.registerPollInterval();
+		//this.initGetDeviceValuesInterval();
+		this.debug("device has been inited");
 	}
 
-	async onCapabilityOnOff(value, opts, callback) {
-		this.debug(`onCapabilityOnOff value: ${value} (old: ${this.state})`);
-		if (this.state === value) {
-			return Promise.resolve();
-		}
-
-		this.state = value;
-
-		return this.apiCallPost({}, `action=${this.state ? "on" : "off"}`).catch(err => {
-			this.error(`failed to set OnOff ${response.toString()}`);
-			this.setUnavailable(err);
-		});
+	onDeleted() {
+		super.onDeleted();
+		clearInterval(this.getDeviceValuesInterval);
 	}
 
-	async onCapabilityLightMode(value, opts, callback) {
-		this.debug(`onCapabilityLightMode value: ${value} (old: ${this.lightMode})`);
-		if (this.lightMode === value) {
-			return Promise.resolve();
-		}
-
-		this.lightMode = value;
-		return this.apiCallPost({}, `action=${this.state ? "on" : "off"}&mode=${this.lightMode === "temperature" ? "mono" : "hsv"}`).catch(err => {
-			this.error(`failed to set light-mode ${err.stack}`);
-			this.setUnavailable(err);
-		});
+	async deviceReady() {
+		try {
+			await super.deviceReady();
+			await this.getDeviceValues();
+		} catch {}
 	}
 
-	async onCapabilityLightTemperature(value, opts, callback) {
-		this.debug(`onCapabilityLightTemperature value: ${value} (old: ${this.lightTemperature})`);
-		if (this.lightTemperature === value) {
-			return Promise.resolve();
-		}
+	async onCapabilityOnOff(value, opts) {
+		const current = this.getCapabilityValue("onoff");
+		if (current === value) return Promise.resolve();
 
-		this.lightTemperature = value;
-		return this.setTemperatureMode();
-	}
+		this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
+		const action = value ? "on" : "off";
 
-	async onCapabilityLightHue(value, opts, callback) {
-		this.debug(`onCapabilityLightHue value: ${value} (old: ${this.lightHue})`);
-		if (this.lightHue === value) {
-			return Promise.resolve();
-		}
-
-		this.lightHue = value;
-		return this.setColorMode();
-	}
-
-	async onCapabilityLightSaturation(value, opts, callback) {
-		this.debug(`onCapabilityLightSaturation value: ${value} (old: ${this.lightSaturation})`);
-		if (this.lightSaturation === value) {
-			return Promise.resolve();
-		}
-
-		this.lightSaturation = value;
-		return this.setColorMode();
-	}
-
-	async onCapabilityDim(value, opts, callback) {
-		this.debug(`onCapabilityDim value: ${value} (old: ${this.dim})`);
-		if (this.dim === value) {
-			return Promise.resolve();
-		}
-
-		this.dim = value;
-		if (this.dim < 0.01) {
-			return this.onCapabilityOnOff(false).catch(this.error);
-		}
-		if (this.lightMode === "temperature") {
-			return this.setTemperatureMode();
-		}
-		return this.setColorMode();
-	}
-
-	getValues() {
-		return this.apiCallGet()
-			.then(response => {
-				if (typeof response.errorResponse == "undefined") {
-					const result = response[Object.keys(response)[0]];
-
-					const state = result.on;
-					if (typeof this.state === "undefined" || this.state !== state) {
-						this.debug(`getValues - state value: ${state} (old: ${this.state})`);
-						this.state = state;
-						this.setCapabilityValue("onoff", this.state).catch(this.error);
-					}
-					const measurePower = Math.round(result.power * 10) / 10;
-					if (typeof this.measurePower === "undefined" || this.measurePower !== measurePower) {
-						// this.debug(`getValues - measurePower value: ${measurePower} (old: ${this.measurePower})`);
-						this.measurePower = measurePower;
-						this.setCapabilityValue("measure_power", this.measurePower).catch(this.error);
-					}
-					const lightMode = result.mode === "mono" ? "temperature" : "color";
-					if (typeof this.lightMode === "undefined" || this.lightMode !== lightMode) {
-						this.debug(`getValues - lightMode value: ${lightMode} (old: ${this.lightMode})`);
-						this.lightMode = lightMode;
-						this.setCapabilityValue("light_mode", this.lightMode).catch(this.error);
-					}
-					if (this.lightMode === "temperature") {
-						// color: temperature[mono]-mode
-						const lightTemperature = parseInt(result.color.split(";")[0]) / 100;
-						if (typeof this.lightTemperature === "undefined" || this.lightTemperature !== lightTemperature) {
-							this.debug(`getValues - lightTemperature value: ${lightTemperature} (old: ${this.lightTemperature})`);
-							this.lightTemperature = lightTemperature;
-							this.setCapabilityValue("light_temperature", this.lightTemperature).catch(this.error);
-						}
-						const dim = parseInt(result.color.split(";")[1]) / 100;
-						if (typeof this.dim === "undefined" || this.dim !== dim) {
-							this.debug(`getValues - dim value: ${dim} (old: ${this.dim})`);
-							this.dim = dim;
-							this.setCapabilityValue("dim", this.dim).catch(this.error);
-						}
-					} else {
-						// color: color[hsv]-mode
-						const lightHue = Math.round((1 / 360) * parseInt(result.color.split(";")[0]) * 100) / 100;
-						if (typeof this.lightHue === "undefined" || this.lightHue !== lightHue) {
-							this.debug(`getValues - lightHue value: ${lightHue} (old: ${this.lightHue})`);
-							this.lightHue = lightHue;
-							this.setCapabilityValue("light_hue", this.lightHue).catch(this.error);
-						}
-						const lightSaturation = parseInt(result.color.split(";")[1]) / 100;
-						if (typeof this.lightSaturation === "undefined" || this.lightSaturation !== lightSaturation) {
-							this.debug(`getValues - lightSaturation value: ${lightSaturation} (old: ${this.lightSaturation})`);
-							this.lightSaturation = lightSaturation;
-							this.setCapabilityValue("light_saturation", this.lightSaturation).catch(this.error);
-						}
-						const dim = parseInt(result.color.split(";")[2]) / 100;
-						if (typeof this.dim === "undefined" || this.dim !== dim) {
-							this.debug(`getValues - dim value: ${dim} (old: ${this.dim})`);
-							this.dim = dim;
-							this.setCapabilityValue("dim", this.dim).catch(this.error);
-						}
-					}
-					this.setAvailable();
-				} else {
-					this.error(`response: ${response.toString()}`);
-					this.setUnavailable(`Response error: ${response.errorResponse.code}`);
-				}
+		return this.setDeviceData("device", `action=${action}`)
+			.then(await this.getDeviceValues())
+			.then(() => {
+				const current = this.getCapabilityValue("onoff");
+				this.notify(Homey.__("device.stateSet", { value: current ? "on" : "off" }));
 			})
-			.catch(err => {
-				this.error(`failed to getValues: ${err.stack}`);
-				this.setUnavailable(err);
-			});
+			.catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
 	}
 
-	setTemperatureMode() {
-		const data = `mode=mono&ramp=10&color=${Math.round(this.lightTemperature * 100)};${Math.round(this.dim * 100)}`;
-		this.debug(`setTemperatureMode: ${data}`);
+	async onCapabilityLightMode(value, opts) {
+		const current = this.getCapabilityValue("light_mode");
+		if (current === value) return Promise.resolve();
 
-		if (!this.state) {
-			this.onCapabilityOnOff(true).catch(this.error);
+		this.debug(`onCapabilityLightMode() - ${current} > ${value}`);
+		const state = this.getCapabilityValue("onoff") ? "on" : "off";
+		const mode = value === "temperature" ? "mono" : "hsv";
+
+		return this.setDeviceData("device", `action=${state}&mode=${mode}`)
+			.then(await this.getDeviceValues())
+			.then(() => {
+				const current = this.getCapabilityValue("light_mode");
+				this.notify(Homey.__("device.modeSet", { value: current }));
+			})
+			.catch((err) => this.error(`onCapabilityLightMode() > ${err}`));
+	}
+
+	async onCapabilityLightTemperature(value, opts) {
+		const current = this.getCapabilityValue("light_temperature");
+		if (current === value) return Promise.resolve();
+
+		this.debug(`onCapabilityLightTemperature() - ${current} > ${value}`);
+		//const state = this.getCapabilityValue("onoff") ? "on" : "off";
+		const lightTemperature = value * 100;
+		const dim = this.getCapabilityValue("dim") * 100;
+
+		return this.setDeviceData("device", `mode=mono&ramp=${RAMP_DEFAULT}&color=${lightTemperature};${dim}`)
+			.then(await this.getDeviceValues())
+			.then(() => {
+				const current = this.getCapabilityValue("light_temperature");
+				this.notify(Homey.__("device.modeSet", { value: current }));
+			})
+			.catch((err) => this.error(`onCapabilityLightTemperature() > ${err}`));
+	}
+
+	async onCapabilityLightHue(value, opts) {
+		const current = this.getCapabilityValue("light_hue");
+		if (current === value) return Promise.resolve();
+
+		this.debug(`onCapabilityLightHue() - ${current} > ${value}`);
+		//const state = this.getCapabilityValue("onoff") ? "on" : "off";
+		const lightHue = value * 360;
+		const lightSaturation = this.getCapabilityValue("light_saturation") * 100;
+		const dim = this.getCapabilityValue("dim") * 100;
+
+		return this.setDeviceData("device", `mode=hsv&ramp=${RAMP_DEFAULT}&color=${lightHue};${lightSaturation};${dim}`)
+			.then(await this.getDeviceValues())
+			.then(() => {
+				const current = this.getCapabilityValue("light_hue");
+				this.notify(Homey.__("device.hueSet", { value: current * 360 }));
+			})
+			.catch((err) => this.error(`onCapabilityLightHue() > ${err}`));
+	}
+
+	async onCapabilityLightSaturation(value, opts) {
+		const current = this.getCapabilityValue("light_saturation");
+		if (current === value) return Promise.resolve();
+
+		this.debug(`onCapabilityLightSaturation() - ${current} > ${value}`);
+		//const state = this.getCapabilityValue("onoff") ? "on" : "off";
+		const lightHue = this.getCapabilityValue("light_hue") * 360;
+		const lightSaturation = value * 100;
+		const dim = this.getCapabilityValue("dim") * 100;
+
+		return this.setDeviceData("device", `mode=hsv&ramp=${RAMP_DEFAULT}&color=${lightHue};${lightSaturation};${dim}`)
+			.then(await this.getDeviceValues())
+			.then(() => {
+				const current = this.getCapabilityValue("light_saturation");
+				this.notify(Homey.__("device.saturationSet", { value: current * 100 }));
+			})
+			.catch((err) => this.error(`onCapabilityLightSaturation() > ${err}`));
+	}
+
+	async onCapabilityDim(value, opts) {
+		const current = this.getCapabilityValue("dim");
+		if (current === value) return Promise.resolve();
+
+		this.debug(`onCapabilityDim() - ${current} > ${value}`);
+		const dim = value * 100;
+
+		let getValue;
+		if (this.getCapabilityValue("light_mode") === "temperature") {
+			const lightTemperature = this.getCapabilityValue("light_temperature") * 100;
+			getValue = `mode=mono&ramp=${RAMP_DEFAULT}&color=${lightTemperature};${dim}`;
+		} else {
+			const lightHue = this.getCapabilityValue("light_hue") * 360;
+			const lightSaturation = this.getCapabilityValue("light_saturation") * 100;
+			getValue = `mode=hsv&ramp=${RAMP_DEFAULT}&color=${lightHue};${lightSaturation};${dim}`;
 		}
 
-		return this.apiCallPost({}, data).catch(err => {
-			this.error(`failed to setTemperatureMode: ${err.stack}`);
-			this.setUnavailable(err);
-		});
+		return this.setDeviceData("device", getValue)
+			.then(await this.getDeviceValues())
+			.then(() => {
+				const current = this.getCapabilityValue("dim");
+				this.notify(Homey.__("device.dimSet", { value: current * 100 }));
+			})
+			.catch((err) => this.error(`onCapabilityDim() > ${err}`));
 	}
 
-	setColorMode() {
-		const data = `mode=hsv&ramp=10&color=${Math.round(this.lightHue * 360)};${Math.round(this.lightSaturation * 100)};${Math.round(this.dim * 100)}`;
-		this.debug(`setColorMode: ${data}`);
+	getDeviceValues(url = "device") {
+		return super.getDeviceValues(url).then(async (data) => {
+			const result = data[Object.keys(data)[0]];
+			try {
+				const state = result.on;
+				const measurePower = Math.round(result.power * 10) / 10;
+				const lightMode = result.mode === "mono" ? "temperature" : "color";
+				await this.setCapabilityValue("onoff", state);
+				await this.setCapabilityValue("measure_power", measurePower);
+				await this.setCapabilityValue("light_mode", lightMode);
 
-		if (!this.state) {
-			this.onCapabilityOnOff(true).catch(this.error);
-		}
-		
-		return this.apiCallPost({}, data).catch(err => {
-			this.error(`failed to setColorMode: ${err.stack}`);
-			this.setUnavailable(err);
+				if (lightMode === "temperature") {
+					const lightTemperature = parseInt(result.color.split(";")[0]) / 100;
+					const dim = parseInt(result.color.split(";")[1]) / 100;
+					await this.setCapabilityValue("light_temperature", lightTemperature);
+					await this.setCapabilityValue("dim", dim);
+				} else {
+					const lightHue = Math.round((1 / 360) * parseInt(result.color.split(";")[0]) * 100) / 100;
+					const lightSaturation = parseInt(result.color.split(";")[1]) / 100;
+					const dim = parseInt(result.color.split(";")[2]) / 100;
+					await this.setCapabilityValue("light_hue", lightHue);
+					await this.setCapabilityValue("light_saturation", lightSaturation);
+					await this.setCapabilityValue("dim", dim);
+				}
+			} catch (err) {
+				this.error(err);
+			}
+			return data;
 		});
-	}
-
-	apiCallPost(options = {}, data) {
-		options["uri"] = `${this.getData().id}/`;
-
-		return super.apiCallPost(options, data);
 	}
 };

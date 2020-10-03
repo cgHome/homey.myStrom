@@ -1,64 +1,57 @@
-const Homey = require("homey");
-const MyStromDevice = require("../device");
+"use strict";
 
-module.exports = class MyStromSwitch extends MyStromDevice {
+const Homey = require("homey");
+const Device = require("../device");
+
+module.exports = class SwitchDevice extends Device {
 	onInit(options = {}) {
-		options.baseUrl = `http://${this.getData().address}/`;
+		options.baseURL = `http://${this.getData().address}/`;
 		super.onInit(options);
 
 		this.registerCapabilityListener("onoff", this.onCapabilityOnOff.bind(this));
 
-		this.registerPollInterval();
+		//this.initGetDeviceValuesInterval();
+		this.debug("device has been inited");
 	}
 
-	async onCapabilityOnOff(value, opts, callback) {
-		this.debug(`onCapabilityOnOff value: ${value} (old: ${this.state})`);
-		if (this.state === value) {
-			return Promise.resolve();
-		}
-
-		this.state = value;
-
-		return this.apiCallGet({ uri: `relay?state=${this.state ? "1" : "0"}` })
-			.catch(err => {
-				this.error(`failed to set capability ${err.stack}`);
-				this.setUnavailable(err);
-			});
+	onDeleted() {
+		super.onDeleted();
+		clearInterval(this.getDeviceValuesInterval);
 	}
 
-	getValues() {
-		return this.apiCallGet({ uri: "report" })
-			.then(response => {
-				if (typeof response.errorResponse == "undefined") {
-					let state = response.relay;
-					if (typeof this.state === "undefined" || this.state !== state) {
-						this.debug(`getValues - state value: ${state} (old: ${this.state})`);
-						this.state = state;
-						this.setCapabilityValue("onoff", this.state).catch(this.error);
-					}
-					let measurePower = Math.round(response.power * 10) / 10;
-					if (typeof this.measurePower === "undefined" || this.measurePower !== measurePower) {
-						//this.debug(`getValues - measurePower value: ${measurePower} (old: ${this.measurePower})`);
-						this.measurePower = measurePower;
-						this.setCapabilityValue("measure_power", this.measurePower).catch(this.error);
-					}
-					if (response.temperature) {
-						let temperature = Math.round(response.temperature * 10) / 10;
-						if (typeof this.temperature === "undefined" || this.temperature !== temperature) {
-							//this.debug(`getValues - temperature value: ${temperature} (old: ${this.temperature})`);
-							this.temperature = temperature;
-							this.setCapabilityValue("measure_temperature", this.temperature).catch(this.error);
-						}
-					}
-					this.setAvailable();
-				} else {
-					this.error(`response: ${response.toString()}`);
-					this.setUnavailable(`Response error: ${response.errorResponse.code}`);
-				}
+	async deviceReady() {
+		try {
+			await super.deviceReady();
+			await this.getDeviceValues();
+		} catch {}
+	}
+
+	async onCapabilityOnOff(value, opts) {
+		const current = this.getCapabilityValue("onoff");
+		if (current === value) return Promise.resolve();
+
+		this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
+		const state = value ? "1" : "0";
+
+		return this.setDeviceData(`relay?state=${state}`)
+			.then(await this.getDeviceValues())
+			.then(() => {
+				const current = this.getCapabilityValue("onoff");
+				this.notify(Homey.__("device.stateSet", { value: current ? "on" : "off" }));
 			})
-			.catch(err => {
-				this.error(`failed to getValues: ${err.stack}`);
-				this.setUnavailable(err);
-			});
+			.catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
+	}
+
+	getDeviceValues(url = "report") {
+		return super.getDeviceValues(url).then(async (data) => {
+			try {
+				await this.setCapabilityValue("onoff", data.relay);
+				await this.setCapabilityValue("measure_power", Math.round(data.power * 10) / 10);
+				await this.setCapabilityValue("measure_temperature", Math.round(data.temperature * 10) / 10);
+			} catch (err) {
+				this.error(err);
+			}
+			return data;
+		});
 	}
 };

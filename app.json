@@ -81,6 +81,11 @@
         "light_saturation",
         "dim"
       ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "setOnDim": false
+        }
+      },
       "pair": [
         {
           "id": "start",

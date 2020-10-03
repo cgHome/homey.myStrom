@@ -1,7 +1,9 @@
-const Homey = require("homey");
-const MyStromDriver = require("../driver");
+"use strict";
 
-module.exports = class MyStromSwitchDriver extends MyStromDriver {
+const Homey = require("homey");
+const Driver = require("../driver");
+
+module.exports = class SwitchDriver extends Driver {
 	onInit(options) {
 		super.onInit(options);
 	}

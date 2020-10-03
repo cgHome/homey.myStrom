@@ -1,81 +1,141 @@
+"use strict";
+
 const Homey = require("homey");
-const WebAPIDevice = require("homey-wifidriver").WebAPIDevice;
+const Http = require("../lib/http");
 
-// eslint-disable-next-line no-unused-vars
-const backOffStrategy = {
-	initialDelay: 10000, // 10 seconds
-	maxDelay: 1000 * 60 * 60 // 1 hour
-};
+const HTTP_OPTIONS = { headers: { "Content-Type": "application/json" } };
 
-module.exports = class MyStromDevice extends WebAPIDevice {
+module.exports = class Device extends Homey.Device {
 	async onInit(options = {}) {
-		await super.onInit(options).catch(err => {
-			this.error(`onInit error ${err.stack}`);
-			return err;
-		});
-
 		this.debug("device init ...");
+		super.onInit();
 
-		const baseUrl = options.baseUrl ? options.baseUrl : `http://${this.getData().address}/api/v1/device/`;
-		this.setDefaultBaseUrl(baseUrl);
+		const baseURL = options.baseURL ? options.baseURL : `http://${this.getData().address}/api/v1/`;
+		this.http = new Http({ baseURL });
 
-		this.setUnavailable(Homey.__("connecting"));
-		this.ready(() => {
-			this.setAvailable();
-			this.debug("device ready ...");
+		this.setUnavailable(Homey.__("connecting")).catch((err) => {
+			this.error(`setUnavailable() > ${err}`);
 		});
-	}
 
-	// Homey-App Loggers
-	log(msg) {
-		Homey.app.log(`${this.getName()} ${msg}`);
-	}
-
-	error(msg) {
-		Homey.app.error(`${this.getName()} ${msg}`);
-	}
-
-	debug(msg) {
-		Homey.app.debug(`${this.getName()} ${msg}`);
-	}
-
-	registerPollInterval() {
-		super.registerPollInterval({
-			id: this.getData().deviceName,
-			fn: this.getValues.bind(this),
-			interval: 5000 // 5 sec
+		this.ready(() => {
+			this.log("device ready ...");
+			this.deviceReady();
 		});
 	}
 
 	onAdded() {
 		super.onAdded();
-		this.debug(`device added (${this.constructor.name})`);
+		this.log(`device ${this.getName()} added`);
 	}
 
 	onDeleted() {
 		super.onDeleted();
-		this.debug(`device deleted (${this.constructor.name})`);
+		this.log(`device ${this.getName()} deleted`);
 	}
 
-	getValues() {
-		throw new Error("Subclass responsibility");
+	deviceReady() {
+		this.setAvailable().catch((err) => {
+			this.error(`setAvailable() > ${err}`);
+		});
 	}
 
-	apiCallPost(options, data) {
-		let _options = typeof options === "object" ? options : {};
-		let _data = typeof options === "string" ? options : data;
+	setDeviceActions() {
+		Homey.ManagerCloud.getLocalAddress()
+			.then((localAddress) => {
+				const value = `get://${localAddress.split(":")[0]}/api/app/ch.mystrom.smarthome/deviceGenAction`;
+				return this.setDeviceData("action/generic", value)
+					.then((data) => this.debug(`setDeviceActions() > ${data || "[none]"}`))
+					.catch((err) => this.error(`setDeviceActions() > ${err}`));
+			})
+			.catch((err) => {
+				this.error(`getLocalAddress() > ${err}`);
+				this.setUnavailable(err).catch((err) => {
+					this.error(`setUnavailable() > ${err}`);
+				});
+			});
+	}
 
-		if (typeof options === "string" || typeof data === "string") {
-			_options["headers"] = {
-				"Content-Type": "application/x-www-form-urlencoded"
-			};
-			if (typeof options === "string") {
-				_options["body"] = options;
-			} else {
-				_options["body"] = data;
+	setCapabilityValue(capabilityId, value) {
+		const currentValue = this.getCapabilityValue(capabilityId);
+		if (currentValue === value) return Promise.resolve(currentValue);
+
+		return super
+			.setCapabilityValue(capabilityId, value)
+			.then(() => {
+				this.debug(`setCapabilityValue() '${capabilityId}' - ${currentValue} > ${value}`);
+				return value;
+			})
+			.catch((err) => {
+				return this.error(`setCapabilityValue() '${capabilityId}' > ${err}`);
+			});
+	}
+
+	async initGetDeviceValuesInterval() {
+		this.debug("initGetDeviceValuesInterval()");
+		this.getDeviceValuesInterval = setInterval(() => {
+			this.getDeviceValues();
+		}, 1 * 60 * 1000); // set interval to every n minute.
+	}
+
+	getDeviceValues(url = "**unknown**") {
+		this.debug(`getDeviceValues() - ${url}`);
+		return this.getDeviceData(url);
+	}
+
+	getDeviceData(url) {
+		return this.http.get(url).then(
+			(data) => {
+				this.debug(`getDeviceData() - '${url}' > ${JSON.stringify(data)}`);
+				this.setAvailable().catch((err) => {
+					this.error(`setAvailable() > ${err}`);
+				});
+				return data;
+			},
+			(err) => {
+				this.error(`getDeviceData() - '${url}' > ${err}`);
+				this.setUnavailable(Homey.__("device.error", { code: err.response.status })).catch((err) => {
+					this.error(`setUnavailable() > ${err}`);
+				});
+				return Error("get device data failed");
 			}
-		}
+		);
+	}
 
-		return super.apiCallPost(_options, _data);
+	setDeviceData(url, value) {
+		return this.http.post(url, value).then(
+			(data) => {
+				this.debug(`setDeviceData() - '${url}' > ${JSON.stringify(value) || ""}`);
+				this.setAvailable().catch((err) => {
+					this.error(`setAvailable() > ${err}`);
+				});
+				return data;
+			},
+			(err) => {
+				this.error(`setDeviceData() - '${url}' ${JSON.stringify(value)} > ${err}`);
+				this.setUnavailable(Homey.__("device.error", { code: err.response.status })).catch((err) => {
+					this.error(`setUnavailable() > ${err}`);
+				});
+				return Error("set device data failed");
+			}
+		);
+	}
+
+	notify(msg) {
+		//new Homey.Notification({ excerpt: `**${this.getName()}** ${msg}` }).register();
+		this.log(`Notify: ${msg}`);
+	}
+
+	// Homey-App Loggers
+	log(msg) {
+		Homey.app.log(`${this._logLinePrefix()} ${msg}`);
+	}
+	error(msg) {
+		Homey.app.error(`${this._logLinePrefix()} ${msg}`);
+	}
+	debug(msg) {
+		Homey.app.debug(`${this._logLinePrefix()} ${msg}`);
+	}
+	_logLinePrefix() {
+		return `${this.constructor.name}::${this.getName()} >`;
 	}
 };

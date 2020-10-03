@@ -1,25 +1,25 @@
+"use strict";
+
 const Homey = require("homey");
-const MyStromButton = require("../button/device");
+const ButtonDevice = require("../button/device");
 
-module.exports = class MyStromButtonPlus extends MyStromButton {
-	buttonGenAction(params) {
+module.exports = class ButtonPlusDevice extends ButtonDevice {
+	onInit(options = {}) {
+		super.onInit(options);
+		this.debug("device has been inited");
+	}
+
+	async handleAction(params) {
 		if (params.mac === this.getData().id && params.action === "5" && params.wheel) {
-			this.debug(`wheel value received: ${JSON.stringify(params)}`);
-
+			this.debug(`handleAction() - wheel > ${JSON.stringify(params)}`);
 			// Battery-Level
 			if (params.battery) {
-				const battery = parseInt(params.battery);
-				if (typeof this.batteryLevel === "undefined" || this.batteryLevel !== battery) {
-					this.batteryLevel = battery;
-					this.setCapabilityValue("measure_battery", this.batteryLevel).catch(this.error);
-				}
+				await this.setCapabilityValue("measure_battery", parseInt(params.battery));
 			}
 			// Wheel-Value
-			this.getDriver()
-				.flowCardTriggerWheel.trigger(this, { value: parseInt(params.wheel) })
-				.catch(this.error);
+			this.getDriver().triggerWheelChanged(this, {}, { action: params.action, value: parseInt(params.wheel) });
 		} else {
-			super.buttonGenAction(params);
+			super.handleAction(params);
 		}
 	}
 };

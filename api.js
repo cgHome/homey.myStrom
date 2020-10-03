@@ -6,12 +6,12 @@ const apiAuthorizationPublic = true;
 
 module.exports = [
 	{
-		description: "WIFI Button generic action",
+		description: "myStrom device generic action",
 		method: "GET",
-		path: "/buttonGenAction",
+		path: "/deviceGenAction",
 		public: apiAuthorizationPublic,
 		fn: function(args, callback) {
-			const result = Homey.emit("myStromButtonGenAction", args.query);
+			const result = Homey.emit("deviceActionReceived", args.query);
 			if (result instanceof Error) return callback(result);
 			return callback(null, result);
 		}

@@ -1,54 +1,41 @@
-const Homey = require("homey");
-const MyStromDevice = require("../device");
+"use strict";
 
-module.exports = class MyStromButton extends MyStromDevice {
+const Homey = require("homey");
+const Device = require("../device");
+
+module.exports = class ButtonDevice extends Device {
 	onInit(options = {}) {
 		super.onInit(options);
-		// Register WEB-API events
-		Homey.on("myStromButtonGenAction", params => this.buttonGenAction(params));
+
+		this.registerCapabilityListener("button", this.onCapabilityButton.bind(this));
+
+		Homey.on("deviceActionReceived", (params) => {
+			this.handleAction(params);
+		});
+
+		this.debug("device has been inited");
 	}
 
 	onAdded() {
 		super.onAdded();
-		this.configButton();
+		this.setDeviceActions();
 	}
 
-	configButton() {
-		Homey.ManagerCloud.getLocalAddress()
-			.then(localAddress => {
-				const data = `get://${localAddress.split(":")[0]}/api/app/ch.mystrom.smarthome/buttonGenAction`;
-				return this.apiCallPost({ uri: "/api/v1/action/generic" }, data)
-					.then(response => {
-						this.debug(`button configured (${data})`);
-					})
-					.catch(err => {
-						this.error(`failed to config button ${err.stack}`);
-						this.setUnavailable(err);
-						throw err;
-					});
-			})
-			.catch(err => {
-				this.error(`failed to get localAddress ${err.stack}`);
-				this.setUnavailable(err);
-			});
-	}
-
-	buttonGenAction(params) {
-		if (params.mac === this.getData().id) {
-			this.debug(`action received: ${JSON.stringify(params)}`);
-
+	async handleAction(params) {
+		if (params.mac === this.getData().id && params.action <= "4" ){
+			this.debug(`handleAction() > ${JSON.stringify(params)}`);
 			// Battery-Level
 			if (params.battery) {
-				const battery = parseInt(params.battery);
-				if (typeof this.batteryLevel === "undefined" || this.batteryLevel !== battery) {
-					this.batteryLevel = battery;
-					this.setCapabilityValue("measure_battery", this.batteryLevel).catch(this.error);
-				}
+				await this.setCapabilityValue("measure_battery", parseInt(params.battery));
 			}
 			// Action
-			this.getDriver()
-				.flowCardTrigger.trigger(this, {}, { action: params.action })
-				.catch(this.error);
+			this.getDriver().triggerButtonPressed(this, {}, { action: params.action });
 		}
+	}
+
+	onCapabilityButton(value = true, opts) {
+		this.debug(`onCapabilityButton() > ${JSON.stringify(arguments)}`);
+		// Software-Button only supports: "short press"
+		return this.getDriver().triggerButtonPressed(this, {}, { action: 1 });
 	}
 };

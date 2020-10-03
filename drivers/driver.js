@@ -1,23 +1,22 @@
 const Homey = require("homey");
-const WebAPIDriver = require("homey-wifidriver").WebAPIDriver;
 
-module.exports = class MyStromDriver extends WebAPIDriver {
+module.exports = class Driver extends Homey.Driver {
 	onInit(options = {}) {
-		super.onInit(options);
-
-		this.debug("driver init ....");
+		this.debug("driver init ...");
+		super.onInit();
 	}
 
 	// Homey-App Loggers
 	log(msg) {
-		Homey.app.log(`${this.constructor.name} ${msg}`);
+		Homey.app.log(`${this._logLinePrefix()} ${msg}`);
 	}
-
 	error(msg) {
-		Homey.app.error(`${this.constructor.name} ${msg}`);
+		Homey.app.error(`${this._logLinePrefix()} ${msg}`);
 	}
-
 	debug(msg) {
-		Homey.app.debug(`${this.constructor.name} ${msg}`);
+		Homey.app.debug(`${this._logLinePrefix()} ${msg}`);
+	}
+	_logLinePrefix() {
+		return `${this.constructor.name} >`;
 	}
 };
