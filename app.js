@@ -1,8 +1,8 @@
 "use strict";
 // Start debuger
 if (process.env.DEBUG === "1") {
-	require("inspector").open(9229, "0.0.0.0", false);
-	//require("inspector").open(9229, "0.0.0.0", true);
+	//require("inspector").open(9229, "0.0.0.0", false);
+	require("inspector").open(9229, "0.0.0.0", true);
 }
 
 const Homey = require("homey");
@@ -22,7 +22,7 @@ module.exports = class MyStromApp extends Homey.App {
 			WBS: 104, // WiFi Button
 			WLS: 105, // WiFi LED-strip
 			WS2: 106, // WiFi Switch CH v2
-			WSE: 107  // WiFi Switch EU
+			WSE: 107, // WiFi Switch EU
 		});
 	}
 
@@ -30,7 +30,7 @@ module.exports = class MyStromApp extends Homey.App {
 		this.log(`${Homey.app.manifest.name.en}-App - v${Homey.app.manifest.version} is running...`);
 
 		// Find myStrom-Devices
-		const browser = bonjour.find({ type: "hap" }, service => {
+		const browser = bonjour.find({ type: "hap" }, (service) => {
 			if (service.host.match("myStrom-Switch")) {
 				const deviceName = service.host.slice(0, service.host.indexOf("."));
 				const mac = service.txt.id.replace(new RegExp(":", "g"), "").toUpperCase();
@@ -42,11 +42,18 @@ module.exports = class MyStromApp extends Homey.App {
 						deviceName: deviceName,
 						host: service.host,
 						address: service.referer.address,
-						type: mac.match("64002D") ? this.deviceType.WSW : this.deviceType.WS2
-					}
+						type: mac.match("64002D") ? this.deviceType.WSW : this.deviceType.WS2,
+					},
 				};
 				this.devices[mac] = device;
-				this.log(`Bonjour discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
+				Homey.emit("deviceDiscovered", {
+					name: device.data.deviceName,
+					address: device.data.address,
+					mac,
+				});
+				this.log(
+					`Bonjour discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`
+				);
 			}
 		});
 		browser.start();
@@ -61,15 +68,23 @@ module.exports = class MyStromApp extends Homey.App {
 						name: deviceName,
 						data: {
 							id: mac,
+							mac: mac,
 							deviceName: deviceName,
 							host: hostname,
 							address: rinfo.address,
-							type: msg[6]
-						}
+							type: msg[6],
+						},
 					};
 					if (!this.devices[mac]) {
 						this.devices[mac] = device;
-						this.log(`UDP discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`);
+						Homey.emit("deviceDiscovered", {
+							name: device.data.deviceName,
+							address: device.data.address,
+							mac,
+						});
+						this.log(
+							`UDP discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`
+						);
 					}
 				} else {
 					// this.error(`UDP discovery failed ${err.code} - ${err.message}`);
@@ -77,6 +92,10 @@ module.exports = class MyStromApp extends Homey.App {
 			});
 		});
 		udpClient.bind(7979);
+	}
+
+	isDebugMode() {
+		return process.env.DEBUG === "1";
 	}
 
 	// Homey-App Loggers
@@ -87,6 +106,8 @@ module.exports = class MyStromApp extends Homey.App {
 		super.error(`${msg}`);
 	}
 	debug(msg) {
-		super.log(`»»» ${msg}`);
+		if (this.isDebugMode()) {
+			super.log(`»»» ${msg}`);
+		}
 	}
 };

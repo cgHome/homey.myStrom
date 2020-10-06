@@ -21,6 +21,13 @@ module.exports = class Device extends Homey.Device {
 			this.log("device ready ...");
 			this.deviceReady();
 		});
+
+		Homey.on("deviceDiscovered", (params) => {
+			if (this.getData().id !== params.mac && !this.getAvailable()) {
+				this.log(`device discovered > ${params.mac}`);
+				this.deviceReady();
+			}
+		});
 	}
 
 	onAdded() {
@@ -39,25 +46,15 @@ module.exports = class Device extends Homey.Device {
 		});
 	}
 
-	setDeviceActions() {
-		Homey.ManagerCloud.getLocalAddress()
-			.then((localAddress) => {
-				const value = `get://${localAddress.split(":")[0]}/api/app/ch.mystrom.smarthome/deviceGenAction`;
-				return this.setDeviceData("action/generic", value)
-					.then((data) => this.debug(`setDeviceActions() > ${data || "[none]"}`))
-					.catch((err) => this.error(`setDeviceActions() > ${err}`));
-			})
-			.catch((err) => {
-				this.error(`getLocalAddress() > ${err}`);
-				this.setUnavailable(err).catch((err) => {
-					this.error(`setUnavailable() > ${err}`);
-				});
-			});
-	}
-
 	setCapabilityValue(capabilityId, value) {
 		const currentValue = this.getCapabilityValue(capabilityId);
-		if (currentValue === value) return Promise.resolve(currentValue);
+
+		if (typeof value === "undefined" || Number.isNaN(value)) {
+			this.error(`setCapabilityValue() '${capabilityId}' - value > ${value}`);
+			return Promise.resolve(currentValue);
+		} else if (value === currentValue) {
+			return Promise.resolve(currentValue);
+		}
 
 		return super
 			.setCapabilityValue(capabilityId, value)
@@ -66,7 +63,8 @@ module.exports = class Device extends Homey.Device {
 				return value;
 			})
 			.catch((err) => {
-				return this.error(`setCapabilityValue() '${capabilityId}' > ${err}`);
+				this.error(`setCapabilityValue() '${capabilityId}' > ${err}`);
+				throw err;
 			});
 	}
 
@@ -77,45 +75,57 @@ module.exports = class Device extends Homey.Device {
 		}, 1 * 60 * 1000); // set interval to every n minute.
 	}
 
-	getDeviceValues(url = "**unknown**") {
-		this.debug(`getDeviceValues() - ${url}`);
-		return this.getDeviceData(url);
+	getDeviceValues(url = "", data) {
+		this.debug(`getDeviceValues() > url: "${url}" data: ${JSON.stringify(data)}`);
+		return data === undefined ? this.getDeviceData(url) : Promise.resolve(data);
 	}
 
-	getDeviceData(url) {
+	getDeviceData(...args) {
+		return this.httpGet(...args);
+	}
+
+	setDeviceData(...args) {
+		return this.httpPost(...args);
+	}
+
+	httpGet(url) {
 		return this.http.get(url).then(
 			(data) => {
-				this.debug(`getDeviceData() - '${url}' > ${JSON.stringify(data)}`);
+				this.debug(`httpGet() - '${url}' > ${JSON.stringify(data)}`);
 				this.setAvailable().catch((err) => {
 					this.error(`setAvailable() > ${err}`);
 				});
 				return data;
 			},
 			(err) => {
-				this.error(`getDeviceData() - '${url}' > ${err}`);
-				this.setUnavailable(Homey.__("device.error", { code: err.response.status })).catch((err) => {
-					this.error(`setUnavailable() > ${err}`);
-				});
-				return Error("get device data failed");
+				const errMsg = `${err.message || err.response.statusText} (${err.code || err.response.status})`;
+				this.error(`httpGet() - '${url}' > ${errMsg}`);
+				if (err.code === "EHOSTUNREACH") {
+					this.setUnavailable(Homey.__("device.error", { code: err.code })).catch((err) => {
+						this.error(`setUnavailable() > ${err}`);
+					});
+				}
+				return Error(`http-get - ${err.code}`);
 			}
 		);
 	}
 
-	setDeviceData(url, value) {
+	httpPost(url, value) {
 		return this.http.post(url, value).then(
 			(data) => {
-				this.debug(`setDeviceData() - '${url}' > ${JSON.stringify(value) || ""}`);
+				this.debug(`httpPost() - '${url}' > ${JSON.stringify(value) || ""}`);
 				this.setAvailable().catch((err) => {
 					this.error(`setAvailable() > ${err}`);
 				});
 				return data;
 			},
 			(err) => {
-				this.error(`setDeviceData() - '${url}' ${JSON.stringify(value)} > ${err}`);
-				this.setUnavailable(Homey.__("device.error", { code: err.response.status })).catch((err) => {
+				const errMsg = `${err.message || err.response.statusText} (${err.code || err.response.status})`;
+				this.error(`httpPost() - '${url}' ${JSON.stringify(value)} > ${errMsg}`);
+				this.setUnavailable(Homey.__("device.error", { code: err.code })).catch((err) => {
 					this.error(`setUnavailable() > ${err}`);
 				});
-				return Error("set device data failed");
+				return Error(`http-post - ${errMsg}}`);
 			}
 		);
 	}

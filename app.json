@@ -81,11 +81,6 @@
         "light_saturation",
         "dim"
       ],
-      "capabilitiesOptions": {
-        "onoff": {
-          "setOnDim": false
-        }
-      },
       "pair": [
         {
           "id": "start",
@@ -117,6 +112,7 @@
       },
       "class": "other",
       "capabilities": [
+        "button",
         "measure_battery"
       ],
       "energy": {
@@ -155,6 +151,7 @@
       },
       "class": "other",
       "capabilities": [
+        "button",
         "measure_battery"
       ],
       "energy": {

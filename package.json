@@ -33,6 +33,7 @@
   "author": "Chris Gross <cgHome@cflat-inc.org>",
   "license": "ISC",
   "dependencies": {
+    "athom-api": "^3.2.13",
     "axios": "^0.20.0",
     "bonjour": "^3.5.0"
   },

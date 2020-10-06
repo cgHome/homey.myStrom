@@ -1,6 +1,20 @@
 {
-    "pair": {
-        "title": "Add a myStrom device...",
-        "intro": "** First install Device via myStrom-App (iOS, Android) **"
-    }
+	"pair": {
+		"title": "Add a myStrom device...",
+		"intro": "** First install Device via myStrom-App (iOS, Android) **"
+	},
+	"device": {
+		"error": "device error (__code__)",
+		"buttonAction-1": "short",
+		"buttonAction-2": "double",
+		"buttonAction-3": "long",
+		"buttonPressed": "**__device__** [__action__] button pressed",
+		"stateSet": "set state to: __value__",
+		"rampSet": "set ramp to: __value__",
+		"modeSet": "set mode to: __value__",
+		"temperatureSet": "set temperature to: __value__",
+		"hueSet": "set hue to: __value__",
+		"saturationSet": "set saturation to: __value__",
+		"dimSet": "set dim to: __value__%"
+	}
 }

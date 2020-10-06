@@ -16,7 +16,7 @@ module.exports = class SwitchDevice extends Device {
 
 	onDeleted() {
 		super.onDeleted();
-		clearInterval(this.getDeviceValuesInterval);
+		//clearInterval(this.getDeviceValuesInterval);
 	}
 
 	async deviceReady() {
@@ -28,7 +28,7 @@ module.exports = class SwitchDevice extends Device {
 
 	async onCapabilityOnOff(value, opts) {
 		const current = this.getCapabilityValue("onoff");
-		if (current === value) return Promise.resolve();
+		if (current === value) return Promise.resolve(true);
 
 		this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
 		const state = value ? "1" : "0";
@@ -42,16 +42,25 @@ module.exports = class SwitchDevice extends Device {
 			.catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
 	}
 
-	getDeviceValues(url = "report") {
-		return super.getDeviceValues(url).then(async (data) => {
-			try {
-				await this.setCapabilityValue("onoff", data.relay);
-				await this.setCapabilityValue("measure_power", Math.round(data.power * 10) / 10);
-				await this.setCapabilityValue("measure_temperature", Math.round(data.temperature * 10) / 10);
-			} catch (err) {
-				this.error(err);
-			}
-			return data;
-		});
+	async getDeviceValues(url = "report") {
+		return super
+			.getDeviceValues(url)
+			.then(async (data) => {
+				try {
+					await this.setCapabilityValue("onoff", data.relay);
+					await this.setCapabilityValue("measure_power", Math.round(data.power * 10) / 10);
+					if (data.temperature) {
+						await this.setCapabilityValue("measure_temperature", Math.round(data.temperature * 10) / 10);
+					}
+				} catch (err) {
+					throw err;
+				}
+			})
+			.catch((err) => this.error(`getDeviceValues() > ${err.message}`));
+	}
+
+	setDeviceData(...args) {
+		// switch uses http-Get to set values
+		return this.httpGet(...args);
 	}
 };
