@@ -68,11 +68,9 @@ module.exports = class Device extends Homey.Device {
 			});
 	}
 
-	async initGetDeviceValuesInterval() {
-		this.debug("initGetDeviceValuesInterval()");
-		this.getDeviceValuesInterval = setInterval(() => {
-			this.getDeviceValues();
-		}, 1 * 60 * 1000); // set interval to every n minute.
+	syncDeviceValues() {
+		this.debug("syncDeviceValues()");
+		this.getDeviceValues();
 	}
 
 	getDeviceValues(url = "", data) {
@@ -128,6 +126,24 @@ module.exports = class Device extends Homey.Device {
 				return Error(`http-post - ${errMsg}}`);
 			}
 		);
+	}
+
+	registerPollInterval(options = {}) {
+		if (typeof this.pollIntervals === "undefined") this.pollIntervals = {};
+		if (this.pollIntervals.hasOwnProperty(options.id)) this.deregisterPollInterval(options.id);
+
+		this.pollIntervals[options.id] = setInterval(options.fn, options.sec * 1000);
+
+		this.debug(`registered polling interval (id: ${options.id}, interval: ${options.interval}ms)`);
+	}
+
+	deregisterPollInterval(id) {
+		if (typeof this.pollIntervals === "undefined") return;
+
+		clearInterval(this.pollIntervals[id]);
+		delete this.pollIntervals[id];
+
+		this.debug(`de-registered polling interval (id: ${id})`);
 	}
 
 	notify(msg) {

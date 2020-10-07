@@ -10,13 +10,18 @@ module.exports = class SwitchDevice extends Device {
 
 		this.registerCapabilityListener("onoff", this.onCapabilityOnOff.bind(this));
 
-		//this.initGetDeviceValuesInterval();
+		this.registerPollInterval({
+			id: this.getData().name,
+			fn: this.syncDeviceValues.bind(this),
+			sec: 60, // set interval to every minute
+		});
+
 		this.debug("device has been inited");
 	}
 
 	onDeleted() {
 		super.onDeleted();
-		//clearInterval(this.getDeviceValuesInterval);
+		this.deregisterPollInterval(this.getData().name);
 	}
 
 	async deviceReady() {
@@ -34,7 +39,7 @@ module.exports = class SwitchDevice extends Device {
 		const state = value ? "1" : "0";
 
 		return this.setDeviceData(`relay?state=${state}`)
-			.then(await this.getDeviceValues())
+			.then(this.getDeviceValues())
 			.then(() => {
 				const current = this.getCapabilityValue("onoff");
 				this.notify(Homey.__("device.stateSet", { value: current ? "on" : "off" }));

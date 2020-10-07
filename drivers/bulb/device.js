@@ -18,13 +18,18 @@ module.exports = class BulbDevice extends Device {
 		this.registerCapabilityListener("light_saturation", this.onCapabilityLightSaturation.bind(this));
 		this.registerCapabilityListener("dim", this.onCapabilityDim.bind(this));
 
-		//this.initGetDeviceValuesInterval();
+		this.registerPollInterval({
+			id: this.getData().name,
+			fn: this.syncDeviceValues.bind(this),
+			sec: 60, // set interval to every minute
+		});
+
 		this.debug("device has been inited");
 	}
 
 	onDeleted() {
 		super.onDeleted();
-		//clearInterval(this.getDeviceValuesInterval);
+		this.deregisterPollInterval(this.getData().name);
 	}
 
 	async deviceReady() {
