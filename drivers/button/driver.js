@@ -13,7 +13,7 @@ module.exports = class ButtonDriver extends Driver {
 			.register()
 			.registerRunListener((args, state) => args.action === state.action);
 
-		this.debug("driver has been inited");
+		this.log("ButtonDriver initiated");
 	}
 
 	onPairListDevices(data, callback) {

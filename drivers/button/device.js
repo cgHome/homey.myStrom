@@ -22,7 +22,7 @@ module.exports = class ButtonDevice extends Device {
 			this.handleAction(params);
 		});
 
-		this.debug("device has been inited");
+		this.log("ButtonDevice initiated");
 	}
 
 	onAdded() {
@@ -40,9 +40,6 @@ module.exports = class ButtonDevice extends Device {
 			})
 			.catch((err) => {
 				this.error(`getLocalAddress() > ${err}`);
-				this.setUnavailable(err).catch((err) => {
-					this.error(`setUnavailable() > ${err}`);
-				});
 			});
 	}
 

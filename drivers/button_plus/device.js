@@ -6,7 +6,8 @@ const ButtonDevice = require("../button/device");
 module.exports = class ButtonPlusDevice extends ButtonDevice {
 	onInit(options = {}) {
 		super.onInit(options);
-		this.debug("device has been inited");
+		
+		this.log("ButtonPlusDevice initiated");
 	}
 
 	async handleAction(params) {

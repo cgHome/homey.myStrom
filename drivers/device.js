@@ -3,28 +3,25 @@
 const Homey = require("homey");
 const Http = require("../lib/http");
 
-const HTTP_OPTIONS = { headers: { "Content-Type": "application/json" } };
-
 module.exports = class Device extends Homey.Device {
-	async onInit(options = {}) {
-		this.debug("device init ...");
+	onInit(options = {}) {
+		this.log(`Device init...`);
 		super.onInit();
 
-		const baseURL = options.baseURL ? options.baseURL : `http://${this.getData().address}/api/v1/`;
-		this.http = new Http({ baseURL });
+		this.setUnavailable(Homey.__("device.waiting"));
 
-		this.setUnavailable(Homey.__("connecting")).catch((err) => {
-			this.error(`setUnavailable() > ${err}`);
-		});
+		const baseURL = options.baseURL ? options.baseURL : `http://${this.getData().address}/api/v1/`;
+		this.api = new Http({ baseURL });
 
 		this.ready(() => {
-			this.log("device ready ...");
+			this.log(`Device ready`);
+			this.setAvailable(Homey.__("device.online"));
 			this.deviceReady();
 		});
 
 		Homey.on("deviceDiscovered", (params) => {
 			if (this.getData().id !== params.mac && !this.getAvailable()) {
-				this.log(`device discovered > ${params.mac}`);
+				this.notify(`Device discovered > ${params.mac}`);
 				this.deviceReady();
 			}
 		});
@@ -41,9 +38,7 @@ module.exports = class Device extends Homey.Device {
 	}
 
 	deviceReady() {
-		this.setAvailable().catch((err) => {
-			this.error(`setAvailable() > ${err}`);
-		});
+		// nop
 	}
 
 	setCapabilityValue(capabilityId, value) {
@@ -74,56 +69,50 @@ module.exports = class Device extends Homey.Device {
 	}
 
 	getDeviceValues(url = "", data) {
-		this.debug(`getDeviceValues() > url: "${url}" data: ${JSON.stringify(data)}`);
-		return data === undefined ? this.getDeviceData(url) : Promise.resolve(data);
+		this.debug(`getDeviceValues() > url: "${url}"`);
+		if (typeof(data) === "undefined") {
+			data = this.getDeviceData(url);
+		}
+
+		return Promise.resolve(data);
 	}
 
 	getDeviceData(...args) {
-		return this.httpGet(...args);
+		return this.apiGet(...args);
 	}
 
 	setDeviceData(...args) {
-		return this.httpPost(...args);
+		return this.apiPost(...args);
 	}
 
-	httpGet(url) {
-		return this.http.get(url).then(
+	apiGet(url) {
+		return this.api.get(url).then(
 			(data) => {
-				this.debug(`httpGet() - '${url}' > ${JSON.stringify(data)}`);
-				this.setAvailable().catch((err) => {
-					this.error(`setAvailable() > ${err}`);
-				});
+				this.debug(`apiGet() - '${url}' > ${JSON.stringify(data)}`);
+				this.setAvailable(Homey.__("device.online"));
 				return data;
 			},
 			(err) => {
-				const errMsg = `${err.message || err.response.statusText} (${err.code || err.response.status})`;
-				this.error(`httpGet() - '${url}' > ${errMsg}`);
 				if (err.code === "EHOSTUNREACH") {
-					this.setUnavailable(Homey.__("device.error", { code: err.code })).catch((err) => {
-						this.error(`setUnavailable() > ${err}`);
-					});
+					this.setUnavailable(Homey.__("device.offline"));
 				}
-				return Error(`http-get - ${err.code}`);
+				return err;
 			}
 		);
 	}
 
-	httpPost(url, value) {
-		return this.http.post(url, value).then(
+	apiPost(url, value) {
+		return this.api.post(url, value).then(
 			(data) => {
-				this.debug(`httpPost() - '${url}' > ${JSON.stringify(value) || ""}`);
-				this.setAvailable().catch((err) => {
-					this.error(`setAvailable() > ${err}`);
-				});
+				this.setAvailable(Homey.__("device.online"));
 				return data;
 			},
 			(err) => {
-				const errMsg = `${err.message || err.response.statusText} (${err.code || err.response.status})`;
-				this.error(`httpPost() - '${url}' ${JSON.stringify(value)} > ${errMsg}`);
-				this.setUnavailable(Homey.__("device.error", { code: err.code })).catch((err) => {
-					this.error(`setUnavailable() > ${err}`);
-				});
-				return Error(`http-post - ${errMsg}}`);
+				this.debug(`apiPost() - '${url}' > ${JSON.stringify(value) || "--"}`);
+				if (err.code === "EHOSTUNREACH") {
+					this.setUnavailable(Homey.__("device.offline"));
+				}
+				return err;
 			}
 		);
 	}
@@ -132,18 +121,17 @@ module.exports = class Device extends Homey.Device {
 		if (typeof this.pollIntervals === "undefined") this.pollIntervals = {};
 		if (this.pollIntervals.hasOwnProperty(options.id)) this.deregisterPollInterval(options.id);
 
-		this.pollIntervals[options.id] = setInterval(options.fn, options.sec * 1000);
-
-		this.debug(`registered polling interval (id: ${options.id}, interval: ${options.interval}ms)`);
+		const interval = options.sec * 1000;
+		this.debug(`Register polling interval (id: ${options.id}, interval: ${interval}ms)`);
+		this.pollIntervals[options.id] = setInterval(options.fn, interval);
 	}
 
 	deregisterPollInterval(id) {
 		if (typeof this.pollIntervals === "undefined") return;
 
+		this.debug(`De-register polling interval (id: ${id})`);
 		clearInterval(this.pollIntervals[id]);
 		delete this.pollIntervals[id];
-
-		this.debug(`de-registered polling interval (id: ${id})`);
 	}
 
 	notify(msg) {

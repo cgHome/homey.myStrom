@@ -19,12 +19,12 @@ module.exports = class BulbDevice extends Device {
 		this.registerCapabilityListener("dim", this.onCapabilityDim.bind(this));
 
 		this.registerPollInterval({
-			id: this.getData().name,
+			id: this.getData().id,
 			fn: this.syncDeviceValues.bind(this),
 			sec: 60, // set interval to every minute
 		});
 
-		this.debug("device has been inited");
+		this.log("BulbDevice initiated");
 	}
 
 	onDeleted() {

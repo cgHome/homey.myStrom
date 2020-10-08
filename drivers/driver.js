@@ -2,7 +2,7 @@ const Homey = require("homey");
 
 module.exports = class Driver extends Homey.Driver {
 	onInit(options = {}) {
-		this.debug("driver init ...");
+		this.debug("driver init...");
 		super.onInit();
 	}
 

@@ -11,12 +11,12 @@ module.exports = class SwitchDevice extends Device {
 		this.registerCapabilityListener("onoff", this.onCapabilityOnOff.bind(this));
 
 		this.registerPollInterval({
-			id: this.getData().name,
+			id: this.getData().id,
 			fn: this.syncDeviceValues.bind(this),
 			sec: 60, // set interval to every minute
 		});
 
-		this.debug("device has been inited");
+		this.log("SwitchDevice initiated");
 	}
 
 	onDeleted() {
@@ -66,6 +66,6 @@ module.exports = class SwitchDevice extends Device {
 
 	setDeviceData(...args) {
 		// switch uses http-Get to set values
-		return this.httpGet(...args);
+		return this.apiGet(...args);
 	}
 };
