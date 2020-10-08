@@ -58,6 +58,7 @@ module.exports = class ButtonDevice extends Device {
 	onCapabilityButton(value = true, opts) {
 		this.debug(`onCapabilityButton() > ${JSON.stringify(arguments)}`);
 		// Software-Button only supports: "short press"
-		return this.getDriver().triggerButtonPressed(this, {}, { action: 1 });
+		this.getDriver().triggerButtonPressed(this, {}, { action: "1" });
+		return Promise.resolve(true);
 	}
 };
