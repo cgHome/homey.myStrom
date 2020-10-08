@@ -34,6 +34,7 @@ v1.1.0
 
 * Migrate from homey-wifidriver to axios
 * Homey-App Logger removed
+* Code refactoring
 
 v1.0.6
 

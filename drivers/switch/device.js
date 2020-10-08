@@ -65,7 +65,7 @@ module.exports = class SwitchDevice extends Device {
 	}
 
 	setDeviceData(...args) {
-		// switch uses http-Get to set values
+		// switch uses apiGet to set values
 		return this.apiGet(...args);
 	}
 };
