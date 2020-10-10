@@ -103,6 +103,6 @@ v0.0.1
 
 ---
 
-## Copyright and license
+## Copyright
 
-Copyright 2017, 2019 cFlat-inc.org under [ISC License](LICENSE)
+Copyright 2017, 2018 [Chris Gross] cFlat-inc.org
