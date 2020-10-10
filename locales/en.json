@@ -4,17 +4,17 @@
 		"intro": "** First install Device via myStrom-App (iOS, Android) **"
 	},
 	"device": {
+		"error": "Device error (__code__)",
 		"online": "Device is online",
 		"offline": "Device is offline",
-		"waiting" : "Waiting for device to connect...",
-		"error": "Device error (__code__)",
-		"rampSet": "Set ramp to: __value__",
-		"modeSet": "Set mode to: __value__",
-		"temperatureSet": "Set temperature to: __value__",
-		"hueSet": "Set hue to: __value__",
-		"saturationSet": "Set saturation to: __value__",
-		"dimSet": "Set dim to: __value__%",
+		"waiting": "Waiting for device to connect...",
 		"stateSet": "Set state to: __value__",
+		"rampSet": "Set ramp to: __value__",
+		"dimSet": "Set dim to: __value__%",
+		"lightModeSet": "Set mode to: __value__",
+		"lightTemperatureSet": "Set temperature to: __value__",
+		"lightHueSet": "Set hue to: __value__",
+		"lightSaturationSet": "Set saturation to: __value__",
 		"button": {
 			"pressed": "**__device__** [__action__] button pressed",
 			"action-1": "short",
@@ -22,6 +22,6 @@
 			"action-3": "long",
 			"action-4": "touch",
 			"action-11": "wheel"
-		} 
+		}
 	}
 }

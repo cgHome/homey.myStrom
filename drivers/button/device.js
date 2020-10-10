@@ -18,10 +18,6 @@ module.exports = class ButtonDevice extends Device {
 
 		this.registerCapabilityListener("button", this.onCapabilityButton.bind(this));
 
-		Homey.on("deviceActionReceived", (params) => {
-			this.handleAction(params);
-		});
-
 		this.log("ButtonDevice initiated");
 	}
 
@@ -43,9 +39,11 @@ module.exports = class ButtonDevice extends Device {
 			});
 	}
 
-	async handleAction(params) {
-		if (params.mac === this.getData().id && params.action <= "4") {
-			this.debug(`handleAction() > ${JSON.stringify(params)}`);
+	async deviceActionReceived(params) {
+		super.deviceActionReceived(params);
+		
+		if (params.action <= "4") {
+			this.debug(`deviceActionReceived() > ${JSON.stringify(params)}`);
 			// Battery-Level
 			if (params.battery) {
 				await this.setCapabilityValue("measure_battery", parseInt(params.battery));

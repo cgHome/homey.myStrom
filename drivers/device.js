@@ -14,31 +14,40 @@ module.exports = class Device extends Homey.Device {
 		this.api = new Http({ baseURL });
 
 		this.ready(() => {
-			this.log(`Device ready`);
-			this.setAvailable(Homey.__("device.online"));
 			this.deviceReady();
 		});
 
 		Homey.on("deviceDiscovered", (params) => {
-			if (this.getData().id !== params.mac && !this.getAvailable()) {
+			if (this.getData().id === params.mac && !this.getAvailable()) {
 				this.notify(`Device discovered > ${params.mac}`);
 				this.deviceReady();
+			}
+		});
+
+		Homey.on("deviceActionReceived", (params) => {
+			if (this.getData().id === params.mac) {
+				this.deviceActionReceived(params);
 			}
 		});
 	}
 
 	onAdded() {
 		super.onAdded();
-		this.log(`device ${this.getName()} added`);
+		this.notify(`Device ${this.getName()} added`);
 	}
 
 	onDeleted() {
 		super.onDeleted();
-		this.log(`device ${this.getName()} deleted`);
+		this.notify(`Device ${this.getName()} deleted`);
 	}
 
 	deviceReady() {
-		// nop
+		this.notify(`Device ready`);
+		this.setAvailable(Homey.__("device.online"));
+	}
+
+	deviceActionReceived(params) {
+		//this.debug(`deviceActionReceived() > ${JSON.stringify(params)}`);
 	}
 
 	setCapabilityValue(capabilityId, value) {

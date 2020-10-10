@@ -21,7 +21,7 @@ module.exports = class BulbDevice extends Device {
 		this.registerPollInterval({
 			id: this.getData().id,
 			fn: this.syncDeviceValues.bind(this),
-			sec: 60, // set interval to every minute
+			sec: 1 * 60,		// set interval to every minute
 		});
 
 		this.log("BulbDevice initiated");
@@ -67,7 +67,7 @@ module.exports = class BulbDevice extends Device {
 			.then((data) => this.getDeviceValues())
 			.then(() => {
 				const current = this.getCapabilityValue("light_mode");
-				this.notify(Homey.__("device.modeSet", { value: current }));
+				this.notify(Homey.__("device.lightModeSet", { value: current }));
 			})
 			.catch((err) => this.error(`onCapabilityLightMode() > ${err}`));
 	}
@@ -85,7 +85,7 @@ module.exports = class BulbDevice extends Device {
 			.then((data) => this.getDeviceValues())
 			.then(() => {
 				const current = this.getCapabilityValue("light_temperature");
-				this.notify(Homey.__("device.temperatureSet", { value: current }));
+				this.notify(Homey.__("device.lightTemperatureSet", { value: current }));
 			})
 			.catch((err) => this.error(`onCapabilityLightTemperature() > ${err}`));
 	}
@@ -106,7 +106,7 @@ module.exports = class BulbDevice extends Device {
 		// 	.then((data) => this.getDeviceValues())
 		// 	.then(() => {
 		// 		const current = this.getCapabilityValue("light_hue");
-		// 		this.notify(Homey.__("device.hueSet", { value: Math.round(current * 360) }));
+		// 		this.notify(Homey.__("device.lightHueSet", { value: Math.round(current * 360) }));
 		// 	})
 		// 	.catch((err) => this.error(`onCapabilityLightHue() > ${err}`));
 	}
@@ -125,9 +125,9 @@ module.exports = class BulbDevice extends Device {
 			.then((data) => this.getDeviceValues())
 			.then(() => {
 				const hue = this.getCapabilityValue("light_hue");
-				this.notify(Homey.__("device.hueSet", { value: Math.round(hue * 360) }));
+				this.notify(Homey.__("device.lightHueSet", { value: Math.round(hue * 360) }));
 				const saturation = this.getCapabilityValue("light_saturation");
-				this.notify(Homey.__("device.saturationSet", { value: Math.round(saturation * 100) }));
+				this.notify(Homey.__("device.lightSaturationSet", { value: Math.round(saturation * 100) }));
 			})
 			.catch((err) => this.error(`onCapabilityLightSaturation() > ${err}`));
 	}
