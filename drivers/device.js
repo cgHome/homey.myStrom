@@ -79,10 +79,9 @@ module.exports = class Device extends Homey.Device {
 
 	getDeviceValues(url = "", data) {
 		this.debug(`getDeviceValues() > url: "${url}"`);
-		if (typeof(data) === "undefined") {
+		if (typeof data === "undefined") {
 			data = this.getDeviceData(url);
 		}
-
 		return Promise.resolve(data);
 	}
 
@@ -97,7 +96,8 @@ module.exports = class Device extends Homey.Device {
 	apiGet(url) {
 		return this.api.get(url).then(
 			(data) => {
-				this.debug(`apiGet() - '${url}' > ${JSON.stringify(data)}`);
+				this.debug(`apiGet() >> '${url}'`);
+				this.debug(`apiGet() << '${url}' ${JSON.stringify(data)}`);
 				this.setAvailable(Homey.__("device.online"));
 				return data;
 			},
@@ -113,11 +113,12 @@ module.exports = class Device extends Homey.Device {
 	apiPost(url, value) {
 		return this.api.post(url, value).then(
 			(data) => {
+				this.debug(`apiPost() >> '${url}' ${JSON.stringify(value) || "--"}`);
+				this.debug(`apiPost() << '${url}' ${JSON.stringify(data) || "--"}`);
 				this.setAvailable(Homey.__("device.online"));
 				return data;
 			},
 			(err) => {
-				this.debug(`apiPost() - '${url}' > ${JSON.stringify(value) || "--"}`);
 				if (err.code === "EHOSTUNREACH") {
 					this.setUnavailable(Homey.__("device.offline"));
 				}
