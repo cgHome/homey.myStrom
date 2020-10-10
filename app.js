@@ -94,10 +94,6 @@ module.exports = class MyStromApp extends Homey.App {
 		udpClient.bind(7979);
 	}
 
-	isDebugMode() {
-		return process.env.DEBUG === "1";
-	}
-
 	// Homey-App Loggers
 	log(msg) {
 		super.log(msg);
@@ -106,7 +102,7 @@ module.exports = class MyStromApp extends Homey.App {
 		super.error(`${msg}`);
 	}
 	debug(msg) {
-		if (this.isDebugMode()) {
+		if (process.env.DEBUG === "1") {
 			super.log(`»»» ${msg}`);
 		}
 	}
