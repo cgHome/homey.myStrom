@@ -34,7 +34,7 @@
   "license": "ISC",
   "dependencies": {
     "athom-api": "^3.2.13",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "bonjour": "^3.5.0"
   },
   "bugs": {
