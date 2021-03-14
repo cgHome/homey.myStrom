@@ -1,8 +1,5 @@
 {
-    "cSpell.words": [
-        "mystrom",
-        "smarthome",
-        "wifidriver"
-    ],
-    "git.ignoreLimitWarning": true
+   "editor.defaultFormatter": "esbenp.prettier-vscode",
+   "editor.formatOnSave": true,
+   "json.format.enable": false
 }
