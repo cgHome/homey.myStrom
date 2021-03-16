@@ -1,18 +1,18 @@
 {
   "env": {
-    "browser": true,
     "node": true,
     "es6": true
   },
-  "extends": "eslint:recommended",
-  "parserOptions": {
-    "ecmaVersion": 2017
-  },
+  "plugins": ["prettier"],
+  "extends": [
+    "athom",
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "plugin:prettier/recommended"
+  ],
   "rules": {
-    "indent": ["error", "tab"],
-    "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "double"],
-    "semi": ["error", "always"],
-    "no-unused-vars": [2, {"vars": "all", "args": "none", "varsIgnorePattern": "Homey"}]
+    "no-shadow": ["error", { "allow": ["current"]}],
+    "prefer-rest-params": "off",
+    "prettier/prettier": "error"
   }
 }
