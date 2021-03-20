@@ -78,11 +78,11 @@ module.exports = class BulbDevice extends Device {
     if (current === value) return Promise.resolve(true);
 
     this.debug(`onCapabilityLightTemperature() - ${current} > ${value}`);
-    const lightTemperature = Math.round(value * 100);
+    const lightTemperature = 14 - Math.round(value * 13);
     const dim = Math.round(this.getCapabilityValue("dim") * 100);
     const color = `${lightTemperature};${dim}`;
 
-    return this.setDeviceData("device", { mode: "mono", color })
+    return this.setDeviceData("device", { action: "on", mode: "mono", ramp: RAMP_DEFAULT, color })
       .then((data) => this.getDeviceValues())
       .then(() => {
         const current = this.getCapabilityValue("light_temperature");
@@ -95,16 +95,16 @@ module.exports = class BulbDevice extends Device {
   // Attention: It can only be sent in combination with the "light_saturation"
   // =========================================================================
   async onCapabilityLightHue(value, opts) {
-    const lightHue = Math.round(value * 360);
     const current = this.getCapabilityValue("light_hue");
     if (current === value) return Promise.resolve(true);
-
+    
     this.debug(`onCapabilityLightHue() - ${current} > ${value}`);
+    const lightHue = Math.round(value * 360);
     const lightSaturation = Math.round(this.getCapabilityValue("light_saturation") * 100);
     const dim = Math.round(this.getCapabilityValue("dim") * 100);
     const color = `${lightHue};${lightSaturation};${dim}`;
 
-    // return this.setDeviceData("device", { mode: "hsv", color })
+    // return this.setDeviceData("device", { action: "on", mode: "hsv", ramp: RAMP_DEFAULT, color })
     //   .then((data) => this.getDeviceValues())
     //   .then(() => {
     //     const current = this.getCapabilityValue("light_hue");
@@ -124,7 +124,7 @@ module.exports = class BulbDevice extends Device {
     const dim = Math.round(this.getCapabilityValue("dim") * 100);
     const color = `${lightHue};${lightSaturation};${dim}`;
 
-    return this.setDeviceData("device", { mode: "hsv", color })
+    return this.setDeviceData("device", { action: "on", mode: "hsv", ramp: RAMP_DEFAULT, color })
       .then((data) => this.getDeviceValues())
       .then(() => {
         const hue = this.getCapabilityValue("light_hue");
@@ -173,7 +173,7 @@ module.exports = class BulbDevice extends Device {
         await this.setCapabilityValue("onoff", state);
         await this.setCapabilityValue("measure_power", measurePower);
         if (result.mode === "mono") {
-          const lightTemperature = parseInt(result.color.split(";")[0], 10) / 100;
+          const lightTemperature = Math.round((1 / 13) * (14 - parseInt(result.color.split(";")[0], 10)) * 100) / 100;
           const dim = parseInt(result.color.split(";")[1], 10) / 100;
           await this.setCapabilityValue("light_mode", "temperature");
           await this.setCapabilityValue("light_temperature", lightTemperature);

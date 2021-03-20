@@ -106,7 +106,7 @@ module.exports = class Device extends Homey.Device {
         if (err.code === "EHOSTUNREACH") {
           this.setUnavailable(Homey.__("device.offline"));
         }
-        return err;
+        throw err;
       }
     );
   }
@@ -124,7 +124,7 @@ module.exports = class Device extends Homey.Device {
         if (err.code === "EHOSTUNREACH") {
           this.setUnavailable(Homey.__("device.offline"));
         }
-        return err;
+        throw err;
       }
     );
   }
