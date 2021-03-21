@@ -21,7 +21,7 @@ module.exports = class SwitchDevice extends Device {
 
   onDeleted() {
     super.onDeleted();
-    this.deregisterPollInterval(this.getData().name);
+    this.deregisterPollInterval(this.getData().id);
   }
 
   async deviceReady() {
