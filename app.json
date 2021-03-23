@@ -75,11 +75,10 @@
       "capabilities": [
         "onoff",
         "measure_power",
-        "light_mode",
+        "dim",
         "light_temperature",
         "light_hue",
-        "light_saturation",
-        "dim"
+        "light_saturation"
       ],
       "pair": [
         {

@@ -10,12 +10,20 @@ module.exports = class BulbDevice extends Device {
   onInit(options = {}) {
     super.onInit(options);
 
+    this.bulpMode = null; // Current mode
+
+    // Remove unused/old capability
+    if (this.hasCapability("light_mode")) {
+      this.removeCapability("light_mode");
+    }
+
     this.registerCapabilityListener("onoff", this.onCapabilityOnOff.bind(this));
-    this.registerCapabilityListener("light_mode", this.onCapabilityLightMode.bind(this));
-    this.registerCapabilityListener("light_temperature", this.onCapabilityLightTemperature.bind(this));
-    this.registerCapabilityListener("light_hue", this.onCapabilityLightHue.bind(this));
-    this.registerCapabilityListener("light_saturation", this.onCapabilityLightSaturation.bind(this));
     this.registerCapabilityListener("dim", this.onCapabilityDim.bind(this));
+    this.registerCapabilityListener("light_temperature", this.onCapabilityLightTemperature.bind(this));
+    this.registerMultipleCapabilityListener(
+      ["light_hue", "light_saturation"],
+      this.onCapabilityLightHueSaturation.bind(this)
+    );
 
     this.registerPollInterval({
       id: this.getData().id,
@@ -42,6 +50,7 @@ module.exports = class BulbDevice extends Device {
 
   async onCapabilityOnOff(value, opts) {
     const current = this.getCapabilityValue("onoff");
+
     if (current === value) return Promise.resolve(true);
 
     this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
@@ -56,21 +65,31 @@ module.exports = class BulbDevice extends Device {
       .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
   }
 
-  async onCapabilityLightMode(value, opts) {
-    const current = this.getCapabilityValue("light_mode");
+  async onCapabilityDim(value, opts) {
+    const current = this.getCapabilityValue("dim");
     if (current === value) return Promise.resolve(true);
 
-    this.debug(`onCapabilityLightMode() - ${current} > ${value}`);
-    const action = this.getCapabilityValue("onoff") ? "on" : "off";
-    const mode = value === "temperature" ? "mono" : "hsv";
+    this.debug(`onCapabilityDim() - ${current} > ${value}`);
+    const action = value >= 0.01 ? "on" : "off";
+    const dim = Math.round(value * 100);
 
-    return this.setDeviceData("device", { action, mode })
+    let color;
+    if (this.bulpMode === "mono") {
+      const lightTemperature = 14 - Math.round(this.getCapabilityValue("light_temperature") * 13);
+      color = `${lightTemperature};${dim}`;
+    } else {
+      const lightHue = Math.round(this.getCapabilityValue("light_hue") * 360);
+      const lightSaturation = Math.round(this.getCapabilityValue("light_saturation") * 100);
+      color = `${lightHue};${lightSaturation};${dim}`;
+    }
+
+    return this.setDeviceData("device", { action, ramp: RAMP_DEFAULT, mode: this.bulpMode, color })
       .then((data) => this.getDeviceValues())
       .then(() => {
-        const current = this.getCapabilityValue("light_mode");
-        this.notify(Homey.__("device.lightModeSet", { value: current }));
+        const current = this.getCapabilityValue("dim");
+        this.notify(Homey.__("device.dimSet", { value: Math.round(current * 100) }));
       })
-      .catch((err) => this.error(`onCapabilityLightMode() > ${err}`));
+      .catch((err) => this.error(`onCapabilityDim() > ${err}`));
   }
 
   async onCapabilityLightTemperature(value, opts) {
@@ -91,76 +110,37 @@ module.exports = class BulbDevice extends Device {
       .catch((err) => this.error(`onCapabilityLightTemperature() > ${err}`));
   }
 
-  /* eslint-disable */
-  // Attention: It can only be sent in combination with the "light_saturation"
-  // =========================================================================
-  async onCapabilityLightHue(value, opts) {
-    const current = this.getCapabilityValue("light_hue");
-    if (current === value) return Promise.resolve(true);
-    
-    this.debug(`onCapabilityLightHue() - ${current} > ${value}`);
-    const lightHue = Math.round(value * 360);
-    const lightSaturation = Math.round(this.getCapabilityValue("light_saturation") * 100);
+  async onCapabilityLightHueSaturation(values, options) {
+    const curHue = this.getCapabilityValue("light_hue");
+    const valHue = values.light_hue || curHue;
+    const curSaturation = this.getCapabilityValue("light_saturation");
+    const valSaturation = values.saturation || curSaturation;
+
+    if (!(curHue !== valHue || curSaturation !== valSaturation)) return Promise.resolve(true);
+
+    this.debug(`onCapabilityLightHueSaturation() light_hue - ${curHue} > ${valHue}`);
+    this.debug(`onCapabilityLightHueSaturation() light_saturation - ${curSaturation} > ${valSaturation}`);
+
+    const hue = Math.round(valHue * 360);
+    const saturation = Math.round(valSaturation * 100);
     const dim = Math.round(this.getCapabilityValue("dim") * 100);
-    const color = `${lightHue};${lightSaturation};${dim}`;
-
-    // return this.setDeviceData("device", { action: "on", mode: "hsv", ramp: RAMP_DEFAULT, color })
-    //   .then((data) => this.getDeviceValues())
-    //   .then(() => {
-    //     const current = this.getCapabilityValue("light_hue");
-    //     this.notify(Homey.__("device.lightHueSet", { value: Math.round(current * 360) }));
-    //   })
-    //   .catch((err) => this.error(`onCapabilityLightHue() > ${err}`));
-  }
-  /* eslint-enable */
-
-  async onCapabilityLightSaturation(value, opts) {
-    const current = this.getCapabilityValue("light_saturation");
-    if (current === value) return Promise.resolve(true);
-
-    this.debug(`onCapabilityLightSaturation() - ${current} > ${value}`);
-    const lightHue = Math.round(this.getCapabilityValue("light_hue") * 360);
-    const lightSaturation = Math.round(value * 100);
-    const dim = Math.round(this.getCapabilityValue("dim") * 100);
-    const color = `${lightHue};${lightSaturation};${dim}`;
+    const color = `${hue};${saturation};${dim}`;
 
     return this.setDeviceData("device", { action: "on", mode: "hsv", ramp: RAMP_DEFAULT, color })
       .then((data) => this.getDeviceValues())
       .then(() => {
-        const hue = this.getCapabilityValue("light_hue");
-        this.notify(Homey.__("device.lightHueSet", { value: Math.round(hue * 360) }));
-        const saturation = this.getCapabilityValue("light_saturation");
-        this.notify(Homey.__("device.lightSaturationSet", { value: Math.round(saturation * 100) }));
+        this.notify(
+          Homey.__("device.lightHueSet", {
+            value: Math.round(this.getCapabilityValue("light_hue") * 360),
+          })
+        );
+        this.notify(
+          Homey.__("device.lightSaturationSet", {
+            value: Math.round(this.getCapabilityValue("light_saturation") * 100),
+          })
+        );
       })
-      .catch((err) => this.error(`onCapabilityLightSaturation() > ${err}`));
-  }
-
-  async onCapabilityDim(value, opts) {
-    const current = this.getCapabilityValue("dim");
-    if (current === value) return Promise.resolve(true);
-
-    this.debug(`onCapabilityDim() - ${current} > ${value}`);
-    const action = value >= 0.01 ? "on" : "off";
-    const mode = this.getCapabilityValue("light_mode") === "temperature" ? "mono" : "hsv";
-    const dim = Math.round(value * 100);
-
-    let color;
-    if (mode === "mono") {
-      const lightTemperature = Math.round(this.getCapabilityValue("light_temperature") * 100);
-      color = `${lightTemperature};${dim}`;
-    } else {
-      const lightHue = Math.round(this.getCapabilityValue("light_hue") * 360);
-      const lightSaturation = Math.round(this.getCapabilityValue("light_saturation") * 100);
-      color = `${lightHue};${lightSaturation};${dim}`;
-    }
-
-    return this.setDeviceData("device", { action, ramp: RAMP_DEFAULT, mode, color })
-      .then((data) => this.getDeviceValues())
-      .then(() => {
-        const current = this.getCapabilityValue("dim");
-        this.notify(Homey.__("device.dimSet", { value: Math.round(current * 100) }));
-      })
-      .catch((err) => this.error(`onCapabilityDim() > ${err}`));
+      .catch((err) => this.error(`onCapabilityLightHue() > ${err}`));
   }
 
   getDeviceValues(url = "device", data) {
@@ -169,22 +149,21 @@ module.exports = class BulbDevice extends Device {
       const result = data[Object.keys(data)[0]];
       try {
         const state = result.on;
-        const measurePower = Math.round(result.power * 10) / 10;
         await this.setCapabilityValue("onoff", state);
+        const measurePower = Math.round(result.power * 10) / 10;
         await this.setCapabilityValue("measure_power", measurePower);
-        if (result.mode === "mono") {
+        this.bulpMode = result.mode;
+        if (this.bulpMode === "mono") {
           const lightTemperature = Math.round((1 / 13) * (14 - parseInt(result.color.split(";")[0], 10)) * 100) / 100;
-          const dim = parseInt(result.color.split(";")[1], 10) / 100;
-          await this.setCapabilityValue("light_mode", "temperature");
           await this.setCapabilityValue("light_temperature", lightTemperature);
+          const dim = parseInt(result.color.split(";")[1], 10) / 100;
           await this.setCapabilityValue("dim", dim);
         } else {
           const lightHue = Math.round((1 / 360) * parseInt(result.color.split(";")[0], 10) * 100) / 100;
-          const lightSaturation = parseInt(result.color.split(";")[1], 10) / 100;
-          const dim = parseInt(result.color.split(";")[2], 10) / 100;
-          await this.setCapabilityValue("light_mode", "color");
           await this.setCapabilityValue("light_hue", lightHue);
+          const lightSaturation = parseInt(result.color.split(";")[1], 10) / 100;
           await this.setCapabilityValue("light_saturation", lightSaturation);
+          const dim = parseInt(result.color.split(";")[2], 10) / 100;
           await this.setCapabilityValue("dim", dim);
         }
       } catch (err) {
