@@ -10,5 +10,8 @@
   },
   "1.0.6": {
     "en": "README.txt > removed external link"
+  },
+  "1.1.0": {
+    "en": "Migrate from homey-wifidriver to axios"
   }
 }
