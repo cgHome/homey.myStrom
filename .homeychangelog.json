@@ -13,5 +13,8 @@
   },
   "1.1.0": {
     "en": "Migrate from homey-wifidriver to axios"
+  },
+  "1.1.1": {
+    "en": "Updated to SDKv3"
   }
 }
