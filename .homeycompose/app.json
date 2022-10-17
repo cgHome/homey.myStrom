@@ -1,0 +1,40 @@
+{
+  "id": "ch.mystrom.smarthome",
+  "sdk": 3,
+  "name": {
+    "en": "myStrom-SmartHome"
+  },
+  "description": {
+    "en": "Adds support for myStrom devices."
+  },
+  "version": "1.1.0",
+  "compatibility": ">=5.0.0",
+  "source": "https://github.com/cgHome/homey.myStrom",
+  "bugs": {
+    "url": "https://github.com/cgHome/homey.myStrom/issues"
+  },
+  "homeyCommunityTopicId": 12507,
+  "support": "https://community.athom.com/t/12507",
+  "category": "lights",
+  "images": {
+    "small": "./assets/images/small.png",
+    "large": "./assets/images/large.png"
+  },
+  "brandColor": "#5AB42E",
+  "permissions": [],
+  "author": {
+    "name": "Chris Gross",
+    "email": "cgHome@cflat-inc.org"
+  },
+  "platforms": [
+    "local"
+  ],
+  "api": {
+    "deviceGenActionAPI": {
+      "description": "myStrom device generic action",
+      "method": "get",
+      "path": "/deviceGenAction",
+      "public": true
+    }
+  }
+}

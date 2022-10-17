@@ -1,36 +1,39 @@
-"use strict";
+'use strict';
 
-const Homey = require("homey");
-const ButtonDriver = require("../button/driver");
+const ButtonDriver = require('../button/driver');
 
 module.exports = class ButtonPlusDriver extends ButtonDriver {
+
   onInit(options = {}) {
-    options.triggerName = "button_plus_pressed";
+    options.triggerName = 'button_plus_pressed';
     super.onInit(options);
 
-    this._wheelChangedTrigger = new Homey.FlowCardTriggerDevice("button_plus_wheel")
-      .register()
+    this._flowTriggerWheelChanged = this.homey.flow
+      .getDeviceTriggerCard('button_plus_wheel')
       .registerRunListener(Promise.resolve(true));
+
+    this.log('Driver initiated');
   }
 
-  onPairListDevices(data, callback) {
-    const devices = (Object.values(Homey.app.devices) || []).filter(
-      (device) => device.data.type === Homey.app.deviceType.WBP
+  async onPairListDevices() {
+    const devices = (Object.values(this.homey.app.devices) || []).filter(
+      (device) => device.data.type === this.homey.app.deviceType.WBP,
     );
 
-    callback(null, devices);
+    return devices;
   }
 
-  triggerWheelChanged(device, tokens, state) {
-    this._wheelChangedTrigger
+  triggerWheelChangedFlow(device, tokens, state) {
+    this._flowTriggerWheelChanged
       .trigger(device, tokens, state)
-      .then(this.log(`${device.getName()} [${this.getActionLabel(state.action)}] wheel changed to: ${state.value}`))
-      .catch((err) => this.error(`triggerWheelChanged() > ${err}`));
+      .then(this.log(`${device.getName()} [${this.getActionLabel(state.action)}] wheel changed to: ${tokens.value}`))
+      .catch((err) => this.error(`triggerWheelChangedFlow() > ${err}`));
   }
 
   getActionLabel(action) {
     const label = super.getActionLabel(action);
-    // eslint-disable-next-line
-    return label !== "unknown" ? label : action === "4" ? "Touch" : action === "5" ? "Wheel" : action === "11" ? "Wheel final" : "unknown";
+    // eslint-disable-next-line no-nested-ternary
+    return label !== 'unknown' ? label : action === '4' ? 'Touch' : action === '5' ? 'Wheel' : action === '11' ? 'Wheel final' : 'unknown';
   }
+
 };

@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
-const Homey = require("homey");
-const Device = require("../device");
+const Device = require('../device');
 
 module.exports = class SwitchDevice extends Device {
+
   onInit(options = {}) {
     options.baseURL = `http://${this.getData().address}/`;
     super.onInit(options);
 
-    this.registerCapabilityListener("onoff", this.onCapabilityOnOff.bind(this));
+    this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
 
     this.registerPollInterval({
       id: this.getData().id,
@@ -16,7 +16,7 @@ module.exports = class SwitchDevice extends Device {
       sec: 60, // set interval to every minute
     });
 
-    this.log("SwitchDevice initiated");
+    this.log('Device initiated');
   }
 
   onDeleted() {
@@ -34,29 +34,29 @@ module.exports = class SwitchDevice extends Device {
   }
 
   async onCapabilityOnOff(value, opts) {
-    const current = this.getCapabilityValue("onoff");
+    const current = this.getCapabilityValue('onoff');
     if (current === value) return Promise.resolve(true);
 
     this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
-    const state = value ? "1" : "0";
+    const state = value ? '1' : '0';
 
     return this.setDeviceData(`relay?state=${state}`)
       .then(this.getDeviceValues())
       .then(() => {
-        const current = this.getCapabilityValue("onoff");
-        this.notify(Homey.__("device.stateSet", { value: current ? "on" : "off" }));
+        const current = this.getCapabilityValue('onoff');
+        this.notify(this.homey.__('device.stateSet', { value: current ? 'on' : 'off' }));
       })
       .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
   }
 
-  async getDeviceValues(url = "report") {
+  async getDeviceValues(url = 'report') {
     return super
       .getDeviceValues(url)
       .then(async (data) => {
-        await this.setCapabilityValue("onoff", data.relay);
-        await this.setCapabilityValue("measure_power", Math.round(data.power * 10) / 10);
+        await this.setCapabilityValue('onoff', data.relay);
+        await this.setCapabilityValue('measure_power', Math.round(data.power * 10) / 10);
         if (data.temperature) {
-          await this.setCapabilityValue("measure_temperature", Math.round(data.temperature * 10) / 10);
+          await this.setCapabilityValue('measure_temperature', Math.round(data.temperature * 10) / 10);
         }
       })
       .catch((err) => this.error(`getDeviceValues() > ${err.message}`));
@@ -66,4 +66,5 @@ module.exports = class SwitchDevice extends Device {
     // switch uses apiGet to set values
     return this.apiGet(...args);
   }
+
 };

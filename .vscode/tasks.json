@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Homey-Run",
+			"command": "homey app run",
+			"type": "shell",
+			"group": "none"
+		}
+	]
+}

@@ -1,8 +1,9 @@
-"use strict";
+'use strict';
 
-/**
- * homey-debugger
- */
+const Homey = require('homey');
+const dns = require('dns');
+const dgram = require('dgram');
+const bonjour = require('bonjour')();
 
 /* eslint-disable */
 if (process.env.DEBUG === "1") {
@@ -11,12 +12,8 @@ if (process.env.DEBUG === "1") {
 }
 /* eslint-enable */
 
-const Homey = require("homey");
-const dns = require("dns");
-const dgram = require("dgram");
-const bonjour = require("bonjour")();
-
 module.exports = class MyStromApp extends Homey.App {
+
   constructor(...args) {
     super(...args);
 
@@ -33,13 +30,13 @@ module.exports = class MyStromApp extends Homey.App {
   }
 
   onInit() {
-    this.log(`${Homey.app.manifest.name.en}-App - v${Homey.app.manifest.version} is running...`);
+    this.log(`${this.homey.manifest.name.en} app - v${this.homey.manifest.version} is running...`);
 
     // Find myStrom-Devices
-    const browser = bonjour.find({ type: "hap" }, (service) => {
-      if (service.host.match("myStrom-Switch")) {
-        const deviceName = service.host.slice(0, service.host.indexOf("."));
-        const mac = service.txt.id.replace(new RegExp(":", "g"), "").toUpperCase();
+    const browser = bonjour.find({ type: 'hap' }, (service) => {
+      if (service.host.match('myStrom-Switch')) {
+        const deviceName = service.host.slice(0, service.host.indexOf('.'));
+        const mac = service.txt.id.replace(new RegExp(':', 'g'), '').toUpperCase();
         const device = {
           name: deviceName,
           data: {
@@ -48,27 +45,27 @@ module.exports = class MyStromApp extends Homey.App {
             deviceName,
             host: service.host,
             address: service.referer.address,
-            type: mac.match("64002D") ? this.deviceType.WSW : this.deviceType.WS2,
+            type: mac.match('64002D') ? this.deviceType.WSW : this.deviceType.WS2,
           },
         };
         this.devices[mac] = device;
-        Homey.emit("deviceDiscovered", {
+        this.homey.emit('deviceDiscovered', {
           name: device.data.deviceName,
           address: device.data.address,
           mac,
         });
         this.log(
-          `Bonjour discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`
+          `Bonjour discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`,
         );
       }
     });
     browser.start();
 
-    const udpClient = dgram.createSocket("udp4", (msg, rinfo) => {
+    const udpClient = dgram.createSocket('udp4', (msg, rinfo) => {
       dns.reverse(rinfo.address, (err, hostnames) => {
         if (!err) {
           const hostname = hostnames[0];
-          const deviceName = hostname.slice(0, hostname.indexOf("."));
+          const deviceName = hostname.slice(0, hostname.indexOf('.'));
           const mac = msg.hexSlice(0, 6).toUpperCase();
           const device = {
             name: deviceName,
@@ -83,13 +80,13 @@ module.exports = class MyStromApp extends Homey.App {
           };
           if (!this.devices[mac]) {
             this.devices[mac] = device;
-            Homey.emit("deviceDiscovered", {
+            this.homey.emit('deviceDiscovered', {
               name: device.data.deviceName,
               address: device.data.address,
               mac,
             });
             this.log(
-              `UDP discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`
+              `UDP discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`,
             );
           }
         } else {
@@ -98,6 +95,12 @@ module.exports = class MyStromApp extends Homey.App {
       });
     });
     udpClient.bind(7979);
+  }
+
+  // Web-API
+  async deviceGenActionAPI(query) {
+    this.debug(`deviceGenActionAPI() - ${JSON.stringify(query)}`);
+    this.homey.emit('deviceActionReceived', query);
   }
 
   // Homey-App Loggers
@@ -110,8 +113,9 @@ module.exports = class MyStromApp extends Homey.App {
   }
 
   debug(msg) {
-    if (process.env.DEBUG === "1") {
+    if (process.env.DEBUG === '1') {
       super.log(`»»» ${msg}`);
     }
   }
+
 };

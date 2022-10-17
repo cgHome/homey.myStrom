@@ -1,18 +1,20 @@
-"use strict";
+'use strict';
 
-const Homey = require("homey");
-const Driver = require("../driver");
+const Driver = require('../driver');
 
 module.exports = class BulbDriver extends Driver {
+
   onInit(options = {}) {
     super.onInit(options);
+    this.log('Driver initiated');
   }
 
-  onPairListDevices(data, callback) {
-    const devices = (Object.values(Homey.app.devices) || []).filter(
-      (device) => device.data.type === Homey.app.deviceType.WRB
+  async onPairListDevices() {
+    const devices = (Object.values(this.homey.app.devices) || []).filter(
+      (device) => device.data.type === this.homey.app.deviceType.WRB,
     );
 
-    callback(null, devices);
+    return devices;
   }
+
 };
