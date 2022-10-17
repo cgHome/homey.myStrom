@@ -1,0 +1,37 @@
+{
+  "name": {
+    "en": "WiFi Bulb"
+  },
+  "images": {
+    "large": "drivers/bulb/assets/images/large.png",
+    "small": "drivers/bulb/assets/images/small.png"
+  },
+  "class": "light",
+  "capabilities": [
+    "onoff",
+    "measure_power",
+    "dim",
+    "light_temperature",
+    "light_hue",
+    "light_saturation"
+  ],
+  "pair": [
+    {
+      "id": "start",
+      "navigation": {
+        "next": "list_devices"
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

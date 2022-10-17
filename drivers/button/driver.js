@@ -1,38 +1,40 @@
-"use strict";
+'use strict';
 
-const Homey = require("homey");
-const Driver = require("../driver");
+const Driver = require('../driver');
 
 module.exports = class ButtonDriver extends Driver {
+
   onInit(options = {}) {
     super.onInit(options);
 
     // Initialize Flow
-    const name = options.triggerName ? options.triggerName : "button_pressed";
-    this._buttonPressedTrigger = new Homey.FlowCardTriggerDevice(name)
-      .register()
-      .registerRunListener((args, state) => args.action === state.action);
+    this._flowTriggerButtonPressed = this.homey.flow
+      .getDeviceTriggerCard(options.triggerName ? options.triggerName : 'button_pressed')
+      .registerRunListener(async (args, state) => {
+        return args.action === state.action;
+      });
 
-    this.log("ButtonDriver initiated");
+    this.log('Driver initiated');
   }
 
-  onPairListDevices(data, callback) {
-    const devices = (Object.values(Homey.app.devices) || []).filter(
-      (device) => device.data.type === Homey.app.deviceType.WBS
+  async onPairListDevices() {
+    const devices = (Object.values(this.homey.app.devices) || []).filter(
+      (device) => device.data.type === this.homey.app.deviceType.WBS,
     );
 
-    callback(null, devices);
+    return devices;
   }
 
-  triggerButtonPressed(device, tokens, state) {
-    this._buttonPressedTrigger
+  triggerButtonPressedFlow(device, tokens, state) {
+    this._flowTriggerButtonPressed
       .trigger(device, tokens, state)
       .then(this.log(`${device.getName()} [${this.getActionLabel(state.action)}] button pressed`))
-      .catch((err) => this.error(`triggerButtonPressed() > ${err}`));
+      .catch((err) => this.error(`triggerButtonPressedFlow() > ${err}`));
   }
 
   getActionLabel(action) {
-    // eslint-disable-next-line
-    return action === "1" ? "short" : action === "2" ? "double" : action === "3" ? "long" : "unknown";
+    // eslint-disable-next-line no-nested-ternary
+    return action === '1' ? 'short' : action === '2' ? 'double' : action === '3' ? 'long' : 'unknown';
   }
+
 };

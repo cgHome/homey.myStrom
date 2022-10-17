@@ -1,0 +1,40 @@
+{
+  "triggers": [
+    {
+      "id": "button_pressed",
+      "title": {
+        "en": "A button is pressed",
+        "de": "Button gedrückt"
+      },
+      "args": [
+        {
+          "name": "action",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "1",
+              "label": {
+                "en": "Short Press",
+                "de": "Kurz gedrückt"
+              }
+            },
+            {
+              "id": "2",
+              "label": {
+                "en": "Double Press",
+                "de": "2x Kurz gedrückt"
+              }
+            },
+            {
+              "id": "3",
+              "label": {
+                "en": "Long Press",
+                "de": "Lang gedrückt"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

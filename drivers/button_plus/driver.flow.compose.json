@@ -1,0 +1,72 @@
+{
+  "triggers": [
+    {
+      "id": "button_plus_pressed",
+      "title": {
+        "en": "A button is pressed",
+        "de": "Button gedrückt"
+      },
+      "args": [
+        {
+          "name": "action",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "1",
+              "label": {
+                "en": "Short Press",
+                "de": "Kurz gedrückt"
+              }
+            },
+            {
+              "id": "2",
+              "label": {
+                "en": "Double Press",
+                "de": "2x Kurz gedrückt"
+              }
+            },
+            {
+              "id": "3",
+              "label": {
+                "en": "Long Press",
+                "de": "Lang gedrückt"
+              }
+            },
+            {
+              "id": "4",
+              "label": {
+                "en": "Touch",
+                "de": "Berührt"
+              }
+            },
+            {
+              "id": "11",
+              "label": {
+                "en": "Wheel",
+                "de": "Drehknopf"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "button_plus_wheel",
+      "title": {
+        "en": "A wheel-value received",
+        "de": "Wheel-Value empfangen"
+      },
+      "args": [],
+      "tokens": [
+        {
+          "name": "value",
+          "type": "number",
+          "title": {
+            "en": "value",
+            "de": "Wert"
+          }
+        }
+      ]
+    }
+  ]
+}

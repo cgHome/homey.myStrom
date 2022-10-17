@@ -11,9 +11,7 @@
     "postpublish": "npm run init && git commit --amend --no-edit ./package.json && git push -f origin main",
     "validate": "homey app validate -l publish",
     "validateTest": "homey app validate",
-    "init": "npm init --quiet -y 1>/dev/null",
-    "eslint": "eslint",
-    "prettier": "prettier"
+    "eslint": "eslint"
   },
   "repository": {
     "type": "git",
@@ -28,7 +26,6 @@
   "author": "Chris Gross <cgHome@cflat-inc.org>",
   "license": "ISC",
   "dependencies": {
-    "athom-api": "^3.7.7",
     "axios": "^1.1.2",
     "bonjour": "^3.5.0"
   },
@@ -41,10 +38,6 @@
   },
   "devDependencies": {
     "eslint": "^8.25.0",
-    "eslint-config-athom": "^3.1.1",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "2.7.1"
+    "eslint-config-athom": "^3.1.1"
   }
 }

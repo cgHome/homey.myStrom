@@ -1,0 +1,38 @@
+{
+  "name": {
+    "en": "WiFi Button"
+  },
+  "images": {
+    "large": "drivers/button/assets/images/large.png",
+    "small": "drivers/button/assets/images/small.png"
+  },
+  "class": "other",
+  "capabilities": [
+    "button",
+    "measure_battery"
+  ],
+  "energy": {
+    "batteries": [
+      "INTERNAL"
+    ]
+  },
+  "pair": [
+    {
+      "id": "start",
+      "navigation": {
+        "next": "list_devices"
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}
