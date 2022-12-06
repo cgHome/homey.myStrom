@@ -12,56 +12,53 @@ module.exports = class BulbDevice extends Device {
 
     this.bulpMode = null; // Current mode
 
-    // Remove unused/old capability
-    if (this.hasCapability('light_mode')) {
-      this.removeCapability('light_mode');
-    }
-
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
     this.registerCapabilityListener('dim', this.onCapabilityDim.bind(this));
     this.registerCapabilityListener('light_temperature', this.onCapabilityLightTemperature.bind(this));
-    this.registerMultipleCapabilityListener(
-      ['light_hue', 'light_saturation'],
-      this.onCapabilityLightHueSaturation.bind(this),
-    );
-
-    this.registerPollInterval({
-      id: this.getData().id,
-      fn: this.syncDeviceValues.bind(this),
-      sec: 1 * 60, // set interval to every minute
-    });
-
-    this.log('Device initiated');
+    this.registerMultipleCapabilityListener(['light_hue', 'light_saturation'], this.onCapabilityLightHueSaturation.bind(this));
   }
 
-  onDeleted() {
-    super.onDeleted();
-    this.deregisterPollInterval(this.getData().id);
+  async initDevice() {
+    super.initDevice()
+      .then(this.getDeviceValues())
+      .then(this.initDeviceRefresh())
+      .catch((err) => this.error(`initDevice() > ${err}`));
   }
 
-  async deviceReady() {
-    try {
-      await super.deviceReady();
-      await this.getDeviceValues();
-    } catch (err) {
-      // nop
-    }
+  getDeviceValues(url = 'device') {
+    return super.getDeviceValues(url)
+      .then((data) => {
+        const result = data[Object.keys(data)[0]];
+        this.setCapabilityValue('onoff', result.on);
+        this.setCapabilityValue('measure_power', Math.round(result.power * 10) / 10);
+        this.bulpMode = result.mode;
+        if (this.bulpMode === 'mono') {
+          this.setCapabilityValue('light_temperature', Math.round((1 / 13) * (14 - parseInt(result.color.split(';')[0], 10)) * 100) / 100);
+          this.setCapabilityValue('dim', parseInt(result.color.split(';')[1], 10) / 100);
+        } else {
+          this.setCapabilityValue('light_hue', Math.round((1 / 360) * parseInt(result.color.split(';')[0], 10) * 100) / 100);
+          this.setCapabilityValue('light_saturation', parseInt(result.color.split(';')[1], 10) / 100);
+          this.setCapabilityValue('dim', parseInt(result.color.split(';')[2], 10) / 100);
+        }
+        return data;
+      })
+      .catch((err) => this.error(`getDeviceValues() > ${err.message}`));
   }
 
   async onCapabilityOnOff(value, opts) {
     const current = this.getCapabilityValue('onoff');
-
     if (current === value) return Promise.resolve(true);
 
     this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
+
     const action = value ? 'on' : 'off';
 
     return this.setDeviceData('device', { action, ramp: RAMP_DEFAULT })
-      .then((data) => this.getDeviceValues(null, data))
-      .then(() => {
+      .then(this.getDeviceValues())
+      .then(this.notify(() => {
         const current = this.getCapabilityValue('onoff');
-        this.notify(this.homey.__('device.stateSet', { value: current ? 'on' : 'off' }));
-      })
+        return this.homey.__('device.stateSet', { value: current ? 'on' : 'off' });
+      }))
       .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
   }
 
@@ -70,6 +67,7 @@ module.exports = class BulbDevice extends Device {
     if (current === value) return Promise.resolve(true);
 
     this.debug(`onCapabilityDim() - ${current} > ${value}`);
+
     const action = value >= 0.01 ? 'on' : 'off';
     const dim = Math.round(value * 100);
 
@@ -86,11 +84,11 @@ module.exports = class BulbDevice extends Device {
     return this.setDeviceData('device', {
       action, ramp: RAMP_DEFAULT, mode: this.bulpMode, color,
     })
-      .then((data) => this.getDeviceValues())
-      .then(() => {
+      .then(this.getDeviceValues())
+      .then(this.notify(() => {
         const current = this.getCapabilityValue('dim');
-        this.notify(this.homey.__('device.dimSet', { value: Math.round(current * 100) }));
-      })
+        return this.homey.__('device.dimSet', { value: Math.round(current * 100) });
+      }))
       .catch((err) => this.error(`onCapabilityDim() > ${err}`));
   }
 
@@ -99,6 +97,7 @@ module.exports = class BulbDevice extends Device {
     if (current === value) return Promise.resolve(true);
 
     this.debug(`onCapabilityLightTemperature() - ${current} > ${value}`);
+
     const lightTemperature = 14 - Math.round(value * 13);
     const dim = Math.round(this.getCapabilityValue('dim') * 100);
     const color = `${lightTemperature};${dim}`;
@@ -106,15 +105,15 @@ module.exports = class BulbDevice extends Device {
     return this.setDeviceData('device', {
       action: 'on', mode: 'mono', ramp: RAMP_DEFAULT, color,
     })
-      .then((data) => this.getDeviceValues())
-      .then(() => {
+      .then(this.getDeviceValues())
+      .then(this.notify(() => {
         const current = this.getCapabilityValue('light_temperature');
-        this.notify(this.homey.__('device.lightTemperatureSet', { value: current }));
-      })
+        return this.homey.__('device.lightTemperatureSet', { value: current });
+      }))
       .catch((err) => this.error(`onCapabilityLightTemperature() > ${err}`));
   }
 
-  async onCapabilityLightHueSaturation(values, options) {
+  async onCapabilityLightHueSaturation(values, opts) {
     const curHue = this.getCapabilityValue('light_hue');
     const valHue = values.light_hue || curHue;
     const curSaturation = this.getCapabilityValue('light_saturation');
@@ -133,54 +132,17 @@ module.exports = class BulbDevice extends Device {
     return this.setDeviceData('device', {
       action: 'on', mode: 'hsv', ramp: RAMP_DEFAULT, color,
     })
-      .then((data) => this.getDeviceValues())
-      .then(() => {
-        this.notify(
-          this.homey.__('device.lightHueSet', {
-            value: Math.round(this.getCapabilityValue('light_hue') * 360),
-          }),
-        );
-        this.notify(
-          this.homey.__('device.lightSaturationSet', {
-            value: Math.round(this.getCapabilityValue('light_saturation') * 100),
-          }),
-        );
-      })
+      .then(this.getDeviceValues())
+      .then(this.notify(() => {
+        const hue = Math.round(this.getCapabilityValue('light_hue') * 360);
+        const saturation = Math.round(this.getCapabilityValue('light_saturation') * 100);
+        return this.homey.__('device.lightHueSetSaturation', { hue, saturation });
+      }))
       .catch((err) => this.error(`onCapabilityLightHue() > ${err}`));
   }
 
-  getDeviceValues(url = 'device', data) {
-    // eslint-disable-next-line no-shadow
-    return super.getDeviceValues(url, data).then(async (data) => {
-      const result = data[Object.keys(data)[0]];
-      try {
-        const state = result.on;
-        await this.setCapabilityValue('onoff', state);
-        const measurePower = Math.round(result.power * 10) / 10;
-        await this.setCapabilityValue('measure_power', measurePower);
-        this.bulpMode = result.mode;
-        if (this.bulpMode === 'mono') {
-          const lightTemperature = Math.round((1 / 13) * (14 - parseInt(result.color.split(';')[0], 10)) * 100) / 100;
-          await this.setCapabilityValue('light_temperature', lightTemperature);
-          const dim = parseInt(result.color.split(';')[1], 10) / 100;
-          await this.setCapabilityValue('dim', dim);
-        } else {
-          const lightHue = Math.round((1 / 360) * parseInt(result.color.split(';')[0], 10) * 100) / 100;
-          await this.setCapabilityValue('light_hue', lightHue);
-          const lightSaturation = parseInt(result.color.split(';')[1], 10) / 100;
-          await this.setCapabilityValue('light_saturation', lightSaturation);
-          const dim = parseInt(result.color.split(';')[2], 10) / 100;
-          await this.setCapabilityValue('dim', dim);
-        }
-      } catch (err) {
-        this.error(`getDeviceValues() > ${err}`);
-      }
-      return data;
-    });
-  }
-
   setDeviceData(url, data) {
-    url = `${url}/${this.getData().id}`;
+    url = `${url}/${this.data.id}`;
     const qString = querystring.stringify(data).split('%3B').join(';');
     return super.setDeviceData(url, qString);
   }

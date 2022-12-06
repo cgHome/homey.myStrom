@@ -5,8 +5,14 @@ const Homey = require('homey');
 module.exports = class Driver extends Homey.Driver {
 
   onInit(options = {}) {
-    super.onInit();
-    this.debug('Driver init...');
+    this.debug('onInit()');
+
+    this.ready()
+      .then(this.driverReady());
+  }
+
+  driverReady() {
+    this.log('Driver ready');
   }
 
   // Homey-App Loggers

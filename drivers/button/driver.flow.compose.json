@@ -6,6 +6,10 @@
         "en": "A button is pressed",
         "de": "Button gedrückt"
       },
+      "titleFormatted": {
+        "en": "Button is [[action]]",
+        "de": "Button ist [[action]]"
+      },
       "args": [
         {
           "name": "action",

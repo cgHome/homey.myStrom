@@ -13,16 +13,12 @@ module.exports = class ButtonDriver extends Driver {
       .registerRunListener(async (args, state) => {
         return args.action === state.action;
       });
-
-    this.log('Driver initiated');
   }
 
   async onPairListDevices() {
-    const devices = (Object.values(this.homey.app.devices) || []).filter(
-      (device) => device.data.type === this.homey.app.deviceType.WBS,
-    );
-
-    return devices;
+    // see device-types on: https://api.mystrom.ch/#51094bbb-3807-47d2-b60e-dabf757d1f8e
+    return (Object.values(this.homey.app.devices) || [])
+      .filter((device) => device.data.type === 104);
   }
 
   triggerButtonPressedFlow(device, tokens, state) {

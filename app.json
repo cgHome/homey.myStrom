@@ -6,7 +6,7 @@
     "en": "myStrom-SmartHome"
   },
   "description": {
-    "en": "Adds support for myStrom devices."
+    "en": "myStrom 💚 better control"
   },
   "version": "1.1.1",
   "compatibility": ">=5.0.0",
@@ -32,7 +32,7 @@
   ],
   "api": {
     "deviceGenActionAPI": {
-      "description": "myStrom device generic action",
+      "description": "myStrom [button] generic action",
       "method": "get",
       "path": "/deviceGenAction",
       "public": true
@@ -201,6 +201,10 @@
           "en": "A button is pressed",
           "de": "Button gedrückt"
         },
+        "titleFormatted": {
+          "en": "Button is [[action]]",
+          "de": "Button ist [[action]]"
+        },
         "args": [
           {
             "type": "device",
@@ -241,6 +245,10 @@
         "title": {
           "en": "A button is pressed",
           "de": "Button gedrückt"
+        },
+        "titleFormatted": {
+          "en": "Button is [[action]]",
+          "de": "Button ist [[action]]"
         },
         "args": [
           {
@@ -296,6 +304,10 @@
         "title": {
           "en": "A wheel-value received",
           "de": "Wheel-Value empfangen"
+        },
+        "titleFormatted": {
+          "en": "Button wheel is [[value]]",
+          "de": "Button Wheel ist [[value]]"
         },
         "args": [
           {

@@ -6,6 +6,10 @@
         "en": "A button is pressed",
         "de": "Button gedrückt"
       },
+      "titleFormatted": {
+        "en": "Button is [[action]]",
+        "de": "Button ist [[action]]"
+      },
       "args": [
         {
           "name": "action",
@@ -55,6 +59,10 @@
       "title": {
         "en": "A wheel-value received",
         "de": "Wheel-Value empfangen"
+      },
+      "titleFormatted": {
+        "en": "Button wheel is [[value]]",
+        "de": "Button Wheel ist [[value]]"
       },
       "args": [],
       "tokens": [

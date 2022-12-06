@@ -19,12 +19,14 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Devices
 
-* myStrom Switch v1 & v2                 [supported]
-* myStrom Bulb                           [supported]
-* myStrom Button                         [supported]
-* myStrom Button Plus                    [supported]
-* myStrom LED Strip                      [currently not supported]
-* myStrom WiFi Motion Sensor             [currently not supported]
+* myStrom Switch CH v1 & v2     > [supported]
+* myStrom Switch CH Zero        > [not tested, but it should work]
+* myStrom Switch EU             > [not tested, but it should work]
+* myStrom Bulb                  > [supported]
+* myStrom Button                > [supported]
+* myStrom Button Plus           > [supported]
+* myStrom LED Strip             > [currently not supported]
+* myStrom WiFi Motion Sensor    > [currently not supported]
 
 ---
 

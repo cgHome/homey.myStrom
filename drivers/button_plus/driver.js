@@ -11,16 +11,12 @@ module.exports = class ButtonPlusDriver extends ButtonDriver {
     this._flowTriggerWheelChanged = this.homey.flow
       .getDeviceTriggerCard('button_plus_wheel')
       .registerRunListener(Promise.resolve(true));
-
-    this.log('Driver initiated');
   }
 
   async onPairListDevices() {
-    const devices = (Object.values(this.homey.app.devices) || []).filter(
-      (device) => device.data.type === this.homey.app.deviceType.WBP,
-    );
-
-    return devices;
+    // see device-types on: https://api.mystrom.ch/#51094bbb-3807-47d2-b60e-dabf757d1f8e
+    return (Object.values(this.homey.app.devices) || [])
+      .filter((device) => device.data.type === 103);
   }
 
   triggerWheelChangedFlow(device, tokens, state) {

@@ -18,18 +18,25 @@ module.exports = class MyStromApp extends Homey.App {
     super(...args);
 
     this.devices = {};
+
+    // see device-types on: https://api.mystrom.ch/#51094bbb-3807-47d2-b60e-dabf757d1f8e
     this.deviceType = Object.freeze({
-      WSW: 101, // WiFi Switch CH v1
-      WRB: 102, // WiFi Bulb
-      WBP: 103, // WiFi Button +
-      WBS: 104, // WiFi Button
-      WLS: 105, // WiFi LED-strip
-      WS2: 106, // WiFi Switch CH v2
-      WSE: 107, // WiFi Switch EU
+      101: 'Switch CH v1',
+      102: 'Bulb',
+      103: 'Button +',
+      104: 'Button',
+      105: 'LED-strip',
+      106: 'Switch CH v2',
+      107: 'Switch EU',
+      110: 'Motion Sensor',
+      112: 'Gateway',
+      113: 'STECCO/CUBO',
+      118: 'Button Plus 2nd gen',
+      120: 'Switch Zero',
     });
   }
 
-  onInit() {
+  onInit(options = {}) {
     this.log(`${this.homey.manifest.name.en} app - v${this.homey.manifest.version} is running...`);
 
     // Find myStrom-Devices
@@ -44,19 +51,19 @@ module.exports = class MyStromApp extends Homey.App {
             mac,
             deviceName,
             host: service.host,
-            address: service.referer.address,
             type: mac.match('64002D') ? this.deviceType.WSW : this.deviceType.WS2,
+          },
+          store: {
+            address: service.referer.address,
           },
         };
         this.devices[mac] = device;
         this.homey.emit('deviceDiscovered', {
           name: device.data.deviceName,
-          address: device.data.address,
+          address: device.store.address,
           mac,
         });
-        this.log(
-          `Bonjour discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`,
-        );
+        this.notify(`Device ${device.data.deviceName} discovered - Bonjour > IP: ${device.store.address} (mac: ${mac}) / type: ${device.data.type})`);
       }
     });
     browser.start();
@@ -73,21 +80,21 @@ module.exports = class MyStromApp extends Homey.App {
               id: mac,
               mac,
               deviceName,
-              host: hostname,
-              address: rinfo.address,
+              host: hostnames[0],
               type: msg[6],
+            },
+            store: {
+              address: rinfo.address,
             },
           };
           if (!this.devices[mac]) {
             this.devices[mac] = device;
             this.homey.emit('deviceDiscovered', {
               name: device.data.deviceName,
-              address: device.data.address,
+              address: device.store.address,
               mac,
             });
-            this.log(
-              `UDP discovered device ${device.data.deviceName} found ${device.data.address} (${mac}) - (Type: ${device.data.type})`,
-            );
+            this.notify(`Device ${device.data.deviceName} discovered - UDP > IP: ${device.store.address} (mac: ${mac} / type: ${device.data.type})`);
           }
         } else {
           // this.error(`UDP discovery failed ${err.code} - ${err.message}`);
@@ -97,24 +104,31 @@ module.exports = class MyStromApp extends Homey.App {
     udpClient.bind(7979);
   }
 
-  // Web-API
-  async deviceGenActionAPI(query) {
-    this.debug(`deviceGenActionAPI() - ${JSON.stringify(query)}`);
-    this.homey.emit('deviceActionReceived', query);
+  // Web-API > deviceGenAction
+  async deviceGenActionAPI(params) {
+    this.debug(`deviceGenActionAPI() - ${JSON.stringify(params)}`);
+    this.homey.emit(`deviceGenAction-${params.mac}`, params);
   }
 
-  // Homey-App Loggers
+  notify(msg) {
+    setTimeout(() => {
+      msg = (typeof msg !== 'function') ? msg : msg();
+      this.homey.notifications.createNotification({ excerpt: `**MyStromApp** - ${msg}` });
+      this.log(`[NOTIFY] ${msg}`);
+    }, 1000);
+  }
+
   log(msg) {
     super.log(msg);
   }
 
   error(msg) {
-    super.error(`${msg}`);
+    super.error(`[ERROR] ${msg}`);
   }
 
   debug(msg) {
     if (process.env.DEBUG === '1') {
-      super.log(`»»» ${msg}`);
+      super.log(`[DEBUG] ${msg}`);
     }
   }
 

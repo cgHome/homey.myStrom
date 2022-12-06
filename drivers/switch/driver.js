@@ -4,17 +4,14 @@ const Driver = require('../driver');
 
 module.exports = class SwitchDriver extends Driver {
 
-  onInit(options) {
+  onInit(options = {}) {
     super.onInit(options);
-    this.log('Driver initiated');
   }
 
   async onPairListDevices() {
-    const devices = (Object.values(this.homey.app.devices) || []).filter(
-      (device) => device.data.type === this.homey.app.deviceType.WSW || device.data.type === this.homey.app.deviceType.WS2,
-    );
-
-    return devices;
+    // see device-types on: https://api.mystrom.ch/#51094bbb-3807-47d2-b60e-dabf757d1f8e
+    return (Object.values(this.homey.app.devices) || [])
+      .filter((device) => device.data.type === 101 || device.data.type === 106 || device.data.type === 107 || device.data.type === 120);
   }
 
 };

@@ -5,32 +5,29 @@ const Device = require('../device');
 module.exports = class SwitchDevice extends Device {
 
   onInit(options = {}) {
-    options.baseURL = `http://${this.getData().address}/`;
+    options.baseURL = options.baseURL || `http://${this.getStoreValue('address')}/`;
     super.onInit(options);
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
-
-    this.registerPollInterval({
-      id: this.getData().id,
-      fn: this.syncDeviceValues.bind(this),
-      sec: 60, // set interval to every minute
-    });
-
-    this.log('Device initiated');
   }
 
-  onDeleted() {
-    super.onDeleted();
-    this.deregisterPollInterval(this.getData().id);
+  initDevice() {
+    super.initDevice()
+      .then(this.getDeviceValues())
+      .then(this.initDeviceRefresh())
+      .catch((err) => this.error(`initDevice() > ${err}`));
   }
 
-  async deviceReady() {
-    try {
-      await super.deviceReady();
-      await this.getDeviceValues();
-    } catch (err) {
-      // nop
-    }
+  async getDeviceValues(url = 'report') {
+    return super.getDeviceValues(url)
+      .then((data) => {
+        this.setCapabilityValue('onoff', data.relay);
+        this.setCapabilityValue('measure_power', Math.round(data.power * 10) / 10);
+        if (data.temperature) {
+          this.setCapabilityValue('measure_temperature', Math.round(data.temperature * 10) / 10);
+        }
+      })
+      .catch((err) => this.error(`getDeviceValues() > ${err.message}`));
   }
 
   async onCapabilityOnOff(value, opts) {
@@ -38,33 +35,19 @@ module.exports = class SwitchDevice extends Device {
     if (current === value) return Promise.resolve(true);
 
     this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
-    const state = value ? '1' : '0';
 
-    return this.setDeviceData(`relay?state=${state}`)
+    return this.setDeviceData(`relay?state=${value ? '1' : '0'}`)
       .then(this.getDeviceValues())
-      .then(() => {
+      .then(this.notify(() => {
         const current = this.getCapabilityValue('onoff');
-        this.notify(this.homey.__('device.stateSet', { value: current ? 'on' : 'off' }));
-      })
+        return this.homey.__('device.stateSet', { value: current ? 'on' : 'off' });
+      }))
       .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
   }
 
-  async getDeviceValues(url = 'report') {
-    return super
-      .getDeviceValues(url)
-      .then(async (data) => {
-        await this.setCapabilityValue('onoff', data.relay);
-        await this.setCapabilityValue('measure_power', Math.round(data.power * 10) / 10);
-        if (data.temperature) {
-          await this.setCapabilityValue('measure_temperature', Math.round(data.temperature * 10) / 10);
-        }
-      })
-      .catch((err) => this.error(`getDeviceValues() > ${err.message}`));
-  }
-
   setDeviceData(...args) {
-    // switch uses apiGet to set values
-    return this.apiGet(...args);
+    // ATTENTION: switch uses http-get to set values
+    return this.getDeviceData(...args);
   }
 
 };
