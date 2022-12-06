@@ -51,7 +51,7 @@ module.exports = class MyStromApp extends Homey.App {
             mac,
             deviceName,
             host: service.host,
-            type: mac.match('64002D') ? this.deviceType.WSW : this.deviceType.WS2,
+            type: mac.match('64002D') ? 101 : 106,
           },
           store: {
             address: service.referer.address,

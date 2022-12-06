@@ -22,6 +22,10 @@ module.exports = class Device extends Homey.Device {
 
     this.setUnavailable(this.homey.__('device.connecting'));
 
+    this.homey.on(`deviceGenAction-${this.data.mac}`, async (params) => {
+      this.deviceGenActionReceived(params);
+    });
+
     this.ready()
       .then(this.initDevice())
       .then(this.setAvailable())
@@ -35,6 +39,7 @@ module.exports = class Device extends Homey.Device {
   initDeviceRefresh() {
     this.debug('initDeviceRefresh()');
     this._refreshInterval = this.homey.setInterval(() => {
+      this.debug('deviceRefresh()');
       this.getDeviceValues();
     }, 1 * 60 * 1000); // set interval to every 1 minutes.
 
@@ -55,8 +60,8 @@ module.exports = class Device extends Homey.Device {
     }
   }
 
-  deviceActionReceived(params) {
-    // this.debug(`deviceActionReceived() > ${JSON.stringify(params)}`);
+  deviceGenActionReceived(params) {
+    this.debug(`deviceGenActionReceived() > ${JSON.stringify(params)}`);
   }
 
   setCapabilityValue(capabilityId, value) {

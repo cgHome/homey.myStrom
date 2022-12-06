@@ -10,28 +10,6 @@ module.exports = class ButtonDevice extends Device {
     this.registerCapabilityListener('button', this.onCapabilityButton.bind(this));
   }
 
-  initDevice() {
-    super.initDevice()
-      .then(this.initDeviceGenAction())
-      .catch((err) => this.error(`initDevice() > ${err}`));
-  }
-
-  initDeviceGenAction(params) {
-    this.debug('initDeviceGenAction()');
-
-    this.homey.on(`deviceGenAction-${this.data.mac}`, async (params) => {
-      if (params.action <= '4') {
-        this.debug(`deviceGenAction: buttonPressed > ${JSON.stringify(params)}`);
-        // Battery-Level
-        if (params.battery) {
-          await this.setCapabilityValue('measure_battery', parseInt(params.battery, 10));
-        }
-        // Action
-        this.driver.triggerButtonPressedFlow(this, {}, { action: params.action });
-      }
-    });
-  }
-
   onAdded() {
     super.onAdded();
     this.subscribeDeviceGenAction();
@@ -45,6 +23,20 @@ module.exports = class ButtonDevice extends Device {
           .then((data) => this.debug(`subscribeDeviceGenAction() > ${data || '[none]'}`));
       })
       .catch((err) => this.error(`subscribeDeviceGenAction() > ${err}`));
+  }
+
+  async deviceGenActionReceived(params) {
+    super.deviceGenActionReceived(params);
+
+    if (params.action <= '4') {
+      this.debug(`deviceGenAction: buttonPressed > ${JSON.stringify(params)}`);
+      // Battery-Level
+      if (params.battery) {
+        await this.setCapabilityValue('measure_battery', parseInt(params.battery, 10));
+      }
+      // Action
+      this.driver.triggerButtonPressedFlow(this, {}, { action: params.action });
+    }
   }
 
   onCapabilityButton(value = true, opts) {

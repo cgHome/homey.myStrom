@@ -8,7 +8,7 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 * Finding new devices can take up to 4 minutes.
 * To add myStrom devices, you have to use the myStrom-App at the moment.
 
-**Important note for Buttons**
+**Important note for Buttons:**
 
 Keep in mind that in order for the Button or Button+ to respond to any of these requests they have to be in the configuration mode:
 
@@ -19,8 +19,8 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Devices
 
-* myStrom Switch CH v1 & v2     > [supported]
-* myStrom Switch CH Zero        > [not tested, but it should work]
+* myStrom Switch v1 & v2        > [supported]
+* myStrom Switch Zero           > [not tested, but it should work]
 * myStrom Switch EU             > [not tested, but it should work]
 * myStrom Bulb                  > [supported]
 * myStrom Button                > [supported]
@@ -31,6 +31,12 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 ---
 
 ## Changelog
+
+v1.1.2
+
+* Promises refactored
+* myStrom Switch Zero added
+* myStrom Switch EU fixed
 
 v1.1.1
 
