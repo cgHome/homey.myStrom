@@ -111,7 +111,7 @@ module.exports = class MyStromApp extends Homey.App {
   }
 
   notify(msg) {
-    setTimeout(() => {
+    this.homey.setTimeout(() => {
       msg = (typeof msg !== 'function') ? msg : msg();
       this.homey.notifications.createNotification({ excerpt: `**MyStromApp** - ${msg}` });
       this.log(`[NOTIFY] ${msg}`);
