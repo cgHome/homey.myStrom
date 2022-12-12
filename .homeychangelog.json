@@ -19,5 +19,8 @@
   },
   "1.1.2": {
     "en": "Promises refactored"
+  },
+  "1.1.3": {
+    "en": "Bugfixes"
   }
 }
