@@ -140,7 +140,8 @@ module.exports = class Device extends Homey.Device {
   notify(msg) {
     this.homey.setTimeout(() => {
       msg = (typeof msg !== 'function') ? msg : msg();
-      // this.homey.notifications.createNotification({ excerpt: `**${this.getName()}** ${msg}` })
+      // this.homey.notifications.createNotification({ excerpt: `**MyStromApp** - ${msg}` })
+      //   .catch((err) => this.error(`createNotification() > ${err}`));
       this.homey.app.log(`[NOTIFY] ${this._logLinePrefix()} > ${msg}`);
     }, 1000);
   }
