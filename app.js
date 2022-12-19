@@ -124,7 +124,7 @@ module.exports = class MyStromApp extends Homey.App {
   }
 
   error(msg) {
-    super.error(`[ERROR] ${msg}`);
+    super.error(`${msg}`);
   }
 
   debug(msg) {
