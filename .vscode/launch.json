@@ -1,17 +1,27 @@
 {
 	"version": "0.2.0",
 	"configurations": [
+
 		{
-			"name": "Attach to Homey",
+			"name": "Attach Homey-Container",
+			"type": "node",
+			"request": "attach",
+			"port": 9229,
+			"localRoot": "${workspaceFolder}",
+			"remoteRoot": "/app/",
+		},
+		{
+			"name": "Attach Homey-Remote",
 			"type": "node",
 			"request": "attach",
 			"address": "192.168.50.10",
+			// "address": "192.168.50.11",
 			"port": 9229,
 			"localRoot": "${workspaceFolder}",
 			"remoteRoot": "/",
 		},
 		{
-			"name": "Attach to Chrome",
+			"name": "Attach Chrome",
 			"type": "chrome",
 			"request": "attach",
 			"port": 9222,

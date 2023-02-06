@@ -20,8 +20,8 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 ## Devices
 
 * myStrom Switch v1 & v2        > [supported]
-* myStrom Switch Zero           > [not tested, but it should work]
-* myStrom Switch EU             > [not tested, but it should work]
+* myStrom Switch Zero           > [supported]
+* myStrom Switch EU             > [supported]
 * myStrom Bulb                  > [supported]
 * myStrom Button                > [supported]
 * myStrom Button Plus           > [supported]
@@ -113,6 +113,7 @@ v0.0.1
 
 ## ToDo
 
+* myStrom Switch Zero > no measure_power & measure_temperature 
 * Add homey discovery-api
 * Test WPS-Mode
 * Adding devices (pair) to WLAN without myStrom-app

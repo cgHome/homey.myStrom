@@ -1,16 +1,20 @@
 'use strict';
 
-const Homey = require('homey');
 const dns = require('dns');
 const dgram = require('dgram');
 const bonjour = require('bonjour')();
 
-/* eslint-disable */
-if (process.env.DEBUG === "1") {
-  require("inspector").open(9229, "0.0.0.0", false);
-  // require("inspector").open(9229, "0.0.0.0", true);
+const Homey = require('homey');
+
+if (process.env.DEBUG === '1') {
+  // >>> Homey-Debug Container
+  // eslint-disable-next-line global-require
+  // require('node:inspector').waitForDebugger();
+
+  // >>> Homey-Debug Remote
+  // eslint-disable-next-line global-require
+  require('node:inspector').open(9229, '0.0.0.0', true);
 }
-/* eslint-enable */
 
 module.exports = class MyStromApp extends Homey.App {
 
@@ -37,6 +41,7 @@ module.exports = class MyStromApp extends Homey.App {
   }
 
   onInit(options = {}) {
+    this.log(`Debug-Mode: ${process.env.DEBUG}`);
     this.log(`${this.homey.manifest.name.en} app - v${this.homey.manifest.version} is running...`);
 
     // Find myStrom-Devices
@@ -66,7 +71,9 @@ module.exports = class MyStromApp extends Homey.App {
         this.notify(`Device ${device.data.deviceName} discovered - Bonjour > IP: ${device.store.address} (mac: ${mac}) / type: ${device.data.type})`);
       }
     });
-    browser.start();
+    browser
+      .on('error', (err) => this.notifyError(`Bonjour error: ${err}`))
+      .start();
 
     const udpClient = dgram.createSocket('udp4', (msg, rinfo) => {
       dns.reverse(rinfo.address, (err, hostnames) => {
@@ -101,7 +108,9 @@ module.exports = class MyStromApp extends Homey.App {
         }
       });
     });
-    udpClient.bind(7979);
+    udpClient
+      .on('error', (err) => this.notifyError(`Bind error: ${err}`))
+      .bind(7979);
   }
 
   // Web-API > deviceGenAction
@@ -117,6 +126,12 @@ module.exports = class MyStromApp extends Homey.App {
         .catch((err) => this.error(`createNotification() > ${err}`));
       this.log(`[NOTIFY] ${msg}`);
     }, 1000);
+  }
+
+  async notifyError(msg) {
+    await this.homey.notifications.createNotification({ excerpt: `**${this.homey.manifest.name.en}** - Error: ${msg}` })
+      .catch((err) => this.error(`createNotification() > ${err}`));
+    this.error(`${msg}`);
   }
 
   log(msg) {

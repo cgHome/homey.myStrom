@@ -1,0 +1,31 @@
+{
+  "name": {
+    "en": "WiFi LED Strip"
+  },
+  "images": {
+    "large": "drivers/led_strip/assets/images/large.png",
+    "small": "drivers/led_strip/assets/images/small.png"
+  },
+  "class": "light",
+  "capabilities": [
+    "onoff",
+    "measure_power",
+    "dim",
+    "light_temperature",
+    "light_hue",
+    "light_saturation"
+  ],
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}
