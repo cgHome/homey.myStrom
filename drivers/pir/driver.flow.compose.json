@@ -1,0 +1,92 @@
+{
+  "triggers": [
+    {
+      "id": "lightState_changed",
+      "title": {
+        "en": "Light state changed",
+        "de": "Lichtstatus geändert"
+      },
+      "$filter": "capabilities=light_state",
+      "titleFormatted": {
+        "en": "Light state changed to [[lightState]]",
+        "de": "Lichtstatus geändert auf [[lightState]]"
+      },
+      "args": [
+        {
+          "name": "lightState",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "day",
+              "label": {
+                "en": "Day",
+                "de": "Tag"
+              }
+            },
+            {
+              "id": "twilight",
+              "label": {
+                "en": "Twilight",
+                "de": "Dämmerung"
+              }
+            },
+            {
+              "id": "night",
+              "label": {
+                "en": "Night",
+                "de": "Nacht"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "is_lightState",
+      "title": {
+        "en": "Light state is !{{|not}}",
+        "de": "Lichtstatus ist !{{|nicht}}"
+      },
+      "$filter": "capabilities=light_state",
+      "titleFormatted": {
+        "en": "Light state is !{{|not}} [[lightState]]",
+        "de": "Lichtstatus ist !{{|nicht}} [[lightState]]"
+      },
+      "hint": {
+        "en": "Checks the current light condition",
+        "de": "Prüft den aktuellen Lichtstatus"
+      },
+      "args": [
+        {
+          "name": "lightState",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "day",
+              "label": {
+                "en": "Day",
+                "de": "Tag"
+              }
+            },
+            {
+              "id": "twilight",
+              "label": {
+                "en": "Twilight",
+                "de": "Dämmerung"
+              }
+            },
+            {
+              "id": "night",
+              "label": {
+                "en": "Night",
+                "de": "Nacht"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

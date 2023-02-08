@@ -1,0 +1,29 @@
+{
+  "name": {
+    "en": "WiFi Motion Sensor"
+  },
+  "images": {
+    "large": "drivers/pir/assets/images/large.png",
+    "small": "drivers/pir/assets/images/small.png"
+  },
+  "class": "other",
+  "capabilities": [
+    "alarm_motion",
+    "measure_temperature",
+    "measure_luminance",
+    "light_state"
+  ],
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

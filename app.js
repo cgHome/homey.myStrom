@@ -13,7 +13,7 @@ if (process.env.DEBUG === '1') {
 
   // >>> Homey-Debug Remote
   // eslint-disable-next-line global-require
-  require('node:inspector').open(9229, '0.0.0.0', true);
+  require('node:inspector').open(9229, '0.0.0.0', false);
 }
 
 module.exports = class MyStromApp extends Homey.App {

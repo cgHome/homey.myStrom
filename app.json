@@ -58,12 +58,6 @@
       ],
       "pair": [
         {
-          "id": "start",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
-        {
           "id": "list_devices",
           "template": "list_devices",
           "navigation": {
@@ -96,12 +90,6 @@
         ]
       },
       "pair": [
-        {
-          "id": "start",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
         {
           "id": "list_devices",
           "template": "list_devices",
@@ -137,12 +125,6 @@
         ]
       },
       "pair": [
-        {
-          "id": "start",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
         {
           "id": "list_devices",
           "template": "list_devices",
@@ -191,6 +173,36 @@
     },
     {
       "name": {
+        "en": "WiFi Motion Sensor"
+      },
+      "images": {
+        "large": "drivers/pir/assets/images/large.png",
+        "small": "drivers/pir/assets/images/small.png"
+      },
+      "class": "other",
+      "capabilities": [
+        "alarm_motion",
+        "measure_temperature",
+        "measure_luminance",
+        "light_state"
+      ],
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "pir"
+    },
+    {
+      "name": {
         "en": "WiFi Switch"
       },
       "images": {
@@ -204,12 +216,6 @@
         "measure_temperature"
       ],
       "pair": [
-        {
-          "id": "start",
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
         {
           "id": "list_devices",
           "template": "list_devices",
@@ -358,7 +364,141 @@
             }
           }
         ]
+      },
+      {
+        "id": "lightState_changed",
+        "title": {
+          "en": "Light state changed",
+          "de": "Lichtstatus geändert"
+        },
+        "titleFormatted": {
+          "en": "Light state changed to [[lightState]]",
+          "de": "Lichtstatus geändert auf [[lightState]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=pir&capabilities=light_state"
+          },
+          {
+            "name": "lightState",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "day",
+                "label": {
+                  "en": "Day",
+                  "de": "Tag"
+                }
+              },
+              {
+                "id": "twilight",
+                "label": {
+                  "en": "Twilight",
+                  "de": "Dämmerung"
+                }
+              },
+              {
+                "id": "night",
+                "label": {
+                  "en": "Night",
+                  "de": "Nacht"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "is_lightState",
+        "title": {
+          "en": "Light state is !{{|not}}",
+          "de": "Lichtstatus ist !{{|nicht}}"
+        },
+        "titleFormatted": {
+          "en": "Light state is !{{|not}} [[lightState]]",
+          "de": "Lichtstatus ist !{{|nicht}} [[lightState]]"
+        },
+        "hint": {
+          "en": "Checks the current light condition",
+          "de": "Prüft den aktuellen Lichtstatus"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=pir&capabilities=light_state"
+          },
+          {
+            "name": "lightState",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "day",
+                "label": {
+                  "en": "Day",
+                  "de": "Tag"
+                }
+              },
+              {
+                "id": "twilight",
+                "label": {
+                  "en": "Twilight",
+                  "de": "Dämmerung"
+                }
+              },
+              {
+                "id": "night",
+                "label": {
+                  "en": "Night",
+                  "de": "Nacht"
+                }
+              }
+            ]
+          }
+        ]
       }
     ]
+  },
+  "capabilities": {
+    "light_state": {
+      "type": "enum",
+      "title": {
+        "en": "Light state",
+        "de": "Lichtstatus"
+      },
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "icon": "/assets/light_state.svg",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "values": [
+        {
+          "id": "day",
+          "title": {
+            "en": "Day",
+            "de": "Tag"
+          }
+        },
+        {
+          "id": "twilight",
+          "title": {
+            "en": "Twilight",
+            "de": "Dämmerung"
+          }
+        },
+        {
+          "id": "night",
+          "title": {
+            "en": "Night",
+            "de": "Nacht"
+          }
+        }
+      ]
+    }
   }
 }

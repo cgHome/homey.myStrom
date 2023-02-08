@@ -25,8 +25,8 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 * myStrom Bulb                  > [supported]
 * myStrom Button                > [supported]
 * myStrom Button Plus           > [supported]
-* myStrom LED Strip             > [currently not supported]
-* myStrom WiFi Motion Sensor    > [currently not supported]
+* myStrom LED Strip             > [supported]
+* myStrom WiFi Motion Sensor    > [supported]
 
 ---
 
