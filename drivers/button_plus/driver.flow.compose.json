@@ -4,11 +4,11 @@
       "id": "button_plus_pressed",
       "title": {
         "en": "A button is pressed",
-        "de": "Button gedrückt"
+        "de": "Eine Taste gedrückt"
       },
       "titleFormatted": {
         "en": "Button is [[action]]",
-        "de": "Button ist [[action]]"
+        "de": "Taste ist [[action]]"
       },
       "args": [
         {
