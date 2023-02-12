@@ -1,0 +1,78 @@
+{
+  "triggers": [
+    {
+      "id": "buttonPlus_pressed",
+      "title": {
+        "en": "A button is pressed",
+        "de": "Eine Taste gedrückt"
+      },
+      "titleFormatted": {
+        "en": "Button [[button]] is [[action]]",
+        "de": "Taste [[button]] ist [[action]]"
+      },
+      "args": [
+        {
+          "name": "button",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "1",
+              "label": {
+                "en": "Button-1",
+                "de": "Taste-1"
+              }
+            },
+            {
+              "id": "2",
+              "label": {
+                "en": "Button-2",
+                "de": "Taste-2"
+              }
+            },
+            {
+              "id": "3",
+              "label": {
+                "en": "Button-3",
+                "de": "Taste-3"
+              }
+            },
+            {
+              "id": "4",
+              "label": {
+                "en": "Button-4",
+                "de": "Taste-4"
+              }
+            }
+          ]
+        },
+        {
+          "name": "action",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "1",
+              "label": {
+                "en": "Short Press",
+                "de": "Kurz gedrückt"
+              }
+            },
+            {
+              "id": "2",
+              "label": {
+                "en": "Double Press",
+                "de": "2x Kurz gedrückt"
+              }
+            },
+            {
+              "id": "3",
+              "label": {
+                "en": "Long Press",
+                "de": "Lang gedrückt"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

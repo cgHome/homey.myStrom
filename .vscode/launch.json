@@ -1,6 +1,41 @@
 {
 	"version": "0.2.0",
 	"configurations": [
+		{
+			"name": "Launch Homey-Container",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeExecutable": "homey",
+			"args": [
+				"app",
+				"run",
+			],
+			"outputCapture": "std",
+			"serverReadyAction": {
+				"pattern": "Debugger listening on",
+				"action": "startDebugging",
+				"name": "Attach Homey-Container"
+			}
+		},
+		{
+			"name": "Launch Homey-Remote",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeExecutable": "homey",
+			"args": [
+				"app",
+				"run",
+				"--remote"
+			],
+			"outputCapture": "std",
+			"serverReadyAction": {
+				"pattern": "Debugger listening on",
+				"action": "startDebugging",
+				"name": "Attach Homey-Remote"
+			}
+		},
 
 		{
 			"name": "Attach Homey-Container",
@@ -14,8 +49,8 @@
 			"name": "Attach Homey-Remote",
 			"type": "node",
 			"request": "attach",
-			"address": "192.168.50.10",
-			// "address": "192.168.50.11",
+			// "address": "192.168.50.10",
+			"address": "192.168.50.11",
 			"port": 9229,
 			"localRoot": "${workspaceFolder}",
 			"remoteRoot": "/",

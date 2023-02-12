@@ -4,11 +4,35 @@ const Device = require('../device');
 
 module.exports = class SwitchDevice extends Device {
 
-  onInit(options = {}) {
+  async onInit(options = {}) {
     options.baseURL = options.baseURL || `http://${this.getStoreValue('address')}/`;
     super.onInit(options);
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
+
+    switch (this.data.type) {
+      case 101: // Switch CH v1
+        if (this.hasCapability('measure_temperature')) {
+          await this.removeCapability('measure_temperature')
+            .then(this.debug('onInit() > Switch CH v1 > measure_temperature removed'))
+            .catch((err) => this.error(`onInit() - ${err}`));
+        }
+        break;
+      case 120: // Switch Zero
+        if (this.hasCapability('measure_power')) {
+          await this.removeCapability('measure_power')
+            .then(this.debug('onInit() > Switch Zero > measure_power removed'))
+            .catch((err) => this.error(`onInit() - ${err}`));
+        }
+        if (this.hasCapability('measure_temperature')) {
+          await this.removeCapability('measure_temperature')
+            .then(this.debug('onInit() > Switch Zero > measure_temperature removed'))
+            .catch((err) => this.error(`onInit() - ${err}`));
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   initDevice() {
@@ -18,11 +42,13 @@ module.exports = class SwitchDevice extends Device {
       .catch((err) => this.error(`initDevice() > ${err}`));
   }
 
-  async getDeviceValues(url = 'report') {
+  getDeviceValues(url = 'report') {
     return super.getDeviceValues(url)
       .then((data) => {
         this.setCapabilityValue('onoff', data.relay);
-        this.setCapabilityValue('measure_power', Math.round(data.power * 10) / 10);
+        if (data.power) {
+          this.setCapabilityValue('measure_power', Math.round(data.power * 10) / 10);
+        }
         if (data.temperature) {
           this.setCapabilityValue('measure_temperature', Math.round(data.temperature * 10) / 10);
         }

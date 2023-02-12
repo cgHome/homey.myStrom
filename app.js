@@ -7,13 +7,13 @@ const bonjour = require('bonjour')();
 const Homey = require('homey');
 
 if (process.env.DEBUG === '1') {
-  // >>> Homey-Debug Container
-  // eslint-disable-next-line global-require
-  // require('node:inspector').waitForDebugger();
-
-  // >>> Homey-Debug Remote
-  // eslint-disable-next-line global-require
-  require('node:inspector').open(9229, '0.0.0.0', false);
+  try {
+    // eslint-disable-next-line global-require
+    require('node:inspector').waitForDebugger();
+  } catch (err) {
+    // eslint-disable-next-line global-require
+    require('node:inspector').open(9229, '0.0.0.0', true);
+  }
 }
 
 module.exports = class MyStromApp extends Homey.App {
@@ -41,7 +41,6 @@ module.exports = class MyStromApp extends Homey.App {
   }
 
   onInit(options = {}) {
-    this.log(`Debug-Mode: ${process.env.DEBUG}`);
     this.log(`${this.homey.manifest.name.en} app - v${this.homey.manifest.version} is running...`);
 
     // Find myStrom-Devices
@@ -72,7 +71,7 @@ module.exports = class MyStromApp extends Homey.App {
       }
     });
     browser
-      .on('error', (err) => this.notifyError(`Bonjour error: ${err}`))
+      .on('error', (err) => this.notifyError(`Bonjour: ${err}`))
       .start();
 
     const udpClient = dgram.createSocket('udp4', (msg, rinfo) => {
@@ -109,7 +108,7 @@ module.exports = class MyStromApp extends Homey.App {
       });
     });
     udpClient
-      .on('error', (err) => this.notifyError(`Bind error: ${err}`))
+      .on('error', (err) => this.notifyError(`UDP-Client: ${err}`))
       .bind(7979);
   }
 

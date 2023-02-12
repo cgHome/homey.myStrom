@@ -141,6 +141,41 @@
     },
     {
       "name": {
+        "en": "WiFi Button plus"
+      },
+      "images": {
+        "large": "drivers/button_plus2/assets/images/large.png",
+        "small": "drivers/button_plus2/assets/images/small.png"
+      },
+      "class": "other",
+      "capabilities": [
+        "button",
+        "measure_temperature",
+        "measure_humidity",
+        "measure_battery"
+      ],
+      "energy": {
+        "batteries": [
+          "INTERNAL"
+        ]
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "button_plus2"
+    },
+    {
+      "name": {
         "en": "WiFi LED Strip"
       },
       "images": {
@@ -237,11 +272,11 @@
         "id": "button_pressed",
         "title": {
           "en": "A button is pressed",
-          "de": "Button gedrückt"
+          "de": "Eine Taste gedrückt"
         },
         "titleFormatted": {
           "en": "Button is [[action]]",
-          "de": "Button ist [[action]]"
+          "de": "Taste ist [[action]]"
         },
         "args": [
           {
@@ -282,11 +317,11 @@
         "id": "button_plus_pressed",
         "title": {
           "en": "A button is pressed",
-          "de": "Button gedrückt"
+          "de": "Eine Taste gedrückt"
         },
         "titleFormatted": {
           "en": "Button is [[action]]",
-          "de": "Button ist [[action]]"
+          "de": "Taste ist [[action]]"
         },
         "args": [
           {
@@ -362,6 +397,85 @@
               "en": "value",
               "de": "Wert"
             }
+          }
+        ]
+      },
+      {
+        "id": "buttonPlus_pressed",
+        "title": {
+          "en": "A button is pressed",
+          "de": "Eine Taste gedrückt"
+        },
+        "titleFormatted": {
+          "en": "Button [[button]] is [[action]]",
+          "de": "Taste [[button]] ist [[action]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=button_plus2"
+          },
+          {
+            "name": "button",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "1",
+                "label": {
+                  "en": "Button-1",
+                  "de": "Taste-1"
+                }
+              },
+              {
+                "id": "2",
+                "label": {
+                  "en": "Button-2",
+                  "de": "Taste-2"
+                }
+              },
+              {
+                "id": "3",
+                "label": {
+                  "en": "Button-3",
+                  "de": "Taste-3"
+                }
+              },
+              {
+                "id": "4",
+                "label": {
+                  "en": "Button-4",
+                  "de": "Taste-4"
+                }
+              }
+            ]
+          },
+          {
+            "name": "action",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "1",
+                "label": {
+                  "en": "Short Press",
+                  "de": "Kurz gedrückt"
+                }
+              },
+              {
+                "id": "2",
+                "label": {
+                  "en": "Double Press",
+                  "de": "2x Kurz gedrückt"
+                }
+              },
+              {
+                "id": "3",
+                "label": {
+                  "en": "Long Press",
+                  "de": "Lang gedrückt"
+                }
+              }
+            ]
           }
         ]
       },
