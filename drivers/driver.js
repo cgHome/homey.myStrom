@@ -16,16 +16,16 @@ module.exports = class Driver extends Homey.Driver {
   }
 
   // Homey-App Loggers
-  log(msg) {
-    this.homey.app.log(`${this._logLinePrefix()} ${msg}`);
+  error(msg) {
+    super.error(`[ERROR] ${this._logLinePrefix()} ${msg}`);
   }
 
-  error(msg) {
-    this.homey.app.error(`${this._logLinePrefix()} ${msg}`);
+  log(msg) {
+    super.log(`[INFO] ${this._logLinePrefix()} ${msg}`);
   }
 
   debug(msg) {
-    this.homey.app.debug(`${this._logLinePrefix()} ${msg}`);
+    super.log(`[DEBUG] ${this._logLinePrefix()} ${msg}`);
   }
 
   _logLinePrefix() {

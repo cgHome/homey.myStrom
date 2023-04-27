@@ -114,8 +114,7 @@ v0.0.1
 ## ToDo
 
 * myStrom Switch Zero > no measure_power & measure_temperature 
-* Add homey discovery-api
-* Test WPS-Mode
+* Add homey discovery-api (https://github.com/rkokkelk/com.jreenen.homeyharmonyhub/blob/master/lib/discovery.js)
 * Adding devices (pair) to WLAN without myStrom-app
 
 ---

@@ -18,7 +18,7 @@ module.exports = class Device extends Homey.Device {
       await this.setStoreValue('address', this.data.address);
     }
 
-    this.httpAPI = new HttpAPI(this.homey, options.baseURL || `http://${this.getStoreValue('address')}/api/v1/`, this._logLinePrefix());
+    this.httpAPI = new HttpAPI(this, options.baseURL || `http://${this.getStoreValue('address')}/api/v1/`, this._logLinePrefix());
 
     this.setUnavailable(this.homey.__('device.connecting'));
 
@@ -142,20 +142,21 @@ module.exports = class Device extends Homey.Device {
       msg = (typeof msg !== 'function') ? msg : msg();
       // this.homey.notifications.createNotification({ excerpt: `**MyStromApp** - ${msg}` })
       //   .catch((err) => this.error(`createNotification() > ${err}`));
-      this.homey.app.log(`[NOTIFY] ${this._logLinePrefix()} > ${msg}`);
+      super.log(`[NOTIFY] ${this._logLinePrefix()} > ${msg}`);
     }, 1000);
   }
 
-  log(msg) {
-    this.homey.app.log(`${this._logLinePrefix()} > ${msg}`);
+  // Homey-App Loggers
+  error(msg) {
+    super.error(`[ERROR] ${this._logLinePrefix()} > ${msg}`);
   }
 
-  error(msg) {
-    this.homey.app.error(`${this._logLinePrefix()} > ${msg}`);
+  log(msg) {
+    super.log(`[INFO] ${this._logLinePrefix()} > ${msg}`);
   }
 
   debug(msg) {
-    this.homey.app.debug(`${this._logLinePrefix()} > ${msg}`);
+    super.log(`[DEBUG] ${this._logLinePrefix()} > ${msg}`);
   }
 
   _logLinePrefix() {

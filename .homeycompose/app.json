@@ -21,7 +21,7 @@
     "large": "./assets/images/large.png"
   },
   "brandColor": "#5AB42E",
-  "permissions": [],
+  "permissions": ["homey:app:nl.nielsdeklerk.log"],
   "author": {
     "name": "Chris Gross",
     "email": "cgHome@cflat-inc.org"
