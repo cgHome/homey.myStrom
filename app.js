@@ -41,7 +41,7 @@ module.exports = class MyStromApp extends Homey.App {
   }
 
   onInit(options = {}) {
-    this.log(`${this.homey.manifest.name.en} app - v${this.homey.manifest.version} is running...`);
+    this.logDebug('onInit()');
 
     // Find myStrom-Devices
     const browser = bonjour.find({ type: 'hap' }, (service) => {
@@ -103,18 +103,20 @@ module.exports = class MyStromApp extends Homey.App {
             this.notify(`Device ${device.data.deviceName} discovered - UDP > IP: ${device.store.address} (mac: ${mac} / type: ${device.data.type})`);
           }
         } else {
-          // this.error(`UDP discovery failed ${err.code} - ${err.message}`);
+          //  this.logError(`UDP discovery failed ${err.code} - ${err.message}`);
         }
       });
     });
     udpClient
       .on('error', (err) => this.notifyError(`UDP-Client: ${err}`))
       .bind(7979);
+
+    this.logInfo(`${this.homey.manifest.name.en} - v${this.homey.manifest.version} is started`);
   }
 
   // Web-API > deviceGenAction
   async deviceGenActionAPI(params) {
-    this.debug(`deviceGenActionAPI() - ${JSON.stringify(params)}`);
+    this.logDebug(`deviceGenActionAPI() - ${JSON.stringify(params)}`);
     this.homey.emit(`deviceGenAction-${params.mac}`, params);
   }
 
@@ -122,28 +124,28 @@ module.exports = class MyStromApp extends Homey.App {
     this.homey.setTimeout(() => {
       msg = (typeof msg !== 'function') ? msg : msg();
       this.homey.notifications.createNotification({ excerpt: `**MyStromApp** - ${msg}` })
-        .catch((err) => this.error(`createNotification() > ${err}`));
-      this.log(`[NOTIFY] ${msg}`);
+        .catch((err) => this.logError(`createNotification() > ${err}`));
+      this.logInfo(`[NOTIFY] ${msg}`);
     }, 1000);
   }
 
   async notifyError(msg) {
     await this.homey.notifications.createNotification({ excerpt: `**${this.homey.manifest.name.en}** - Error: ${msg}` })
-      .catch((err) => this.error(`createNotification() > ${err}`));
+      .catch((err) => this.logError(`createNotification() > ${err}`));
+    this.logError(`${msg}`);
+  }
+
+  logError(msg) {
     this.error(`${msg}`);
   }
 
-  log(msg) {
-    super.log(msg);
+  logInfo(msg) {
+    this.log(`[INFO] ${msg}`);
   }
 
-  error(msg) {
-    super.error(`${msg}`);
-  }
-
-  debug(msg) {
+  logDebug(msg) {
     if (process.env.DEBUG === '1') {
-      super.log(`[DEBUG] ${msg}`);
+      this.log(`[DEBUG] ${msg}`);
     }
   }
 

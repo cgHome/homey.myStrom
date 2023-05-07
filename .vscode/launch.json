@@ -1,8 +1,8 @@
 {
 	"version": "0.2.0",
 	"configurations": [
-		{
-			"name": "H2016:Select",
+		{		
+			"name": "HP2016:Select",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}",
@@ -10,11 +10,11 @@
 			"args": [
 				"select",
 				"-n",
-				"H2016"
+				"HP2016"
 			]
 		},
 		{
-			"name": "H2016:Run",
+			"name": "HP2016:Run",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}",
@@ -27,11 +27,11 @@
 			"serverReadyAction": {
 				"pattern": "Debugger listening on",
 				"action": "startDebugging",
-				"name": "H2016:Attach",
+				"name": "HP2016:Attach",
 			}
 		},
 		{
-			"name": "H2016:Attach",
+			"name": "HP2016:Attach",
 			"type": "node",
 			"request": "attach",
 			"address": "192.168.50.10",
@@ -52,7 +52,7 @@
 			]
 		},
 		{
-			"name": "HP2023:local:Run",
+			"name": "HP2023:Run",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}",
@@ -65,11 +65,11 @@
 			"serverReadyAction": {
 				"pattern": "Debugger listening on",
 				"action": "startDebugging",
-				"name": "HP2023:local:Attach",
+				"name": "HP2023:Attach",
 			}
 		},
 		{
-			"name": "HP2023:local:Attach",
+			"name": "HP2023:Attach",
 			"type": "node",
 			"request": "attach",
 			"port": 9229,

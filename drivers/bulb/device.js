@@ -22,7 +22,7 @@ module.exports = class BulbDevice extends Device {
     super.initDevice()
       .then(this.getDeviceValues())
       .then(this.initDeviceRefresh())
-      .catch((err) => this.error(`initDevice() > ${err}`));
+      .catch((err) => this.logError(`initDevice() > ${err}`));
   }
 
   getDeviceValues(url = 'device') {
@@ -42,14 +42,14 @@ module.exports = class BulbDevice extends Device {
         }
         return data;
       })
-      .catch((err) => this.error(`getDeviceValues() > ${err.message}`));
+      .catch((err) => this.logError(`getDeviceValues() > ${err.message}`));
   }
 
   async onCapabilityOnOff(value, opts) {
     const current = this.getCapabilityValue('onoff');
     if (current === value) return Promise.resolve(true);
 
-    this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
+    this.logDebug(`onCapabilityOnOff() - ${current} > ${value}`);
 
     const action = value ? 'on' : 'off';
 
@@ -59,14 +59,14 @@ module.exports = class BulbDevice extends Device {
         const current = this.getCapabilityValue('onoff');
         return this.homey.__('device.stateSet', { value: current ? 'on' : 'off' });
       }))
-      .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
+      .catch((err) => this.logError(`onCapabilityOnOff() > ${err}`));
   }
 
   async onCapabilityDim(value, opts) {
     const current = this.getCapabilityValue('dim');
     if (current === value) return Promise.resolve(true);
 
-    this.debug(`onCapabilityDim() - ${current} > ${value}`);
+    this.logDebug(`onCapabilityDim() - ${current} > ${value}`);
 
     const action = value >= 0.01 ? 'on' : 'off';
     const dim = Math.round(value * 100);
@@ -89,14 +89,14 @@ module.exports = class BulbDevice extends Device {
         const current = this.getCapabilityValue('dim');
         return this.homey.__('device.dimSet', { value: Math.round(current * 100) });
       }))
-      .catch((err) => this.error(`onCapabilityDim() > ${err}`));
+      .catch((err) => this.logError(`onCapabilityDim() > ${err}`));
   }
 
   async onCapabilityLightTemperature(value, opts) {
     const current = this.getCapabilityValue('light_temperature');
     if (current === value) return Promise.resolve(true);
 
-    this.debug(`onCapabilityLightTemperature() - ${current} > ${value}`);
+    this.logDebug(`onCapabilityLightTemperature() - ${current} > ${value}`);
 
     const lightTemperature = 14 - Math.round(value * 13);
     const dim = Math.round(this.getCapabilityValue('dim') * 100);
@@ -110,7 +110,7 @@ module.exports = class BulbDevice extends Device {
         const current = this.getCapabilityValue('light_temperature');
         return this.homey.__('device.lightTemperatureSet', { value: current });
       }))
-      .catch((err) => this.error(`onCapabilityLightTemperature() > ${err}`));
+      .catch((err) => this.logError(`onCapabilityLightTemperature() > ${err}`));
   }
 
   async onCapabilityLightHueSaturation(values, opts) {
@@ -121,8 +121,8 @@ module.exports = class BulbDevice extends Device {
 
     if (!(curHue !== valHue || curSaturation !== valSaturation)) return Promise.resolve(true);
 
-    this.debug(`onCapabilityLightHueSaturation() light_hue - ${curHue} > ${valHue}`);
-    this.debug(`onCapabilityLightHueSaturation() light_saturation - ${curSaturation} > ${valSaturation}`);
+    this.logDebug(`onCapabilityLightHueSaturation() light_hue - ${curHue} > ${valHue}`);
+    this.logDebug(`onCapabilityLightHueSaturation() light_saturation - ${curSaturation} > ${valSaturation}`);
 
     const hue = Math.round(valHue * 360);
     const saturation = Math.round(valSaturation * 100);
@@ -138,7 +138,7 @@ module.exports = class BulbDevice extends Device {
         const saturation = Math.round(this.getCapabilityValue('light_saturation') * 100);
         return this.homey.__('device.lightHueSetSaturation', { hue, saturation });
       }))
-      .catch((err) => this.error(`onCapabilityLightHue() > ${err}`));
+      .catch((err) => this.logError(`onCapabilityLightHue() > ${err}`));
   }
 
   setDeviceData(url, data) {

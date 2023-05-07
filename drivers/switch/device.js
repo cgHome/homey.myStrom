@@ -14,20 +14,20 @@ module.exports = class SwitchDevice extends Device {
       case 101: // Switch CH v1
         if (this.hasCapability('measure_temperature')) {
           await this.removeCapability('measure_temperature')
-            .then(this.debug('onInit() > Switch CH v1 > measure_temperature removed'))
-            .catch((err) => this.error(`onInit() - ${err}`));
+            .then(this.logDebug('onInit() > Switch CH v1 > measure_temperature removed'))
+            .catch((err) => this.logError(`onInit() - ${err}`));
         }
         break;
       case 120: // Switch Zero
         if (this.hasCapability('measure_power')) {
           await this.removeCapability('measure_power')
-            .then(this.debug('onInit() > Switch Zero > measure_power removed'))
-            .catch((err) => this.error(`onInit() - ${err}`));
+            .then(this.logDebug('onInit() > Switch Zero > measure_power removed'))
+            .catch((err) => this.logError(`onInit() - ${err}`));
         }
         if (this.hasCapability('measure_temperature')) {
           await this.removeCapability('measure_temperature')
-            .then(this.debug('onInit() > Switch Zero > measure_temperature removed'))
-            .catch((err) => this.error(`onInit() - ${err}`));
+            .then(this.logDebug('onInit() > Switch Zero > measure_temperature removed'))
+            .catch((err) => this.logError(`onInit() - ${err}`));
         }
         break;
       default:
@@ -39,7 +39,7 @@ module.exports = class SwitchDevice extends Device {
     super.initDevice()
       .then(this.getDeviceValues())
       .then(this.initDeviceRefresh())
-      .catch((err) => this.error(`initDevice() > ${err}`));
+      .catch((err) => this.logError(`initDevice() > ${err}`));
   }
 
   getDeviceValues(url = 'report') {
@@ -53,14 +53,14 @@ module.exports = class SwitchDevice extends Device {
           this.setCapabilityValue('measure_temperature', Math.round(data.temperature * 10) / 10);
         }
       })
-      .catch((err) => this.error(`getDeviceValues() > ${err.message}`));
+      .catch((err) => this.logError(`getDeviceValues() > ${err.message}`));
   }
 
   async onCapabilityOnOff(value, opts) {
     const current = this.getCapabilityValue('onoff');
     if (current === value) return Promise.resolve(true);
 
-    this.debug(`onCapabilityOnOff() - ${current} > ${value}`);
+    this.logDebug(`onCapabilityOnOff() - ${current} > ${value}`);
 
     return this.setDeviceData(`relay?state=${value ? '1' : '0'}`)
       .then(this.getDeviceValues())
@@ -68,7 +68,7 @@ module.exports = class SwitchDevice extends Device {
         const current = this.getCapabilityValue('onoff');
         return this.homey.__('device.stateSet', { value: current ? 'on' : 'off' });
       }))
-      .catch((err) => this.error(`onCapabilityOnOff() > ${err}`));
+      .catch((err) => this.logError(`onCapabilityOnOff() > ${err}`));
   }
 
   setDeviceData(...args) {

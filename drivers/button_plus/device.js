@@ -13,7 +13,7 @@ module.exports = class ButtonPlusDevice extends ButtonDevice {
     super.deviceGenActionReceived(params);
 
     if (params.action === '5' && params.wheel) {
-      this.debug(`deviceGenAction: wheelChanged > ${JSON.stringify(params)}`);
+      this.logDebug(`deviceGenAction: wheelChanged > ${JSON.stringify(params)}`);
       // Battery-Level
       if (params.battery) {
         await this.setCapabilityValue('measure_battery', parseInt(params.battery, 10));

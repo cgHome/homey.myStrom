@@ -11,7 +11,7 @@ module.exports = class Device extends Homey.Device {
 
   async onInit(options) {
     super.onInit(options);
-    this.debug('onInit()');
+    this.logDebug('onInit()');
 
     // Compatibility fix < v1.1.1
     if (typeof this.data.address !== 'undefined') {
@@ -29,7 +29,7 @@ module.exports = class Device extends Homey.Device {
     this.ready()
       .then(this.initDevice())
       .then(this.setAvailable())
-      .then(this.log('Device ready'));
+      .then(this.logInfo('Device ready'));
   }
 
   initDevice() {
@@ -37,38 +37,38 @@ module.exports = class Device extends Homey.Device {
   }
 
   initDeviceRefresh() {
-    this.debug('initDeviceRefresh()');
+    this.logDebug('initDeviceRefresh()');
     this._refreshInterval = this.homey.setInterval(() => {
-      this.debug('deviceRefresh()');
+      this.logDebug('deviceRefresh()');
       this.getDeviceValues();
     }, 1 * 60 * 1000); // set interval to every 1 minutes.
 
     this.homey.on('unload', () => {
-      this.debug('initDeviceRefresh() > homeyEvent: unload');
+      this.logDebug('initDeviceRefresh() > homeyEvent: unload');
       this.homey.clearInterval(this._refreshInterval);
     });
   }
 
   async onAdded() {
-    this.log(`Device ${this.getName()} added`);
+    this.logInfo(`Device ${this.getName()} added`);
   }
 
   async onDeleted() {
-    this.log(`Device ${this.getName()} deleted`);
+    this.logInfo(`Device ${this.getName()} deleted`);
     if (typeof this._refreshInterval !== 'undefined') {
       this.homey.clearInterval(this._refreshInterval);
     }
   }
 
   deviceGenActionReceived(params) {
-    this.debug(`deviceGenActionReceived() > ${JSON.stringify(params)}`);
+    this.logDebug(`deviceGenActionReceived() > ${JSON.stringify(params)}`);
   }
 
   setCapabilityValue(capabilityId, value) {
     const currentValue = this.getCapabilityValue(capabilityId);
 
     if (typeof value === 'undefined' || Number.isNaN(value)) {
-      this.error(`setCapabilityValue() '${capabilityId}' - value > ${value}`);
+      this.logError(`setCapabilityValue() '${capabilityId}' - value > ${value}`);
       return Promise.resolve(currentValue);
     }
     if (value === currentValue) {
@@ -77,30 +77,30 @@ module.exports = class Device extends Homey.Device {
 
     return super.setCapabilityValue(capabilityId, value)
       .then(() => {
-        this.debug(`setCapabilityValue() '${capabilityId}' - ${currentValue} > ${value}`);
+        this.logDebug(`setCapabilityValue() '${capabilityId}' - ${currentValue} > ${value}`);
         return value;
       })
       .catch((err) => {
-        return this.error(`setCapabilityValue() '${capabilityId}' > ${err}`);
+        return this.logError(`setCapabilityValue() '${capabilityId}' > ${err}`);
       });
   }
 
   // Data handling
   getDeviceValues(url = '**unknown**') {
-    this.debug(`getDeviceValues() - '${url}'`);
+    this.logDebug(`getDeviceValues() - '${url}'`);
     return this.getDeviceData(url);
   }
 
   getDeviceData(url) {
     return this.httpAPI.get(url)
       .then((json) => {
-        this.debug(`getDeviceData() - '${url}' > ${JSON.stringify(json)}`);
+        this.logDebug(`getDeviceData() - '${url}' > ${JSON.stringify(json)}`);
         this.setAvailable()
-          .catch((err) => this.error(`setAvailable() > ${err}`));
+          .catch((err) => this.logError(`setAvailable() > ${err}`));
         return json;
       })
       .catch((err) => {
-        this.error(`getDeviceData() - '${url}' > ${err}`);
+        this.logError(`getDeviceData() - '${url}' > ${err}`);
         this._handelHttpError(err);
         throw new Error(`Get device-data failed (${(err.response && err.response.status) || err.code})`);
       });
@@ -109,13 +109,13 @@ module.exports = class Device extends Homey.Device {
   setDeviceData(url, value) {
     return this.httpAPI.post(url, value)
       .then((json) => {
-        this.debug(`setDeviceData() - '${url}' > ${JSON.stringify(value) || ''}`);
+        this.logDebug(`setDeviceData() - '${url}' > ${JSON.stringify(value) || ''}`);
         this.setAvailable()
-          .catch((err) => this.error(`setAvailable() > ${err}`));
+          .catch((err) => this.logError(`setAvailable() > ${err}`));
         return json;
       })
       .catch((err) => {
-        this.error(`setDeviceData() - '${url}' ${JSON.stringify(value)} > ${err}`);
+        this.logError(`setDeviceData() - '${url}' ${JSON.stringify(value)} > ${err}`);
         this._handelHttpError(err);
         throw new Error(`Set device-data failed (${(err.response && err.response.status) || err.code})`);
       });
@@ -141,26 +141,26 @@ module.exports = class Device extends Homey.Device {
     this.homey.setTimeout(() => {
       msg = (typeof msg !== 'function') ? msg : msg();
       // this.homey.notifications.createNotification({ excerpt: `**MyStromApp** - ${msg}` })
-      //   .catch((err) => this.error(`createNotification() > ${err}`));
-      super.log(`[NOTIFY] ${this._logLinePrefix()} > ${msg}`);
+      //   .catch((err) =>  this.logError(`createNotification() > ${err}`));
+      this.log(`[NOTIFY] ${this._logLinePrefix()} > ${msg}`);
     }, 1000);
   }
 
   // Homey-App Loggers
-  error(msg) {
-    super.error(`[ERROR] ${this._logLinePrefix()} > ${msg}`);
+  logError(msg) {
+    this.error(`[ERROR] ${this._logLinePrefix()} > ${msg}`);
   }
 
-  log(msg) {
-    super.log(`[INFO] ${this._logLinePrefix()} > ${msg}`);
+  logInfo(msg) {
+    this.log(`[INFO] ${this._logLinePrefix()} > ${msg}`);
   }
 
-  debug(msg) {
-    super.log(`[DEBUG] ${this._logLinePrefix()} > ${msg}`);
+  logDebug(msg) {
+    this.log(`[DEBUG] ${this._logLinePrefix()} > ${msg}`);
   }
 
   _logLinePrefix() {
-    return `${this.constructor.name}::${this.getName()}`;
+    return `${this.getName()}`;
   }
 
 };

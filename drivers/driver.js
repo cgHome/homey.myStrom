@@ -5,31 +5,31 @@ const Homey = require('homey');
 module.exports = class Driver extends Homey.Driver {
 
   onInit(options = {}) {
-    this.debug('onInit()');
+    this.logDebug('onInit()');
 
     this.ready()
       .then(this.driverReady());
   }
 
   driverReady() {
-    this.log('Driver ready');
+    this.logInfo('Driver ready');
   }
 
   // Homey-App Loggers
-  error(msg) {
-    super.error(`[ERROR] ${this._logLinePrefix()} ${msg}`);
+  logError(msg) {
+    this.error(`[ERROR] ${this._logLinePrefix()} ${msg}`);
   }
 
-  log(msg) {
-    super.log(`[INFO] ${this._logLinePrefix()} ${msg}`);
+  logInfo(msg) {
+    this.log(`[INFO] ${this._logLinePrefix()} ${msg}`);
   }
 
-  debug(msg) {
-    super.log(`[DEBUG] ${this._logLinePrefix()} ${msg}`);
+  logDebug(msg) {
+    this.log(`[DEBUG] ${this._logLinePrefix()} ${msg}`);
   }
 
   _logLinePrefix() {
-    return `${this.constructor.name} >`;
+    return '';
   }
 
 };

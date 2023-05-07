@@ -18,7 +18,7 @@ module.exports = class PirDevice extends Device {
     super.initDevice()
       .then(this.subscribeDeviceGenAction())
       .then(this.getDeviceValues())
-      .catch((err) => this.error(`initDevice() > ${err}`));
+      .catch((err) => this.logError(`initDevice() > ${err}`));
   }
 
   subscribeDeviceGenAction() {
@@ -26,9 +26,9 @@ module.exports = class PirDevice extends Device {
       .then((localAddress) => {
         const value = `get://${localAddress}/api/app/${this.homey.manifest.id}/deviceGenAction`;
         return this.setDeviceData('action/pir/generic', value)
-          .then((data) => this.debug(`subscribeDeviceGenAction() > ${data || '[none]'}`));
+          .then((data) => this.logDebug(`subscribeDeviceGenAction() > ${data || '[none]'}`));
       })
-      .catch((err) => this.error(`subscribeDeviceGenAction() > ${err}`));
+      .catch((err) => this.logError(`subscribeDeviceGenAction() > ${err}`));
   }
 
   deviceGenActionReceived(params) {
@@ -36,11 +36,11 @@ module.exports = class PirDevice extends Device {
 
     switch (params.action) {
       case MOTION_START:
-        this.debug('deviceGenActionReceived() > motion start');
+        this.logDebug('deviceGenActionReceived() > motion start');
         this.setCapabilityValue('alarm_motion', true);
         break;
       case MOTION_STOP:
-        this.debug('deviceGenActionReceived() > motion stop');
+        this.logDebug('deviceGenActionReceived() > motion stop');
         this.setCapabilityValue('alarm_motion', false);
         break;
       case MOTION_DAY:
@@ -63,15 +63,15 @@ module.exports = class PirDevice extends Device {
           this.setCapabilityValue('measure_temperature', Math.round(data.temperature * 10) / 10);
         }
       })
-      .catch((err) => this.error(`getDeviceValues() > ${err.message}`));
+      .catch((err) => this.logError(`getDeviceValues() > ${err.message}`));
   }
 
   setLightState(state) {
     if (state !== this.getCapabilityValue('light_state')) {
-      this.debug(`setLightState() > ${state}`);
+      this.logDebug(`setLightState() > ${state}`);
       this.setCapabilityValue('light_state', state)
         .then(this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state }))
-        .catch((err) => this.error(`setLightState() - ${err}`));
+        .catch((err) => this.logError(`setLightState() - ${err}`));
     }
   }
 

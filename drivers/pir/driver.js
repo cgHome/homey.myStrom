@@ -27,7 +27,7 @@ module.exports = class PirDriver extends Driver {
     this.__flowTriggerLightStateChanged
       .trigger(device, tokens, state)
       .then(device.log(`light state changed to ${state.lightState}`))
-      .catch((err) => this.error(`triggerLightStateChangedFlow() > ${err}`));
+      .catch((err) => this.logError(`triggerLightStateChangedFlow() > ${err}`));
   }
 
 };
