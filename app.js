@@ -27,6 +27,10 @@ module.exports = class MyStromApp extends MyApp {
 
   #devices = {};
 
+  get devices() {
+    return this.#devices;
+  }
+
   onInit(options = {}) {
     super.onInit();
 

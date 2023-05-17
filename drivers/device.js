@@ -2,7 +2,7 @@
 
 const { MyHttpDevice } = require('my-homey');
 
-module.exports = class Device extends MyHttpDevice {
+module.exports = class BaseDevice extends MyHttpDevice {
 
   #refreshDeviceInterval = null;
 

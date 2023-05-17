@@ -1,8 +1,8 @@
 'use strict';
 
-const Device = require('../device');
+const BaseDevice = require('../device');
 
-module.exports = class SwitchDevice extends Device {
+module.exports = class SwitchDevice extends BaseDevice {
 
   async onInit(options = {}) {
     super.onInit(options);

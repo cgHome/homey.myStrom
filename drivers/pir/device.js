@@ -1,6 +1,6 @@
 'use strict';
 
-const Device = require('../device');
+const BaseDevice = require('../device');
 
 const MOTION_START = '8';
 const MOTION_STOP = '9';
@@ -8,7 +8,7 @@ const MOTION_NIGHT = '14';
 const MOTION_TWILIGHT = '15';
 const MOTION_DAY = '16';
 
-module.exports = class PirDevice extends Device {
+module.exports = class PirDevice extends BaseDevice {
 
   onInit(options = {}) {
     super.onInit(options);

@@ -1,8 +1,8 @@
 'use strict';
 
-const Driver = require('../driver');
+const BaseDriver = require('../driver');
 
-module.exports = class SwitchDriver extends Driver {
+module.exports = class SwitchDriver extends BaseDriver {
 
   onInit(options = {}) {
     super.onInit(options);

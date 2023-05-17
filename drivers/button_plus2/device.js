@@ -1,8 +1,8 @@
 'use strict';
 
-const Device = require('../device');
+const BaseDevice = require('../device');
 
-module.exports = class ButtonPlus2Device extends Device {
+module.exports = class ButtonPlus2Device extends BaseDevice {
 
   onInit(options = {}) {
     super.onInit(options);

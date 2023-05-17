@@ -51,31 +51,32 @@
 				"HP2023"
 			]
 		},
-		{					
-			"name": "HP23:Run",
-			"type": "node",
-			"request": "launch",
-			"cwd": "${workspaceFolder}",
-			"runtimeExecutable": "homey",
-			"args": [
-				"app",
-				"run",
-			],
-			"outputCapture": "std",
-			"serverReadyAction": {
-				"pattern": "Debugger listening on",
-				"action": "startDebugging",
-				"name": "HP23:Attach",
-			}
-		},
-		{
-			"name": "HP23:Attach",
-			"type": "node",
-			"request": "attach",
-			"port": 9229,
-			"localRoot": "${workspaceFolder}",
-			"remoteRoot": "/app/",
-		},
+		// Datagram does not work in the container at the moment !!
+		// {					
+		// 	"name": "HP23:Run",
+		// 	"type": "node",
+		// 	"request": "launch",
+		// 	"cwd": "${workspaceFolder}",
+		// 	"runtimeExecutable": "homey",
+		// 	"args": [
+		// 		"app",
+		// 		"run",
+		// 	],
+		// 	"outputCapture": "std",
+		// 	"serverReadyAction": {
+		// 		"pattern": "Debugger listening on",
+		// 		"action": "startDebugging",
+		// 		"name": "HP23:Attach",
+		// 	}
+		// },
+		// {
+		// 	"name": "HP23:Attach",
+		// 	"type": "node",
+		// 	"request": "attach",
+		// 	"port": 9229,
+		// 	"localRoot": "${workspaceFolder}",
+		// 	"remoteRoot": "/app/",
+		// },
 		{
 			"name": "HP23:remote:Run",
 			"type": "node",

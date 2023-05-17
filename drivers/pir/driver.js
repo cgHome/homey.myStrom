@@ -1,8 +1,8 @@
 'use strict';
 
-const Driver = require('../driver');
+const BaseDriver = require('../driver');
 
-module.exports = class PirDriver extends Driver {
+module.exports = class PirDriver extends BaseDriver {
 
   onInit(options = {}) {
     super.onInit(options);

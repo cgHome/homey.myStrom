@@ -1,11 +1,11 @@
 'use strict';
 
 const querystring = require('querystring');
-const Device = require('../device');
+const BaseDevice = require('../device');
 
 const RAMP_DEFAULT = '0';
 
-module.exports = class BulbDevice extends Device {
+module.exports = class BulbDevice extends BaseDevice {
 
   onInit(options = {}) {
     super.onInit(options);

@@ -1,8 +1,8 @@
 'use strict';
 
-const Driver = require('../driver');
+const BaseDriver = require('../driver');
 
-module.exports = class ButtonDriver extends Driver {
+module.exports = class ButtonDriver extends BaseDriver {
 
   onInit(options = {}) {
     super.onInit(options);

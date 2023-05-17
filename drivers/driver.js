@@ -2,7 +2,7 @@
 
 const { MyDriver } = require('my-homey');
 
-module.exports = class Driver extends MyDriver {
+module.exports = class BaseDriver extends MyDriver {
 
   async onInit(options = {}) {
     super.onInit(options);
