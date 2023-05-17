@@ -4,44 +4,31 @@ const dns = require('dns');
 const dgram = require('dgram');
 const bonjour = require('bonjour')();
 
-const Homey = require('homey');
+const { MyApp } = require('my-homey');
 
-if (process.env.DEBUG === '1') {
-  try {
-    // eslint-disable-next-line global-require
-    require('node:inspector').waitForDebugger();
-  } catch (err) {
-    // eslint-disable-next-line global-require
-    require('node:inspector').open(9229, '0.0.0.0', true);
-  }
-}
+// see device-types on: https://api.mystrom.ch/#51094bbb-3807-47d2-b60e-dabf757d1f8e
+// eslint-disable-next-line no-unused-vars
+const DEVICE_TYPE = {
+  101: 'Switch CH v1',
+  102: 'Bulb',
+  103: 'Button +',
+  104: 'Button',
+  105: 'LED-strip',
+  106: 'Switch CH v2',
+  107: 'Switch EU',
+  110: 'Motion Sensor',
+  112: 'Gateway',
+  113: 'STECCO/CUBO',
+  118: 'Button Plus 2nd gen',
+  120: 'Switch Zero',
+};
 
-module.exports = class MyStromApp extends Homey.App {
+module.exports = class MyStromApp extends MyApp {
 
-  constructor(...args) {
-    super(...args);
-
-    this.devices = {};
-
-    // see device-types on: https://api.mystrom.ch/#51094bbb-3807-47d2-b60e-dabf757d1f8e
-    this.deviceType = Object.freeze({
-      101: 'Switch CH v1',
-      102: 'Bulb',
-      103: 'Button +',
-      104: 'Button',
-      105: 'LED-strip',
-      106: 'Switch CH v2',
-      107: 'Switch EU',
-      110: 'Motion Sensor',
-      112: 'Gateway',
-      113: 'STECCO/CUBO',
-      118: 'Button Plus 2nd gen',
-      120: 'Switch Zero',
-    });
-  }
+  #devices = {};
 
   onInit(options = {}) {
-    this.logDebug('onInit()');
+    super.onInit();
 
     // Find myStrom-Devices
     const browser = bonjour.find({ type: 'hap' }, (service) => {
@@ -61,13 +48,13 @@ module.exports = class MyStromApp extends Homey.App {
             address: service.referer.address,
           },
         };
-        this.devices[mac] = device;
+        this.#devices[mac] = device;
         this.homey.emit('deviceDiscovered', {
           name: device.data.deviceName,
           address: device.store.address,
           mac,
         });
-        this.notify(`Device ${device.data.deviceName} discovered - Bonjour > IP: ${device.store.address} (mac: ${mac}) / type: ${device.data.type})`);
+        this.logNotice(`Device ${device.data.deviceName} discovered - Bonjour > IP: ${device.store.address} (mac: ${mac}) / type: ${device.data.type})`);
       }
     });
     browser
@@ -93,8 +80,8 @@ module.exports = class MyStromApp extends Homey.App {
               address: rinfo.address,
             },
           };
-          if (!this.devices[mac]) {
-            this.devices[mac] = device;
+          if (!this.#devices[mac]) {
+            this.#devices[mac] = device;
             this.homey.emit('deviceDiscovered', {
               name: device.data.deviceName,
               address: device.store.address,
@@ -111,7 +98,7 @@ module.exports = class MyStromApp extends Homey.App {
       .on('error', (err) => this.notifyError(`UDP-Client: ${err}`))
       .bind(7979);
 
-    this.logInfo(`${this.homey.manifest.name.en} - v${this.homey.manifest.version} is started`);
+    this.logInfo('Homey-App is started');
   }
 
   // Web-API > deviceGenAction
@@ -135,18 +122,20 @@ module.exports = class MyStromApp extends Homey.App {
     this.logError(`${msg}`);
   }
 
-  logError(msg) {
-    this.error(`${msg}`);
-  }
+  // NOTE: simplelog-api on/off
 
-  logInfo(msg) {
-    this.log(`[INFO] ${msg}`);
-  }
+  // logError(msg) {
+  //   this.error(`${msg}`);
+  // }
 
-  logDebug(msg) {
-    if (process.env.DEBUG === '1') {
-      this.log(`[DEBUG] ${msg}`);
-    }
-  }
+  // logInfo(msg) {
+  //   this.log(`[INFO] ${msg}`);
+  // }
+
+  // logDebug(msg) {
+  //   if (process.env.DEBUG === '1') {
+  //     this.log(`[DEBUG] ${msg}`);
+  //   }
+  // }
 
 };

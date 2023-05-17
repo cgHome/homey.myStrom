@@ -2,6 +2,14 @@
 
 Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 
+---
+
+## Attention
+
+**The app is currently **not** HP2023 (v10.x) compatible.....**
+
+---
+
 **Note:**
 
 * **If you have problems after the upgrade, register all devices new.**
@@ -19,18 +27,28 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Devices
 
-* myStrom Switch v1 & v2        > [supported]
-* myStrom Switch Zero           > [supported]
-* myStrom Switch EU             > [supported]
-* myStrom Bulb                  > [supported]
-* myStrom Button                > [supported]
-* myStrom Button Plus           > [supported]
-* myStrom LED Strip             > [supported]
-* myStrom WiFi Motion Sensor    > [supported]
+* myStrom Switch v1 & v2        
+* myStrom Switch Zero           
+* myStrom Switch EU             
+* myStrom Bulb                  
+* myStrom Button                
+* myStrom Button Plus           
+* myStrom LED Strip             
+* myStrom WiFi Motion Sensor    
 
 ---
 
 ## Changelog
+
+v1.1.5
+
+* myStrom LED Strip added            
+* myStrom WiFi Motion Sensor added
+* Several internal changes
+
+v1.1.4
+
+* Bugfixes
 
 v1.1.3
 
@@ -113,12 +131,10 @@ v0.0.1
 
 ## ToDo
 
-* myStrom Switch Zero > no measure_power & measure_temperature 
-* Add homey discovery-api (https://github.com/rkokkelk/com.jreenen.homeyharmonyhub/blob/master/lib/discovery.js)
-* Adding devices (pair) to WLAN without myStrom-app
+* Add homey discovery-api [see](https://github.com/rkokkelk/com.jreenen.homeyharmonyhub/blob/master/lib/discovery.js)
 
 ---
 
 ## Copyright
 
-Copyright 2017, 2018 [Chris Gross] cFlat-inc.org
+Copyright 2017, 2023 [Chris Gross] cFlat-inc.org

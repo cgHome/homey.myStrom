@@ -5,7 +5,6 @@ const Device = require('../device');
 module.exports = class SwitchDevice extends Device {
 
   async onInit(options = {}) {
-    options.baseURL = options.baseURL || `http://${this.getStoreValue('address')}/`;
     super.onInit(options);
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));

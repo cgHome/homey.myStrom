@@ -1,0 +1,10 @@
+.homeyignore
+.vscode/
+.eslintrc.json
+.git/
+.gitignore
+.gitattributes
+docs/
+*.md
+package-lock.json
+jsconfig.json

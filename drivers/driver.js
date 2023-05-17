@@ -1,35 +1,29 @@
 'use strict';
 
-const Homey = require('homey');
+const { MyDriver } = require('my-homey');
 
-module.exports = class Driver extends Homey.Driver {
+module.exports = class Driver extends MyDriver {
 
-  onInit(options = {}) {
-    this.logDebug('onInit()');
-
-    this.ready()
-      .then(this.driverReady());
+  async onInit(options = {}) {
+    super.onInit(options);
   }
 
-  driverReady() {
-    this.logInfo('Driver ready');
-  }
+  // NOTE: simplelog-api on/off
 
-  // Homey-App Loggers
-  logError(msg) {
-    this.error(`[ERROR] ${this._logLinePrefix()} ${msg}`);
-  }
+  // logError(msg) {
+  //   if (process.env.DEBUG === '1') {
+  //     this.error(`[ERROR] ${msg}}`);
+  //   } else {
+  //     this.error(msg);
+  //   }
+  // }
 
-  logInfo(msg) {
-    this.log(`[INFO] ${this._logLinePrefix()} ${msg}`);
-  }
+  // logInfo(msg) {
+  //   this.log(`[INFO] ${msg}`);
+  // }
 
-  logDebug(msg) {
-    this.log(`[DEBUG] ${this._logLinePrefix()} ${msg}`);
-  }
-
-  _logLinePrefix() {
-    return '';
-  }
+  // logDebug(msg) {
+  //   this.log(`[DEBUG] ${msg}`);
+  // }
 
 };

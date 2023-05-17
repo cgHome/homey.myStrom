@@ -2,14 +2,14 @@ This app allows you to connect your myStrom.ch devices to Homey.
 
 Supported devices
 
-- myStrom Switch CH v1 & v2          [supported]
-- myStrom Switch CH Zero             [not tested, but it should work]
-- myStrom Switch EU                  [not tested, but it should work]
-- myStrom Bulb                       [supported]
-- myStrom Button                     [supported]
-- myStrom Button Plus                [supported]
-- myStrom LED Strip                  [currently not supported]
-- myStrom WiFi Motion Sensor         [currently not supported]
+- myStrom Switch CH v1 & v2          
+- myStrom Switch CH Zero             
+- myStrom Switch EU                  
+- myStrom Bulb                      
+- myStrom Button                    
+- myStrom Button Plus               
+- myStrom LED Strip
+- myStrom WiFi Motion Sensor
 
 Note:
 
