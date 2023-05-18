@@ -102,7 +102,7 @@ module.exports = class MyStromApp extends MyApp {
       .on('error', (err) => this.notifyError(`UDP-Client: ${err}`))
       .bind(7979);
 
-    this.logInfo('Homey-App is started');
+    this.logDebug('App is started');
   }
 
   // Web-API > deviceGenAction
