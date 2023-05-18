@@ -4,8 +4,8 @@ const { MyDriver } = require('my-homey');
 
 module.exports = class BaseDriver extends MyDriver {
 
-  async onInit(options = {}) {
-    super.onInit(options);
+  onInit() {
+    super.onInit();
   }
 
   // NOTE: simplelog-api on/off

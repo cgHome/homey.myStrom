@@ -10,8 +10,8 @@ const MOTION_DAY = '16';
 
 module.exports = class PirDevice extends BaseDevice {
 
-  onInit(options = {}) {
-    super.onInit(options);
+  onInit() {
+    super.onInit();
   }
 
   initDevice() {

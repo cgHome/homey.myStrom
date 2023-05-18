@@ -4,8 +4,8 @@ const BaseDriver = require('../driver');
 
 module.exports = class PirDriver extends BaseDriver {
 
-  onInit(options = {}) {
-    super.onInit(options);
+  onInit() {
+    super.onInit();
 
     // Create flow-cards
     this.__flowTriggerLightStateChanged = this.homey.flow.getDeviceTriggerCard('lightState_changed');

@@ -5,8 +5,8 @@ const ButtonDevice = require('../button/device');
 
 module.exports = class ButtonPlusDevice extends ButtonDevice {
 
-  onInit(options = {}) {
-    super.onInit(options);
+  onInit() {
+    super.onInit();
   }
 
   async deviceGenActionReceived(params) {

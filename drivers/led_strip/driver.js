@@ -4,8 +4,8 @@ const BulbDriver = require('../bulb/driver');
 
 module.exports = class StripDriver extends BulbDriver {
 
-  onInit(options = {}) {
-    super.onInit(options);
+  onInit() {
+    super.onInit();
   }
 
   async onPairListDevices() {

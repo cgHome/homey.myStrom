@@ -7,8 +7,8 @@ const RAMP_DEFAULT = '0';
 
 module.exports = class BulbDevice extends BaseDevice {
 
-  onInit(options = {}) {
-    super.onInit(options);
+  onInit() {
+    super.onInit();
 
     this.bulpMode = null; // Current mode
 

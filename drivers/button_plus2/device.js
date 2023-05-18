@@ -4,8 +4,8 @@ const BaseDevice = require('../device');
 
 module.exports = class ButtonPlus2Device extends BaseDevice {
 
-  onInit(options = {}) {
-    super.onInit(options);
+  onInit() {
+    super.onInit();
 
     this.registerCapabilityListener('button', this.onCapabilityButton.bind(this));
   }

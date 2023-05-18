@@ -4,8 +4,8 @@ const BaseDriver = require('../driver');
 
 module.exports = class SwitchDriver extends BaseDriver {
 
-  onInit(options = {}) {
-    super.onInit(options);
+  onInit() {
+    super.onInit();
   }
 
   async onPairListDevices() {

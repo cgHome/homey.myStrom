@@ -6,8 +6,8 @@ module.exports = class BaseDevice extends MyHttpDevice {
 
   #refreshDeviceInterval = null;
 
-  onInit(options = {}) {
-    super.onInit(options);
+  onInit() {
+    super.onInit();
 
     this.homey.on(`deviceGenAction-${this.data.mac}`, async (params) => {
       this.deviceGenActionReceived(params);

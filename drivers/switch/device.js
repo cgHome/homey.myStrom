@@ -4,8 +4,8 @@ const BaseDevice = require('../device');
 
 module.exports = class SwitchDevice extends BaseDevice {
 
-  async onInit(options = {}) {
-    super.onInit(options);
+  async onInit() {
+    super.onInit();
 
     this.registerCapabilityListener('onoff', this.onCapabilityOnOff.bind(this));
 
