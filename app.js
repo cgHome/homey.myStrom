@@ -91,7 +91,7 @@ module.exports = class MyStromApp extends MyApp {
               address: device.store.address,
               mac,
             });
-            this.notify(`Device ${device.data.deviceName} discovered - UDP > IP: ${device.store.address} (mac: ${mac} / type: ${device.data.type})`);
+            this.logNotice(`Device ${device.data.deviceName} discovered - UDP > IP: ${device.store.address} (mac: ${mac} / type: ${device.data.type})`);
           }
         } else {
           //  this.logError(`UDP discovery failed ${err.code} - ${err.message}`);
@@ -109,21 +109,6 @@ module.exports = class MyStromApp extends MyApp {
   async deviceGenActionAPI(params) {
     this.logDebug(`deviceGenActionAPI() - ${JSON.stringify(params)}`);
     this.homey.emit(`deviceGenAction-${params.mac}`, params);
-  }
-
-  notify(msg) {
-    this.homey.setTimeout(() => {
-      msg = (typeof msg !== 'function') ? msg : msg();
-      this.homey.notifications.createNotification({ excerpt: `**MyStromApp** - ${msg}` })
-        .catch((err) => this.logError(`createNotification() > ${err}`));
-      this.logInfo(`[NOTIFY] ${msg}`);
-    }, 1000);
-  }
-
-  async notifyError(msg) {
-    await this.homey.notifications.createNotification({ excerpt: `**${this.homey.manifest.name.en}** - Error: ${msg}` })
-      .catch((err) => this.logError(`createNotification() > ${err}`));
-    this.logError(`${msg}`);
   }
 
   // NOTE: simplelog-api on/off

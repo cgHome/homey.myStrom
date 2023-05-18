@@ -6,7 +6,7 @@ module.exports = class BaseDevice extends MyHttpDevice {
 
   #refreshDeviceInterval = null;
 
-  async onInit(options) {
+  onInit(options = {}) {
     super.onInit(options);
 
     this.homey.on(`deviceGenAction-${this.data.mac}`, async (params) => {
@@ -40,19 +40,16 @@ module.exports = class BaseDevice extends MyHttpDevice {
     this.homey.clearInterval(this.#refreshDeviceInterval);
   }
 
+  // MyHttpDevice
+
+  getBaseURL() {
+    return `http://${this.getStoreValue('address')}/`;
+  }
+
   // myStromDevice action
 
   deviceGenActionReceived(params) {
     this.logDebug(`deviceGenActionReceived() > ${JSON.stringify(params)}`);
-  }
-
-  notify(msg) {
-    this.homey.setTimeout(() => {
-      msg = (typeof msg !== 'function') ? msg : msg();
-      // this.homey.notifications.createNotification({ excerpt: `**MyStromApp** - ${msg}` })
-      //   .catch((err) =>  this.logError(`createNotification() > ${err}`));
-      this.logNotice(msg);
-    }, 1000);
   }
 
   // NOTE: simplelog-api on/off

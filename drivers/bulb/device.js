@@ -55,7 +55,7 @@ module.exports = class BulbDevice extends BaseDevice {
 
     return this.setDeviceData('device', { action, ramp: RAMP_DEFAULT })
       .then(this.getDeviceValues())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const current = this.getCapabilityValue('onoff');
         return this.homey.__('device.stateSet', { value: current ? 'on' : 'off' });
       }))
@@ -85,7 +85,7 @@ module.exports = class BulbDevice extends BaseDevice {
       action, ramp: RAMP_DEFAULT, mode: this.bulpMode, color,
     })
       .then(this.getDeviceValues())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const current = this.getCapabilityValue('dim');
         return this.homey.__('device.dimSet', { value: Math.round(current * 100) });
       }))
@@ -106,7 +106,7 @@ module.exports = class BulbDevice extends BaseDevice {
       action: 'on', mode: 'mono', ramp: RAMP_DEFAULT, color,
     })
       .then(this.getDeviceValues())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const current = this.getCapabilityValue('light_temperature');
         return this.homey.__('device.lightTemperatureSet', { value: current });
       }))
@@ -133,7 +133,7 @@ module.exports = class BulbDevice extends BaseDevice {
       action: 'on', mode: 'hsv', ramp: RAMP_DEFAULT, color,
     })
       .then(this.getDeviceValues())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const hue = Math.round(this.getCapabilityValue('light_hue') * 360);
         const saturation = Math.round(this.getCapabilityValue('light_saturation') * 100);
         return this.homey.__('device.lightHueSetSaturation', { hue, saturation });

@@ -63,7 +63,7 @@ module.exports = class SwitchDevice extends BaseDevice {
 
     return this.setDeviceData(`relay?state=${value ? '1' : '0'}`)
       .then(this.getDeviceValues())
-      .then(this.notify(() => {
+      .then(this.deviceChanged(() => {
         const current = this.getCapabilityValue('onoff');
         return this.homey.__('device.stateSet', { value: current ? 'on' : 'off' });
       }))
