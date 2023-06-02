@@ -6,10 +6,6 @@ Adds support for [myStrom devices](https://mystrom.ch/smart-home/).
 
 ## Attention
 
-**The app is currently **not** HP2023 (v10.x) compatible.....**
-
----
-
 **Note:**
 
 * **If you have problems after the upgrade, register all devices new.**
@@ -39,6 +35,11 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 ---
 
 ## Changelog
+
+v1.2.0
+
+* Support HP2023
+* Several internal changes
 
 v1.1.5
 

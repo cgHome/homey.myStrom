@@ -43,7 +43,7 @@ module.exports = class BaseDevice extends MyHttpDevice {
   // MyHttpDevice
 
   getBaseURL() {
-    return `http://${this.getStoreValue('address')}/`;
+    return `http://${this.getStoreValue('address')}/api/v1/`;
   }
 
   // myStromDevice action
