@@ -7,7 +7,7 @@
   "description": {
     "en": "myStrom 💚 better control"
   },
-  "version": "1.1.4",
+  "version": "1.2.0",
   "compatibility": ">=5.0.0",
   "source": "https://github.com/cgHome/homey.myStrom",
   "bugs": {
@@ -21,7 +21,9 @@
     "large": "./assets/images/large.png"
   },
   "brandColor": "#5AB42E",
-  "permissions": ["homey:app:nl.nielsdeklerk.log"],
+  "permissions": [
+    "homey:app:nl.nielsdeklerk.log"
+  ],
   "author": {
     "name": "Chris Gross",
     "email": "cgHome@cflat-inc.org"
