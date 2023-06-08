@@ -36,6 +36,10 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Changelog
 
+v1.2.1
+
+* Device refresh fixed
+
 v1.2.0
 
 * Support HP2023
