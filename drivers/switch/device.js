@@ -36,7 +36,6 @@ module.exports = class SwitchDevice extends BaseDevice {
 
   initDevice() {
     super.initDevice()
-      .then(this.getDeviceValues())
       .then(this.initDeviceRefresh())
       .catch((err) => this.logError(`initDevice() > ${err}`));
   }

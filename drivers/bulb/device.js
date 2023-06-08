@@ -20,7 +20,6 @@ module.exports = class BulbDevice extends BaseDevice {
 
   async initDevice() {
     super.initDevice()
-      .then(this.getDeviceValues())
       .then(this.initDeviceRefresh())
       .catch((err) => this.logError(`initDevice() > ${err}`));
   }

@@ -14,11 +14,10 @@ module.exports = class BaseDevice extends MyHttpDevice {
     });
   }
 
-  initDevice() {
-    return super.initDevice()
-      .then(this.initDeviceRefresh())
-      .catch((err) => this.logError(`initDevice() > ${err}`));
-  }
+  // initDevice() {
+  //   return super.initDevice()
+  //     .catch((err) => this.logError(`initDevice() > ${err}`));
+  // }
 
   initDeviceRefresh() {
     this.logDebug('initDeviceRefresh()');
@@ -32,12 +31,18 @@ module.exports = class BaseDevice extends MyHttpDevice {
 
   onDeleted() {
     super.onDeleted();
-    this.homey.clearInterval(this.#refreshDeviceInterval);
+
+    if (this.#refreshDeviceInterval !== null) {
+      this.homey.clearInterval(this.#refreshDeviceInterval);
+    }
   }
 
   onUnload() {
     super.onUnload();
-    this.homey.clearInterval(this.#refreshDeviceInterval);
+
+    if (this.#refreshDeviceInterval !== null) {
+      this.homey.clearInterval(this.#refreshDeviceInterval);
+    }
   }
 
   // MyHttpDevice
