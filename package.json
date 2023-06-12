@@ -1,6 +1,5 @@
 {
   "name": "homey.mystrom",
-  "version": "1.2.0",
   "description": "Adds support for myStrom devices.",
   "engines": {
     "node": ">=12.22"
@@ -12,9 +11,6 @@
     "start": "npm install && homey app install",
     "build": "homey app build",
     "publish": "homey app publish",
-    "postpublish": "git commit --amend --no-edit ./package.json && git push -f origin main",
-    "validate": "homey app validate -l publish",
-    "validate:test": "homey app validate",
     "eslint": "eslint",
     "update:myHomey": "npm uninstall my-homey && npm install github:cgHome/homey.my-homey#master"
   },

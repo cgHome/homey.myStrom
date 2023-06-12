@@ -24,7 +24,7 @@ module.exports = class ButtonDriver extends BaseDriver {
   triggerButtonPressedFlow(device, tokens, state) {
     this._flowTriggerButtonPressed
       .trigger(device, tokens, state)
-      .then(this.logInfo(`${device.getName()} [${this.getActionLabel(state.action)}] button pressed`))
+      .then(() => this.logInfo(`${device.getName()} [${this.getActionLabel(state.action)}] button pressed`))
       .catch((err) => this.logError(`triggerButtonPressedFlow() > ${err}`));
   }
 

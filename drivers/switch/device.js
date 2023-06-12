@@ -13,19 +13,19 @@ module.exports = class SwitchDevice extends BaseDevice {
       case 101: // Switch CH v1
         if (this.hasCapability('measure_temperature')) {
           await this.removeCapability('measure_temperature')
-            .then(this.logDebug('onInit() > Switch CH v1 > measure_temperature removed'))
+            .then(() => this.logDebug('onInit() > Switch CH v1 > measure_temperature removed'))
             .catch((err) => this.logError(`onInit() - ${err}`));
         }
         break;
       case 120: // Switch Zero
         if (this.hasCapability('measure_power')) {
           await this.removeCapability('measure_power')
-            .then(this.logDebug('onInit() > Switch Zero > measure_power removed'))
+            .then(() => this.logDebug('onInit() > Switch Zero > measure_power removed'))
             .catch((err) => this.logError(`onInit() - ${err}`));
         }
         if (this.hasCapability('measure_temperature')) {
           await this.removeCapability('measure_temperature')
-            .then(this.logDebug('onInit() > Switch Zero > measure_temperature removed'))
+            .then(() => this.logDebug('onInit() > Switch Zero > measure_temperature removed'))
             .catch((err) => this.logError(`onInit() - ${err}`));
         }
         break;
@@ -36,7 +36,7 @@ module.exports = class SwitchDevice extends BaseDevice {
 
   initDevice() {
     super.initDevice()
-      .then(this.initDeviceRefresh())
+      .then(() => this.initDeviceRefresh())
       .catch((err) => this.logError(`initDevice() > ${err}`));
   }
 
@@ -50,10 +50,10 @@ module.exports = class SwitchDevice extends BaseDevice {
     return super.getDeviceValues(url)
       .then((data) => {
         this.setCapabilityValue('onoff', data.relay);
-        if (data.power) {
+        if ('power' in data) {
           this.setCapabilityValue('measure_power', Math.round(data.power * 10) / 10);
         }
-        if (data.temperature) {
+        if ('temperature' in data) {
           this.setCapabilityValue('measure_temperature', Math.round(data.temperature * 10) / 10);
         }
       })
@@ -67,8 +67,8 @@ module.exports = class SwitchDevice extends BaseDevice {
     this.logDebug(`onCapabilityOnOff() - ${current} > ${value}`);
 
     return this.setDeviceData(`relay?state=${value ? '1' : '0'}`)
-      .then(this.getDeviceValues())
-      .then(this.deviceChanged(() => {
+      .then(() => this.getDeviceValues())
+      .then(() => this.deviceChanged(() => {
         const current = this.getCapabilityValue('onoff');
         return this.homey.__('device.stateSet', { value: current ? 'on' : 'off' });
       }))

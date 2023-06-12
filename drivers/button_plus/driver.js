@@ -22,7 +22,7 @@ module.exports = class ButtonPlusDriver extends ButtonDriver {
   triggerWheelChangedFlow(device, tokens, state) {
     this._flowTriggerWheelChanged
       .trigger(device, tokens, state)
-      .then(this.logInfo(`${device.getName()} [${this.getActionLabel(state.action)}] wheel changed to: ${tokens.value}`))
+      .then(() => this.logInfo(`${device.getName()} [${this.getActionLabel(state.action)}] wheel changed to: ${tokens.value}`))
       .catch((err) => this.logError(`triggerWheelChangedFlow() > ${err}`));
   }
 

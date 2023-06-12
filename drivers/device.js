@@ -16,7 +16,6 @@ module.exports = class BaseDevice extends MyHttpDevice {
 
   // initDevice() {
   //   return super.initDevice()
-  //     .catch((err) => this.logError(`initDevice() > ${err}`));
   // }
 
   initDeviceRefresh() {

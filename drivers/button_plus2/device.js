@@ -17,7 +17,7 @@ module.exports = class ButtonPlus2Device extends BaseDevice {
 
   initDevice() {
     super.initDevice()
-      .then(this.subscribeDeviceGenAction())
+      .then(() => this.subscribeDeviceGenAction())
       .catch((err) => this.logError(`initDevice() > ${err}`));
   }
 

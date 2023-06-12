@@ -16,8 +16,8 @@ module.exports = class PirDevice extends BaseDevice {
 
   initDevice() {
     super.initDevice()
-      .then(this.subscribeDeviceGenAction())
-      .then(this.getDeviceValues())
+      .then(() => this.subscribeDeviceGenAction())
+      .then(() => this.getDeviceValues())
       .catch((err) => this.logError(`initDevice() > ${err}`));
   }
 
@@ -70,7 +70,7 @@ module.exports = class PirDevice extends BaseDevice {
     if (state !== this.getCapabilityValue('light_state')) {
       this.logDebug(`setLightState() > ${state}`);
       this.setCapabilityValue('light_state', state)
-        .then(this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state }))
+        .then(() => this.driver.triggerLightStateChangedFlow(this, {}, { lightState: state }))
         .catch((err) => this.logError(`setLightState() - ${err}`));
     }
   }

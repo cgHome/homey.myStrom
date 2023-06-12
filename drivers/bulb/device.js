@@ -20,7 +20,7 @@ module.exports = class BulbDevice extends BaseDevice {
 
   async initDevice() {
     super.initDevice()
-      .then(this.initDeviceRefresh())
+      .then(() => this.initDeviceRefresh())
       .catch((err) => this.logError(`initDevice() > ${err}`));
   }
 
@@ -53,8 +53,8 @@ module.exports = class BulbDevice extends BaseDevice {
     const action = value ? 'on' : 'off';
 
     return this.setDeviceData('device', { action, ramp: RAMP_DEFAULT })
-      .then(this.getDeviceValues())
-      .then(this.deviceChanged(() => {
+      .then(() => this.getDeviceValues())
+      .then(() => this.deviceChanged(() => {
         const current = this.getCapabilityValue('onoff');
         return this.homey.__('device.stateSet', { value: current ? 'on' : 'off' });
       }))
@@ -83,8 +83,8 @@ module.exports = class BulbDevice extends BaseDevice {
     return this.setDeviceData('device', {
       action, ramp: RAMP_DEFAULT, mode: this.bulpMode, color,
     })
-      .then(this.getDeviceValues())
-      .then(this.deviceChanged(() => {
+      .then(() => this.getDeviceValues())
+      .then(() => this.deviceChanged(() => {
         const current = this.getCapabilityValue('dim');
         return this.homey.__('device.dimSet', { value: Math.round(current * 100) });
       }))
@@ -104,8 +104,8 @@ module.exports = class BulbDevice extends BaseDevice {
     return this.setDeviceData('device', {
       action: 'on', mode: 'mono', ramp: RAMP_DEFAULT, color,
     })
-      .then(this.getDeviceValues())
-      .then(this.deviceChanged(() => {
+      .then(() => this.getDeviceValues())
+      .then(() => this.deviceChanged(() => {
         const current = this.getCapabilityValue('light_temperature');
         return this.homey.__('device.lightTemperatureSet', { value: current });
       }))
@@ -131,8 +131,8 @@ module.exports = class BulbDevice extends BaseDevice {
     return this.setDeviceData('device', {
       action: 'on', mode: 'hsv', ramp: RAMP_DEFAULT, color,
     })
-      .then(this.getDeviceValues())
-      .then(this.deviceChanged(() => {
+      .then(() => this.getDeviceValues())
+      .then(() => this.deviceChanged(() => {
         const hue = Math.round(this.getCapabilityValue('light_hue') * 360);
         const saturation = Math.round(this.getCapabilityValue('light_saturation') * 100);
         return this.homey.__('device.lightHueSetSaturation', { hue, saturation });
