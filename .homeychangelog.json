@@ -31,5 +31,8 @@
   },
   "1.2.1": {
     "en": "Device refresh fixed"
+  },
+  "1.2.2": {
+    "en": "Some internal fixes"
   }
 }
