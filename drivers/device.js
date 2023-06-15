@@ -56,26 +56,4 @@ module.exports = class BaseDevice extends MyHttpDevice {
     this.logDebug(`deviceGenActionReceived() > ${JSON.stringify(params)}`);
   }
 
-  // NOTE: simplelog-api on/off
-
-  // logError(msg) {
-  //   if (process.env.DEBUG === '1') {
-  //     this.error(`[ERROR] ${this.getName()} > ${msg}}`);
-  //   } else {
-  //     this.error(msg);
-  //   }
-  // }
-
-  // logNotice(msg) {
-  //   this.log(`[NOTICE] ${this.getName()} > ${msg}`);
-  // }
-
-  // logInfo(msg) {
-  //   this.log(`[INFO] ${this.getName()} > ${msg}`);
-  // }
-
-  // logDebug(msg) {
-  //   this.log(`[DEBUG] ${this.getName()} > ${msg}`);
-  // }
-
 };

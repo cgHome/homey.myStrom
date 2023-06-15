@@ -111,20 +111,4 @@ module.exports = class MyStromApp extends MyApp {
     this.homey.emit(`deviceGenAction-${params.mac}`, params);
   }
 
-  // NOTE: simplelog-api on/off
-
-  // logError(msg) {
-  //   this.error(`${msg}`);
-  // }
-
-  // logInfo(msg) {
-  //   this.log(`[INFO] ${msg}`);
-  // }
-
-  // logDebug(msg) {
-  //   if (process.env.DEBUG === '1') {
-  //     this.log(`[DEBUG] ${msg}`);
-  //   }
-  // }
-
 };
