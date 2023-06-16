@@ -37,5 +37,8 @@
   },
   "1.2.3": {
     "en": "API crash fixed"
+  },
+  "1.2.4": {
+    "en": "TempFix debug-log"
   }
 }
