@@ -36,6 +36,10 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Changelog
 
+v1.2.4
+
+* TempFix debug-log
+
 v1.2.3
 
 * API crash fixed
