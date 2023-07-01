@@ -65,6 +65,12 @@ module.exports = class ButtonPlus2Device extends BaseDevice {
     }
   }
 
+  // Data handling
+
+  getDeviceValues() {
+    return Promise.resolve();
+  }
+
   onCapabilityButton(value = true, opts) {
     this.logDebug(`onCapabilityButton() > ${JSON.stringify(value)}`);
     // Software-Button only supports: "short press"
