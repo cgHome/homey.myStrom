@@ -40,5 +40,8 @@
   },
   "1.2.4": {
     "en": "TempFix debug-log"
+  },
+  "1.2.5": {
+    "en": "Button get device-data failed fixed"
   }
 }
