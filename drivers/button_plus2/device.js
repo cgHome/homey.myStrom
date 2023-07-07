@@ -28,7 +28,10 @@ module.exports = class ButtonPlus2Device extends BaseDevice {
         return this.setDeviceData('action/generic/generic', value)
           .then((data) => this.logDebug(`subscribeDeviceGenAction() > ${data || '[none]'}`));
       })
-      .catch((err) => this.logError(`subscribeDeviceGenAction() > ${err}`));
+      .catch((err) => {
+        this.setAvailable();
+        this.logError(`subscribeDeviceGenAction() > ${err}`);
+      });
   }
 
   async deviceGenActionReceived(params) {

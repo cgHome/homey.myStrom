@@ -15,6 +15,12 @@ module.exports = class ButtonDevice extends BaseDevice {
     this.subscribeDeviceGenAction();
   }
 
+  initDevice() {
+    super.initDevice()
+      .then(() => this.subscribeDeviceGenAction())
+      .catch((err) => this.logError(`initDevice() > ${err}`));
+  }
+
   subscribeDeviceGenAction() {
     this.homey.cloud.getLocalAddress()
       .then((localAddress) => {
@@ -22,7 +28,10 @@ module.exports = class ButtonDevice extends BaseDevice {
         return this.setDeviceData('action/generic', value)
           .then((data) => this.logDebug(`subscribeDeviceGenAction() > ${data || '[none]'}`));
       })
-      .catch((err) => this.logError(`subscribeDeviceGenAction() > ${err}`));
+      .catch((err) => {
+        this.setAvailable();
+        this.logError(`subscribeDeviceGenAction() > ${err}`);
+      });
   }
 
   async deviceGenActionReceived(params) {
