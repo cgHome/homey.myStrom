@@ -17,7 +17,7 @@ module.exports = class PirDevice extends BaseDevice {
   initDevice() {
     super.initDevice()
       .then(() => this.subscribeDeviceGenAction())
-      .then(() => this.getDeviceValues())
+      .then(() => this.initDeviceRefresh())
       .catch((err) => this.logError(`initDevice() > ${err}`));
   }
 
