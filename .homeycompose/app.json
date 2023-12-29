@@ -7,7 +7,7 @@
   "description": {
     "en": "myStrom 💚 better control"
   },
-  "version": "1.2.7",
+  "version": "1.2.8",
   "compatibility": ">=5.0.0",
   "source": "https://github.com/cgHome/homey.myStrom",
   "bugs": {

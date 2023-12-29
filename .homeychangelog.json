@@ -49,5 +49,8 @@
   },
   "1.2.7": {
     "en": "myStrom-Pir sensor refresh fixed"
+  },
+  "1.2.8": {
+    "en": "Bump myHomey"
   }
 }
