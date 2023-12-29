@@ -36,9 +36,13 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Changelog
 
-v1.2.5
+v1.2.7
 
-* Button 'get device-data failed' fixed
+* myStrom-Pir sensor refresh fixed
+
+v1.2.6
+
+* Bugfixes
 
 v1.2.4
 
