@@ -36,6 +36,18 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 
 ## Changelog
 
+v1.2.10
+
+* Bump myHomey
+
+v1.2.9
+
+* Bump myHomey
+
+v1.2.8
+
+* Bump myHomey
+  
 v1.2.7
 
 * myStrom-Pir sensor refresh fixed
