@@ -28,7 +28,6 @@ module.exports = class ButtonPlusDriver extends ButtonDriver {
 
   getActionLabel(action) {
     const label = super.getActionLabel(action);
-    // eslint-disable-next-line no-nested-ternary
     return label !== 'unknown' ? label : action === '4' ? 'Touch' : action === '5' ? 'Wheel' : action === '11' ? 'Wheel final' : 'unknown';
   }
 

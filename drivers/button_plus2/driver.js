@@ -29,7 +29,6 @@ module.exports = class ButtonDriver extends BaseDriver {
   }
 
   getActionLabel(action) {
-    // eslint-disable-next-line no-nested-ternary
     return action === '1' ? 'short' : action === '2' ? 'double' : action === '3' ? 'long' : 'unknown';
   }
 

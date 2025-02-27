@@ -2,17 +2,17 @@
   "name": "homey.mystrom",
   "description": "Adds support for myStrom devices.",
   "engines": {
-    "node": ">=12.22"
+    "node": ">=12.16.1"
   },
   "main": "app.js",
   "scripts": {
     "debug": "homey app run",
     "debug:remote": "npm run debug -- --remote",
-    "start": "npm install && homey app install",
     "build": "homey app build",
     "publish": "homey app publish",
-    "eslint": "eslint",
-    "update:myHomey": "npm uninstall my-homey && npm install github:cgHome/homey.my-homey#master"
+    "lint": "eslint .",
+    "app:install": "npm install && npm exec homey app install",
+    "upd:myHomey": "npm uninstall my-homey && npm install github:cgHome/homey.my-homey#master"
   },
   "repository": {
     "type": "git",
@@ -31,14 +31,15 @@
   },
   "homepage": "https://homey.app/a/ch.mystrom.smarthome",
   "devDependencies": {
-    "@tsconfig/node12": "^1.0.11",
-    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.5",
-    "@types/node": "^20.2.5",
-    "eslint": "^8.41.0",
-    "eslint-config-athom": "^3.1.1"
+    "@eslint/eslintrc": "^3.3.0",
+    "@eslint/js": "^9.21.0",
+    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.10",
+    "eslint": "^9.21.0",
+    "eslint-config-athom": "^3.1.3",
+    "globals": "^16.0.0"
   },
   "dependencies": {
-    "bonjour": "^3.5.0",
+    "bonjour-service": "^1.3.0",
     "my-homey": "github:cgHome/homey.my-homey#master"
   }
 }

@@ -1,37 +1,33 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "ch.mystrom.smarthome",
+  "version": "1.0.0",
+  "compatibility": ">=12.3.0",
   "sdk": 3,
+  "platforms": [
+    "local"
+  ],
   "name": {
     "en": "myStrom-SmartHome"
   },
   "description": {
     "en": "myStrom 💚 better control"
   },
-  "version": "1.2.10",
-  "compatibility": ">=5.0.0",
-  "source": "https://github.com/cgHome/homey.myStrom",
-  "bugs": {
-    "url": "https://github.com/cgHome/homey.myStrom/issues"
-  },
-  "homeyCommunityTopicId": 12507,
-  "support": "https://community.athom.com/t/12507",
-  "category": "lights",
+  "category": [
+    "lights"
+  ],
+  "permissions": [
+    "homey:app:org.cflat-inc.telemetryCollector"
+  ],
+  "brandColor": "#5AB42E",
   "images": {
     "small": "./assets/images/small.png",
     "large": "./assets/images/large.png"
   },
-  "brandColor": "#5AB42E",
-  "permissions": [
-    "homey:app:nl.nielsdeklerk.log"
-  ],
   "author": {
     "name": "Chris Gross",
     "email": "cgHome@cflat-inc.org"
   },
-  "platforms": [
-    "local"
-  ],
   "api": {
     "deviceGenActionAPI": {
       "description": "myStrom [button] generic action",
@@ -39,6 +35,12 @@
       "path": "/deviceGenAction",
       "public": true
     }
+  },
+  "homeyCommunityTopicId": 12507,
+  "support": "https://community.athom.com/t/12507",
+  "source": "https://github.com/cgHome/homey.myStrom",
+  "bugs": {
+    "url": "https://github.com/cgHome/homey.myStrom/issues"
   },
   "drivers": [
     {

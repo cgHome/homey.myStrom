@@ -1,99 +1,13 @@
 {
 	"version": "0.2.0",
 	"configurations": [
-		{		
-			"name": "HP16:Select",
-			"type": "node",
-			"request": "launch",
-			"cwd": "${workspaceFolder}",
-			"runtimeExecutable": "homey",
-			"args": [
-				"select",
-				"-n",
-				"HP2016"
-			]
-		},
 		{
-			"name": "HP16:Run",
-			"type": "node",
-			"request": "launch",
-			"cwd": "${workspaceFolder}",
-			"runtimeExecutable": "homey",
-			"args": [
-				"app",
-				"run",
-			],
-			"outputCapture": "std",
-			"serverReadyAction": {
-				"pattern": "Debugger listening on",
-				"action": "startDebugging",
-				"name": "HP16:Attach",
-			}
-		},
-		{
-			"name": "HP16:Attach",
+			"name": "HP23:local:Attach",
 			"type": "node",
 			"request": "attach",
-			"address": "192.168.50.10",
 			"port": 9229,
 			"localRoot": "${workspaceFolder}",
-			"remoteRoot": "/",
-		},
-		{
-			"name": "HP23:Select",
-			"type": "node",
-			"request": "launch",
-			"cwd": "${workspaceFolder}",
-			"runtimeExecutable": "homey",
-			"args": [
-				"select",
-				"-n",
-				"HP2023"
-			]
-		},
-		// Datagram does not work in the container at the moment !!
-		// {					
-		// 	"name": "HP23:Run",
-		// 	"type": "node",
-		// 	"request": "launch",
-		// 	"cwd": "${workspaceFolder}",
-		// 	"runtimeExecutable": "homey",
-		// 	"args": [
-		// 		"app",
-		// 		"run",
-		// 	],
-		// 	"outputCapture": "std",
-		// 	"serverReadyAction": {
-		// 		"pattern": "Debugger listening on",
-		// 		"action": "startDebugging",
-		// 		"name": "HP23:Attach",
-		// 	}
-		// },
-		// {
-		// 	"name": "HP23:Attach",
-		// 	"type": "node",
-		// 	"request": "attach",
-		// 	"port": 9229,
-		// 	"localRoot": "${workspaceFolder}",
-		// 	"remoteRoot": "/app/",
-		// },
-		{
-			"name": "HP23:remote:Run",
-			"type": "node",
-			"request": "launch",
-			"cwd": "${workspaceFolder}",
-			"runtimeExecutable": "homey",
-			"args": [
-				"app",
-				"run",
-				"--remote"
-			],
-			"outputCapture": "std",
-			"serverReadyAction": {
-				"pattern": "Debugger listening on",
-				"action": "startDebugging",
-				"name": "HP23:remote:Attach",
-			}
+			"remoteRoot": "/app/",
 		},
 		{
 			"name": "HP23:remote:Attach",
@@ -103,6 +17,22 @@
 			"port": 9229,
 			"localRoot": "${workspaceFolder}",
 			"remoteRoot": "/app/",
+		},
+		{
+			"name": "HP16:remote:Attach",
+			"type": "node",
+			"request": "attach",
+			"address": "192.168.50.10",
+			"port": 9229,
+			"localRoot": "${workspaceFolder}",
+			"remoteRoot": "/",
+		},
+		{
+			"name": "Attach: chrome",
+			"type": "chrome",
+			"request": "attach",
+			"port": 9222,
+			"webRoot": "${workspaceFolder}"
 		}
 	]
 }

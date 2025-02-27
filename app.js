@@ -1,13 +1,12 @@
 'use strict';
 
-const dns = require('dns');
-const dgram = require('dgram');
-const bonjour = require('bonjour')();
+const dns = require('node:dns');
+const dgram = require('node:dgram');
+const { Bonjour } = require("bonjour-service");
 
 const { MyApp } = require('my-homey');
 
 // see device-types on: https://api.mystrom.ch/#51094bbb-3807-47d2-b60e-dabf757d1f8e
-// eslint-disable-next-line no-unused-vars
 const DEVICE_TYPE = {
   101: 'Switch CH v1',
   102: 'Bulb',
@@ -34,7 +33,20 @@ module.exports = class MyStromApp extends MyApp {
   onInit() {
     super.onInit();
 
-    // Find myStrom-Devices
+    this.discoveryMyStromDevices();
+
+    this.logInfo('App has been initialized');
+  }
+
+  // Web-API > deviceGenAction
+  async deviceGenActionAPI(params) {
+    this.logDebug(`deviceGenActionAPI() - ${JSON.stringify(params)}`);
+    this.homey.emit(`deviceGenAction-${params.mac}`, params);
+  }
+
+  discoveryMyStromDevices() {
+    const bonjour = new Bonjour();
+
     const browser = bonjour.find({ type: 'hap' }, (service) => {
       if (service.host.match('myStrom-Switch')) {
         const deviceName = service.host.slice(0, service.host.indexOf('.'));
@@ -101,22 +113,6 @@ module.exports = class MyStromApp extends MyApp {
     udpClient
       .on('error', (err) => this.notifyError(`UDP-Client: ${err}`))
       .bind(7979);
-
-    this.logDebug('App is started');
-  }
-
-  // Web-API > deviceGenAction
-  async deviceGenActionAPI(params) {
-    this.logDebug(`deviceGenActionAPI() - ${JSON.stringify(params)}`);
-    this.homey.emit(`deviceGenAction-${params.mac}`, params);
-  }
-
-  // NOTE: simplelog-api on/off
-
-  logDebug(msg) {
-    if (process.env.DEBUG === '1') {
-      super.logDebug(msg);
-    }
   }
 
 };
