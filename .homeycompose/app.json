@@ -1,6 +1,6 @@
 {
   "id": "ch.mystrom.smarthome",
-  "version": "1.0.0",
+  "version": "1.2.10",
   "compatibility": ">=12.3.0",
   "sdk": 3,
   "platforms": [

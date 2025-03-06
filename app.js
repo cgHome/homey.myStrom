@@ -2,11 +2,12 @@
 
 const dns = require('node:dns');
 const dgram = require('node:dgram');
-const { Bonjour } = require("bonjour-service");
+const { Bonjour } = require('bonjour-service');
 
 const { MyApp } = require('my-homey');
 
 // see device-types on: https://api.mystrom.ch/#51094bbb-3807-47d2-b60e-dabf757d1f8e
+// eslint-disable-next-line no-unused-vars
 const DEVICE_TYPE = {
   101: 'Switch CH v1',
   102: 'Bulb',
@@ -45,9 +46,7 @@ module.exports = class MyStromApp extends MyApp {
   }
 
   discoveryMyStromDevices() {
-    const bonjour = new Bonjour();
-
-    const browser = bonjour.find({ type: 'hap' }, (service) => {
+    const browser = (new Bonjour()).find({ type: 'hap' }, (service) => {
       if (service.host.match('myStrom-Switch')) {
         const deviceName = service.host.slice(0, service.host.indexOf('.'));
         const mac = service.txt.id.replace(new RegExp(':', 'g'), '').toUpperCase();
