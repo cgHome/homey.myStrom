@@ -58,5 +58,8 @@
   },
   "1.2.10": {
     "en": "Bump myHomey"
+  },
+  "1.3.0": {
+    "en": "TelemetryCollector-Api added"
   }
 }
