@@ -30,6 +30,19 @@ module.exports = class SwitchDevice extends BaseDevice {
         }
         break;
       default:
+        if (!this.hasCapability('meter_power')) {
+          await this.addCapability('meter_power')
+            .then(() => this.logDebug('onInit() > Switch > meter_power added'))
+            .catch((err) => this.logError(`onInit() - ${err}`));
+        }
+        // this.unsetStoreValue('energy'); // NOTE: Only for test
+        if (!this.getStoreValue('energy')) {
+          await this.setStoreValue('energy', JSON.stringify({
+            current_boot_id: '',
+            begin_total_energy: 0,
+            total_energy: 0,
+          }));
+        }
         break;
     }
   }
@@ -50,11 +63,22 @@ module.exports = class SwitchDevice extends BaseDevice {
     return super.getDeviceValues(url)
       .then((data) => {
         this.setCapabilityValue('onoff', data.relay);
+        if ('energy_since_boot' in data) {
+          const energy = this.getStoreValue('energy');
+          if (energy.current_boot_id !== data.boot_id) {
+            energy.begin_total_energy = energy.total_energy;
+            energy.current_boot_id = data.boot_id;
+          }
+          energy.total_energy = energy.begin_total_energy + data.energy_since_boot;
+          this.setStoreValue('energy', energy);
+
+          this.setCapabilityValue('meter_power', parseFloat((energy.total_energy / 3600000).toFixed(2))); // Convert > Ws (watt second) to kWh
+        }
         if ('power' in data) {
-          this.setCapabilityValue('measure_power', Math.round(data.power * 10) / 10);
+          this.setCapabilityValue('measure_power', parseFloat(data.power.toFixed(1)));
         }
         if ('temperature' in data) {
-          this.setCapabilityValue('measure_temperature', Math.round(data.temperature * 10) / 10);
+          this.setCapabilityValue('measure_temperature', parseFloat(data.temperature.toFixed(1)));
         }
       })
       .catch((err) => this.logError(`getDeviceValues() > ${err.message}`));
