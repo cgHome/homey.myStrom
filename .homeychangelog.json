@@ -64,5 +64,8 @@
   },
   "1.4.0": {
     "en": "Switch Ex device added. Swicht Energy Meter added."
+  },
+  "1.4.1": {
+    "en": "Some text changed"
   }
 }
