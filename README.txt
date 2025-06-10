@@ -4,7 +4,8 @@ Supported devices
 
 - myStrom Switch CH v1 & v2          
 - myStrom Switch CH Zero             
-- myStrom Switch EU                  
+- myStrom Switch EU 
+- myStrom Switch Ex             
 - myStrom Bulb                      
 - myStrom Button                    
 - myStrom Button Plus               

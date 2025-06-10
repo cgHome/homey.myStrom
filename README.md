@@ -26,6 +26,7 @@ Keep in mind that in order for the Button or Button+ to respond to any of these 
 * myStrom Switch v1 & v2        
 * myStrom Switch Zero           
 * myStrom Switch EU             
+* myStrom Switch Ex             
 * myStrom Bulb                  
 * myStrom Button                
 * myStrom Button Plus           
