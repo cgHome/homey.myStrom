@@ -37,11 +37,11 @@ module.exports = class SwitchDevice extends BaseDevice {
         }
         // this.unsetStoreValue('energy'); // NOTE: Only for test
         if (!this.getStoreValue('energy')) {
-          await this.setStoreValue('energy', JSON.stringify({
+          await this.setStoreValue('energy', {
             current_boot_id: '',
             begin_total_energy: 0,
             total_energy: 0,
-          }));
+          });
         }
         break;
     }

@@ -21,6 +21,7 @@ const DEVICE_TYPE = {
   113: 'STECCO/CUBO',
   118: 'Button Plus 2nd gen',
   120: 'Switch Zero',
+  122: 'Switch Ex',
 };
 
 module.exports = class MyStromApp extends MyApp {
