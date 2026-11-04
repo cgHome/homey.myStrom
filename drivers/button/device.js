@@ -21,17 +21,8 @@ module.exports = class ButtonDevice extends BaseDevice {
       .catch((err) => this.logError(`initDevice() > ${err}`));
   }
 
-  subscribeDeviceGenAction() {
-    this.homey.cloud.getLocalAddress()
-      .then((localAddress) => {
-        const value = `get://${localAddress}/api/app/${this.homey.manifest.id}/deviceGenAction`;
-        return this.setDeviceData('action/generic', value)
-          .then((data) => this.logDebug(`subscribeDeviceGenAction() > ${data || '[none]'}`));
-      })
-      .catch((err) => {
-        this.setAvailable();
-        this.logError(`subscribeDeviceGenAction() > ${err}`);
-      });
+  get genActionPath() {
+    return 'action/generic';
   }
 
   async deviceGenActionReceived(params) {
