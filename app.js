@@ -78,35 +78,33 @@ module.exports = class MyStromApp extends MyApp {
       .start();
 
     const udpClient = dgram.createSocket('udp4', (msg, rinfo) => {
+      const mac = msg.hexSlice(0, 6).toUpperCase();
+      if (this.#devices[mac]) return;
       dns.reverse(rinfo.address, (err, hostnames) => {
-        if (!err) {
-          const hostname = hostnames[0];
-          const deviceName = hostname.slice(0, hostname.indexOf('.'));
-          const mac = msg.hexSlice(0, 6).toUpperCase();
-          const device = {
-            name: deviceName,
-            data: {
-              id: mac,
-              mac,
-              deviceName,
-              host: hostnames[0],
-              type: msg[6],
-            },
-            store: {
-              address: rinfo.address,
-            },
-          };
-          if (!this.#devices[mac]) {
-            this.#devices[mac] = device;
-            this.homey.emit('deviceDiscovered', {
-              name: device.data.deviceName,
-              address: device.store.address,
-              mac,
-            });
-            this.logNotice(`Device ${device.data.deviceName} discovered - UDP > IP: ${device.store.address} (mac: ${mac} / type: ${device.data.type})`);
-          }
-        } else {
-          //  this.logError(`UDP discovery failed ${err.code} - ${err.message}`);
+        // Networks without reverse DNS records would otherwise never list the device.
+        const hostname = err ? `myStrom-${mac.slice(-6)}` : hostnames[0];
+        const deviceName = hostname.split('.')[0];
+        const device = {
+          name: deviceName,
+          data: {
+            id: mac,
+            mac,
+            deviceName,
+            host: hostname,
+            type: msg[6],
+          },
+          store: {
+            address: rinfo.address,
+          },
+        };
+        if (!this.#devices[mac]) {
+          this.#devices[mac] = device;
+          this.homey.emit('deviceDiscovered', {
+            name: device.data.deviceName,
+            address: device.store.address,
+            mac,
+          });
+          this.logNotice(`Device ${device.data.deviceName} discovered - UDP > IP: ${device.store.address} (mac: ${mac} / type: ${device.data.type})`);
         }
       });
     });
