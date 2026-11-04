@@ -79,7 +79,10 @@ module.exports = class MyStromApp extends MyApp {
 
     const udpClient = dgram.createSocket('udp4', (msg, rinfo) => {
       const mac = msg.hexSlice(0, 6).toUpperCase();
-      if (this.#devices[mac]) return;
+      if (this.#devices[mac]) {
+        this.homey.emit(`deviceSeen-${mac}`);
+        return;
+      }
       dns.reverse(rinfo.address, (err, hostnames) => {
         // Networks without reverse DNS records would otherwise never list the device.
         const hostname = err ? `myStrom-${mac.slice(-6)}` : hostnames[0];
